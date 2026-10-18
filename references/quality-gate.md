@@ -38,7 +38,7 @@
 | ระดับการตรวจสอบ | เกณฑ์ประเมิน | ตัวอย่างข้อกำหนด | กลไกการตรวจรับ (Gate) |
 |---|---|---|---|
 | **Tier 1: Hard Invariants** | ไม่มีการประนีประนอม (Pass/Fail) | WCAG Dual-Theme Contrast, Keyboard Focus Visible, 44px Touch Targets, Reduced-Motion Compliance, Semantic State Contract | Automated Unit & Contrast Test |
-| **Tier 2: Soft Heuristics** | ปรับตามบริบทและขนาดหน้าจอ | Safe Concentric Radius, Motion Timing, Accent Budget ($\le 15\%$), Whitespace Budget ($\ge 25\%$) | Design Review & Optical Comparison |
+| **Tier 2: Soft Heuristics** | ปรับตามบริบทและขนาดหน้าจอ | Safe Concentric Radius, Boundary Clearance & Optical Inset (MD106), Motion Timing, Accent Budget ($\le 15\%$), Whitespace Budget ($\ge 25\%$) | Design Review & Optical Comparison |
 | **Tier 3: Progressive Enhancements** | เสริมความลื่นไหลเมื่อเบราว์เซอร์รองรับ | CSS Anchor Positioning, Scroll-Driven Animations, View Transitions L2, `@starting-style` | Feature Detection (`@supports` / JS Fallback) |
 | **Tier 4: Domain Rules** | สอดคล้องกับงานเฉพาะทางของผู้ใช้ | High-Density Telemetry, Map Canvas 100dvh, 0W Idle WebGL `frameloop="demand"` | Domain User Workflow Audit |
 

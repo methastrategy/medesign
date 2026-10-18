@@ -125,3 +125,8 @@ Scope: text rendered in the UI being built; does not apply to chat replies or sk
    - **NO Broken State Contract:** ทุกปุ่มต้องมีสถานะครบ 6 ชั้น (`default → hover → pressed → focus-visible → disabled/loading → success/error`) ห้ามมีปุ่มที่กดแล้วนิ่งสนิท
    - **NO Accent Color Inflation:** สีเน้น (Accent Color) ต้องใช้ไม่เกิน 10-15% ของพื้นที่หน้าจอทั้งหมด ห้ามระบายสีเน้นลงบนไอคอน หัวข้อ และการ์ดทุกใบจนปุ่ม CTA สูญเสียแรงดึงดูดสายตา (Visual Gravity)
 
+3. **Optical Geometry & Component Craft Slop (Hit-Target Conflation):**
+   - **NO Unpadded Boundary Collision on Sliders/Pills:** ห้ามวางแถบสเกลหรือเส้นสถานะ (`width: 100%`) ในกล่องแคปซูลโค้งมน (`border-radius: full / >10px`) ที่มีสีพื้นหลังหรือเส้นกรอบ โดยไม่มีระยะเว้นสายตาอย่างน้อย `12px` (`padding: 0 12px;`)
+   - **NO Hit-Target Visual Contamination (The Invisible Touch Halo Rule):** เมื่อทำขนาดปุ่ม/แถบควบคุม $\ge 44$px ตามเกณฑ์การเข้าถึง ห้ามใส่สีพื้นหลังทึบลงบนกล่อง 44px ให้คงสภาพกล่อง 44px เป็นสีโปร่งใส (Transparent Hit Box) แล้วปล่อยให้แถบ Visual Track ขนาด 4px หรือไอคอนอยู่ตรงกลางอย่างอิสระ
+   - **NO Stretched Dash Frequency Spectrum:** ห้ามทำ Audio Spectrum ด้วย Flex Div ขยายเต็มความกว้างหน้าจอจนกลายเป็นขีดนอนแบน ต้องใช้แท่งความถี่แนวตั้ง 32-48 แท่ง (กว้าง 3-4px) ตามเส้นโค้งความถี่เสียงจริง
+

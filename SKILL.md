@@ -41,7 +41,7 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | แอนิเมชันลื่นไหล & Micro-Interactions (AutoAnimate) | `references/micro-interactions-and-auto-animate.md` |
 | Infinite Spatial Canvas & Viewport Virtualization | `references/spatial-canvas-engine.md` |
 | 38 Archetypes ระดับโลก (30 Visual + 8 Engineering) & 5-Axis Matrix | `references/argon-design-archetypes.md` -> `references/quality-gate.md` |
-| 10 กฎเหล็ก Apple Design Award & CSS 2026 Invariants | `references/modern-craft-invariants.md` -> `references/quality-gate.md` |
+| 11 กฎเหล็ก Apple Design Award & CSS 2026 Invariants | `references/modern-craft-invariants.md` -> `references/quality-gate.md` |
 | สไตล์ Preset พิเศษ (`metha` / `apple` / `tesla`) | อ่าน `presets/{metha|apple|tesla}/guidelines.md` + `presets/{name}/design-tokens.css` |
 | รัน Deterministic Test Suite & Browser Matrix Audit | `node tests/runner.js [--browser]` หรือ `node tests/browser-audit.js` |
 
@@ -72,7 +72,7 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | `/medesign compare` | **เปิด Blind Testbed Lab** — เปรียบเทียบ Visual Craft 5 มิติ (`tests/visual-testbed.html`) |
 | `/medesign lint [path]` | **รัน Linter ตรวจจับ Hard Invariants**, สกัดกั้น AI Slop และคำนวณคะแนน $Q$-Score |
 | `/medesign search [query]` | **ค้นหา 38 Archetypes และ Presets** ด้วย Node.js Discovery Engine พร้อม Terminal Summary Card |
-| `/medesign polish [path]` | **ซ่อมโค้ดอัตโนมัติ (Self-Healing)** แก้ไข Hard Invariants (MD005, MD104, em-dash, dead buttons) |
+| `/medesign polish [path]` | **ซ่อมโค้ดอัตโนมัติ (Self-Healing)** แก้ไข Hard Invariants (MD005, MD104, MD106 boundary clearance, em-dash, dead buttons) |
 | `/medesign bolder [path]` | **เพิ่มความคมชัดและน้ำหนักภาพ** เพิ่ม font-weight, ความเข้ม border, และความสดของ Accent |
 | `/medesign quiet [path]` | **ลดทอนความจัดจ้านสู่ Minimalist** ลด font-weight, เปลี่ยนเส้นขอบเป็น Hairline, ลดความสดสี |
 | `/medesign snapshot [path]` | **จับภาพหน้าจอเรนเดอร์จริงระดับ High-DPI** (Mobile, Tablet, Desktop, หรือ `--og` 1200x630) ด้วย Headless CDP |
@@ -84,7 +84,7 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 
 > ค่า Tokens เต็ม: `user-profile.json` (หรืออ้างอิงจาก `references/brand-design-tokens.md`)
 
-- **01 Optical Geometry Engine:** Safe Concentric (`max(0px, r_outer - border_w - pad)`), Full Pill (`calc(var(--h) / 2)` หรือ `@property` สำหรับ Morphing), Area-Proportional Scaling (`clamp(0.96, 1 - 2.5/max(W,H), 0.995)` โดยแยก Hit Target 44px ออกจาก Visual Surface)
+- **01 Optical Geometry Engine:** Safe Concentric (`max(0px, r_outer - border_w - pad)`), Boundary Clearance (`MD106`: Transparent Touch Halo สำหรับ Slider และ $\ge 12$px Optical Padding), Full Pill (`calc(var(--h) / 2)` หรือ `@property` สำหรับ Morphing), Area-Proportional Scaling (`clamp(0.96, 1 - 2.5/max(W,H), 0.995)` โดยแยก Hit Target 44px ออกจาก Visual Surface)
 - **02 Perceptual Color Engine:** Perceptual Intent rules (`in oklch shorter hue` สำหรับรักษาความสด, `in oklab` สำหรับเกลี่ยความสว่าง/Neutral, Midpoint testing 25/50/75%), `color-mix()` token derivation, Functional Dark Mode Tokens (`surface-canvas`, `surface-raised`, `surface-inset`, `border-subtle`, `border-focus`), OLED Pure Black `#000000`
 - **03 Motion & Interaction Engine:** 4 Motion Profiles (`precision` 0-100ms, `soft-settle` 240-280ms, `spring-settle`, `instant` 0ms), Asymmetric Entry/Exit ($0.65\times$ e.g. 280ms/180ms), `@media (prefers-reduced-motion: reduce)` compliance, CSS Anchor Positioning + Popover API + `@starting-style`
 - **04 Typography & Script Engine:** Dual-Context Line-Height (UI Chrome `1.25/1.38` + `@supports (text-box: trim-both...)` + Thai Diacritic Headroom 2-4px, Prose `1.60/1.72`), `@font-face` `size-adjust` calibration, Heading Tracking `-0.025em`

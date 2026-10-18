@@ -19,6 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const pkg = require('../package.json');
 
 const rootDir = path.join(__dirname, '..');
 const rawArgs = process.argv.slice(2);
@@ -36,7 +37,7 @@ const aliasMap = {
   mesnapshot: 'snapshot'
 };
 
-if (aliasMap[invokedBin]) {
+if (aliasMap[invokedBin] && rawArgs[0] !== aliasMap[invokedBin]) {
   command = aliasMap[invokedBin];
   args = [command, ...rawArgs];
 }
@@ -51,7 +52,7 @@ const ANSI_GRAY = '\x1b[90m';
 
 function printHelp() {
   console.log(`
-${ANSI_BOLD}ME-DESIGN CLI v1.4.0${ANSI_RESET}
+${ANSI_BOLD}ME-DESIGN CLI v${pkg.version}${ANSI_RESET}
 Autonomous Design Engineering Toolkit & Automated Linter for AI Coding Assistants
 
 ${ANSI_BOLD}USAGE:${ANSI_RESET}
@@ -100,15 +101,20 @@ ${ANSI_BOLD}COMMANDS:${ANSI_RESET}
 switch (command) {
   case 'search': {
     const isJson = args.includes('--json');
-    const query = args.slice(1).filter(a => !a.startsWith('--')).join(' ').trim();
+    const isHelp = args.includes('--help') || args.includes('-h');
+    const query = args.slice(1).filter(a => !a.startsWith('--') && a !== '-h').join(' ').trim();
 
-    if (!query) {
+    if (!query || isHelp) {
       if (isJson) {
-        console.log(JSON.stringify({ error: 'Missing search query', usage: 'medesign search <query> [--json]' }));
+        console.log(JSON.stringify({ usage: 'medesign search <query> [--json]' }));
       } else {
-        console.log(`\n${ANSI_YELLOW}Usage:${ANSI_RESET} medesign search "<query>" [--json]\nExample: medesign search "cadastre survey"\n`);
+        console.log(`\n${ANSI_BOLD}ME-DESIGN Search Engine${ANSI_RESET}`);
+        console.log(`${ANSI_GRAY}Instant discovery across 38 Archetypes & system presets${ANSI_RESET}\n`);
+        console.log(`${ANSI_BOLD}Usage:${ANSI_RESET} medesign search "<query>" [--json]`);
+        console.log(`       mesearch "<query>" [--json]\n`);
+        console.log(`Example: medesign search "cadastre survey"\n`);
       }
-      process.exit(1);
+      process.exit(isHelp ? 0 : 1);
     }
 
     const catalogPath = path.join(rootDir, 'references', 'catalog.json');
@@ -260,9 +266,23 @@ ${ANSI_GRAY}──────────────────────�
 
   case 'polish': {
     const targetFile = args[1];
-    if (!targetFile) {
-      console.error(`${ANSI_RED}Error:${ANSI_RESET} Please specify target file to polish (e.g. medesign polish index.html)`);
-      process.exit(1);
+    if (!targetFile || targetFile === '--help' || targetFile === '-h') {
+      console.log(`
+${ANSI_BOLD}ME-DESIGN Self-Healing Polish${ANSI_RESET}
+${ANSI_GRAY}Autonomous repair engine for Hard Invariants & design quality${ANSI_RESET}
+
+${ANSI_BOLD}Usage:${ANSI_RESET}
+  medesign polish <file>
+  mepolish <file>
+
+${ANSI_BOLD}Repairs:${ANSI_RESET}
+  - Injects physical :focus-visible outline (MD005)
+  - Replaces raw 100vh with dynamic 100dvh (MD104)
+  - Injects forced-colors high contrast media query
+  - Fixes dead buttons with interactive hover/active states (MD004)
+  - Cleans HTML entity and unicode em-dashes to hyphens
+`);
+      process.exit(targetFile === '--help' || targetFile === '-h' ? 0 : 1);
     }
     const resolvedPath = path.resolve(process.cwd(), targetFile);
     if (!fs.existsSync(resolvedPath)) {
@@ -385,9 +405,21 @@ ${ANSI_GRAY}──────────────────────�
 
   case 'bolder': {
     const targetFile = args[1];
-    if (!targetFile) {
-      console.error(`${ANSI_RED}Error:${ANSI_RESET} Please specify target file (e.g. medesign bolder index.html)`);
-      process.exit(1);
+    if (!targetFile || targetFile === '--help' || targetFile === '-h') {
+      console.log(`
+${ANSI_BOLD}ME-DESIGN Bolder Modifier${ANSI_RESET}
+${ANSI_GRAY}Elevate visual density, typography weights, and color saturation${ANSI_RESET}
+
+${ANSI_BOLD}Usage:${ANSI_RESET}
+  medesign bolder <file>
+  mebolder <file>
+
+${ANSI_BOLD}Modifications:${ANSI_RESET}
+  - Elevates font weights: normal/400 -> 600, medium/500 -> 700
+  - Deepens subtle translucent borders (border-white/10 -> border-white/20)
+  - Boosts OKLCH chroma by ~25%
+`);
+      process.exit(targetFile === '--help' || targetFile === '-h' ? 0 : 1);
     }
     const resolvedPath = path.resolve(process.cwd(), targetFile);
     if (!fs.existsSync(resolvedPath)) {
@@ -481,9 +513,21 @@ ${ANSI_GRAY}──────────────────────�
 
   case 'quiet': {
     const targetFile = args[1];
-    if (!targetFile) {
-      console.error(`${ANSI_RED}Error:${ANSI_RESET} Please specify target file (e.g. medesign quiet index.html)`);
-      process.exit(1);
+    if (!targetFile || targetFile === '--help' || targetFile === '-h') {
+      console.log(`
+${ANSI_BOLD}ME-DESIGN Quiet Modifier${ANSI_RESET}
+${ANSI_GRAY}Soften visual density, typography weights, and border contrast${ANSI_RESET}
+
+${ANSI_BOLD}Usage:${ANSI_RESET}
+  medesign quiet <file>
+  mequiet <file>
+
+${ANSI_BOLD}Modifications:${ANSI_RESET}
+  - Softens font weights: bold/700 -> 500, semibold/600 -> 500
+  - Reduces borders to hairline borders
+  - Softens OKLCH chroma by ~30%
+`);
+      process.exit(targetFile === '--help' || targetFile === '-h' ? 0 : 1);
     }
     const resolvedPath = path.resolve(process.cwd(), targetFile);
     if (!fs.existsSync(resolvedPath)) {
@@ -616,6 +660,17 @@ ${ANSI_GRAY}──────────────────────�
 
   case 'presets': {
     const sub = args[1] || 'list';
+    if (sub === '--help' || sub === '-h' || sub === 'help') {
+      console.log(`
+${ANSI_BOLD}ME-DESIGN Presets Inspector${ANSI_RESET}
+${ANSI_GRAY}Inspect available design system presets${ANSI_RESET}
+
+${ANSI_BOLD}Usage:${ANSI_RESET}
+  medesign presets list
+  medesign presets get <preset-name>
+`);
+      process.exit(0);
+    }
     const presetsDir = path.join(rootDir, 'presets');
     if (sub === 'list') {
       console.log(`\n${ANSI_BOLD}AVAILABLE ME-DESIGN PRESETS:${ANSI_RESET}\n`);
@@ -648,6 +703,17 @@ ${ANSI_GRAY}──────────────────────�
   }
 
   case 'test': {
+    if (args[1] === '--help' || args[1] === '-h') {
+      console.log(`
+${ANSI_BOLD}ME-DESIGN Test Runner${ANSI_RESET}
+${ANSI_GRAY}Run deterministic AST & semantic rule test suites${ANSI_RESET}
+
+${ANSI_BOLD}Usage:${ANSI_RESET}
+  medesign test
+  medesign test --browser
+`);
+      process.exit(0);
+    }
     const runnerScript = path.join(rootDir, 'tests', 'runner.js');
     const child = spawnSync(process.execPath, [runnerScript, ...args.slice(1)], {
       stdio: 'inherit',
@@ -657,6 +723,16 @@ ${ANSI_GRAY}──────────────────────�
   }
 
   case 'doctor': {
+    if (args[1] === '--help' || args[1] === '-h') {
+      console.log(`
+${ANSI_BOLD}ME-DESIGN Environment Doctor${ANSI_RESET}
+${ANSI_GRAY}Verify local environment, Node.js, and Chrome/CDP availability${ANSI_RESET}
+
+${ANSI_BOLD}Usage:${ANSI_RESET}
+  medesign doctor
+`);
+      process.exit(0);
+    }
     console.log(`\n${ANSI_BOLD}ME-DESIGN System Health & Environment Doctor${ANSI_RESET}`);
     console.log(`${ANSI_GRAY}────────────────────────────────────────${ANSI_RESET}\n`);
 

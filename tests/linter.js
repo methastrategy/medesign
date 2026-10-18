@@ -8,8 +8,26 @@
 
 const fs = require('fs');
 const path = require('path');
+const pkg = require('../package.json');
 
 const args = process.argv.slice(2);
+
+if (args.includes('--help') || args.includes('-h')) {
+  console.log(`
+\x1b[1mME-DESIGN Linter (v${pkg.version})\x1b[0m
+\x1b[90mStatic AST & semantic rule auditing for HTML/CSS/JSX\x1b[0m
+
+\x1b[1mUsage:\x1b[0m
+  medesign lint <file> [options]
+  melint <file> [options]
+
+\x1b[1mOptions:\x1b[0m
+  --format <text|json|sarif>   Output format (default: text)
+  --preset <apple|tesla|metha> Target design preset
+  --config <path>              Custom medesign.config.js path
+`);
+  process.exit(0);
+}
 let targetFile = null;
 let presetName = 'default';
 let format = 'text'; // 'text' | 'json' | 'sarif'
@@ -309,7 +327,7 @@ if (format === 'sarif') {
         tool: {
           driver: {
             name: 'medesign',
-            version: '1.4.0',
+            version: pkg.version,
             informationUri: 'https://github.com/methastrategy/medesign',
             rules: allRules.map(r => ({
               id: r.id,
@@ -371,7 +389,7 @@ console.log(`${ANSI_GRAY}──────────────────�
 console.log(`Target        ${path.basename(targetFile)}`);
 console.log(`Preset        ${presetName.toUpperCase()}`);
 console.log(`Analysis      Static AST & Semantic Rules`);
-console.log(`Ruleset       medesign-standard@1.4.0\n`);
+console.log(`Ruleset       medesign-standard@${pkg.version}\n`);
 
 console.log(`${ANSI_BOLD}QUALITY SCORE (Q = ${w.H}H + ${w.I}I + ${w.G}G + ${w.R}R + ${w.V}V)${ANSI_RESET}`);
 console.log(`  Hierarchy (H)       ${H.toFixed(1)} / 100`);

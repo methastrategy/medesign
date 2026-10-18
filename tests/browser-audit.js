@@ -29,6 +29,20 @@ const ANSI_CYAN = '\x1b[36m';
 const ANSI_GRAY = '\x1b[90m';
 
 const args = process.argv.slice(2);
+
+if (args.includes('--help') || args.includes('-h')) {
+  console.log(`
+\x1b[1mME-DESIGN Browser Audit Engine\x1b[0m
+\x1b[90mHeadless Chrome DevTools Protocol verification matrix (7 conditions)\x1b[0m
+
+\x1b[1mUsage:\x1b[0m
+  medesign audit <file> [options]
+
+\x1b[1mOptions:\x1b[0m
+  --json    Output results in JSON format
+`);
+  process.exit(0);
+}
 let targetFile = null;
 let isJson = false;
 
@@ -56,24 +70,31 @@ function findChromium() {
   if (envPath && fs.existsSync(envPath)) return envPath;
 
   const localApp = process.env.LOCALAPPDATA || '';
-  const candidate = path.join(localApp, 'ms-playwright', 'chromium-1248', 'chrome-win64', 'chrome.exe');
-  if (fs.existsSync(candidate)) return candidate;
+  const pwDir = path.join(localApp, 'ms-playwright');
+  if (fs.existsSync(pwDir)) {
+    try {
+      const entries = fs.readdirSync(pwDir);
+      const chromiumDirs = entries.filter(e => e.startsWith('chromium-')).sort().reverse();
+      for (const cDir of chromiumDirs) {
+        const p = path.join(pwDir, cDir, 'chrome-win64', 'chrome.exe');
+        if (fs.existsSync(p)) return p;
+      }
+    } catch (e) {}
+  }
 
   const programFiles = process.env['ProgramFiles'] || 'C:\\Program Files';
   const programFilesX86 = process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
 
   const alternatives = [
-    // Windows
     path.join(programFiles, 'Google', 'Chrome', 'Application', 'chrome.exe'),
     path.join(programFilesX86, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+    path.join(programFiles, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
     path.join(programFilesX86, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
-    // Linux (CI & Debian/Ubuntu)
     '/usr/bin/google-chrome',
     '/usr/bin/google-chrome-stable',
     '/usr/bin/chromium',
     '/usr/bin/chromium-browser',
     '/snap/bin/chromium',
-    // macOS
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     '/Applications/Chromium.app/Contents/MacOS/Chromium'
   ];

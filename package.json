@@ -5,12 +5,12 @@
   "main": "bin/medesign.js",
   "bin": {
     "medesign": "bin/medesign.js",
-    "mepolish": "bin/medesign.js",
-    "mebolder": "bin/medesign.js",
-    "mequiet": "bin/medesign.js",
-    "melint": "bin/medesign.js",
-    "mesearch": "bin/medesign.js",
-    "mesnapshot": "bin/medesign.js"
+    "mepolish": "bin/mepolish.js",
+    "mebolder": "bin/mebolder.js",
+    "mequiet": "bin/mequiet.js",
+    "melint": "bin/melint.js",
+    "mesearch": "bin/mesearch.js",
+    "mesnapshot": "bin/mesnapshot.js"
   },
   "files": [
     "bin",

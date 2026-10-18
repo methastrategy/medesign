@@ -18,6 +18,22 @@ const presetsDir = path.join(__dirname, '..', 'presets');
 
 // Parse CLI Arguments
 const args = process.argv.slice(2);
+
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+\x1b[1mME-DESIGN Token Exporter\x1b[0m
+\x1b[90mExport preset design tokens to Tailwind v4 @theme, W3C DTCG, or CSS\x1b[0m
+
+\x1b[1mUsage:\x1b[0m
+  medesign tokens [export] [options]
+
+\x1b[1mOptions:\x1b[0m
+  --preset <apple|tesla|metha|all>   Target preset (default: all)
+  --format <tailwind|dtcg|css|all>   Target format (default: all)
+  --out <directory>                  Output directory (default: stdout / dist/tokens)
+`);
+  process.exit(0);
+}
 let targetPreset = 'all';
 let targetFormat = 'all';
 let outDir = null;

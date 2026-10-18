@@ -78,8 +78,17 @@ function findChromium() {
   if (envPath && fs.existsSync(envPath)) return envPath;
 
   const localApp = process.env.LOCALAPPDATA || '';
-  const candidate = path.join(localApp, 'ms-playwright', 'chromium-1248', 'chrome-win64', 'chrome.exe');
-  if (fs.existsSync(candidate)) return candidate;
+  const pwDir = path.join(localApp, 'ms-playwright');
+  if (fs.existsSync(pwDir)) {
+    try {
+      const entries = fs.readdirSync(pwDir);
+      const chromiumDirs = entries.filter(e => e.startsWith('chromium-')).sort().reverse();
+      for (const cDir of chromiumDirs) {
+        const p = path.join(pwDir, cDir, 'chrome-win64', 'chrome.exe');
+        if (fs.existsSync(p)) return p;
+      }
+    } catch (e) {}
+  }
 
   const programFiles = process.env['ProgramFiles'] || 'C:\\Program Files';
   const programFilesX86 = process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
@@ -87,6 +96,7 @@ function findChromium() {
   const alternatives = [
     path.join(programFiles, 'Google', 'Chrome', 'Application', 'chrome.exe'),
     path.join(programFilesX86, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+    path.join(programFiles, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
     path.join(programFilesX86, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
     '/usr/bin/google-chrome',
     '/usr/bin/google-chrome-stable',

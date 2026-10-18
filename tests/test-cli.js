@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const pkg = require('../package.json');
 const { execSync, spawnSync } = require('child_process');
 
 const ANSI_RESET = '\x1b[0m';
@@ -23,7 +24,7 @@ if (!fs.existsSync(tmpDir)) {
   fs.mkdirSync(tmpDir, { recursive: true });
 }
 
-console.log(`\n${ANSI_BOLD}ME-DESIGN CLI Test Suite (v1.4.0)${ANSI_RESET}`);
+console.log(`\n${ANSI_BOLD}ME-DESIGN CLI Test Suite (v${pkg.version})${ANSI_RESET}`);
 console.log(`${ANSI_GRAY}Verifying search discovery, self-healing polish, and density modifiers...${ANSI_RESET}\n`);
 
 let passed = 0;
@@ -145,10 +146,43 @@ try {
   assert(doctorOut.includes('Node.js Runtime') && doctorOut.includes('Headless Browser'), 'Doctor command runs health checks');
 
   // 10. Test 'snapshot' command via CLI
-  const snapOut = execSync(`node "${cliPath}" snapshot "examples/geospatial-banner-1200x630.html" --og --out "${tmpDir}/snap"`, { encoding: 'utf8' });
+  const testBanner = path.join(__dirname, '..', 'examples', 'geospatial-banner-1200x630.html');
+  const snapOut = execSync(`node "${cliPath}" snapshot "${testBanner}" --og --out "${tmpDir}/snap"`, { encoding: 'utf8' });
   assert(snapOut.includes('ME-DESIGN Snapshot Engine'), 'Snapshot engine displays banner header');
   assert(snapOut.includes('1 snapshots saved'), 'Snapshot command captured OG banner successfully');
   assert(fs.existsSync(path.join(tmpDir, 'snap', 'geospatial-banner-1200x630-og-banner-1200x630.png')), 'Snapshot output file exists on disk');
+
+  // 11. Test dedicated executable launchers
+  const mepolishOut = execSync(`node "${path.join(__dirname, '..', 'bin', 'mepolish.js')}" --help`, { encoding: 'utf8' });
+  assert(mepolishOut.includes('ME-DESIGN Self-Healing Polish'), 'Dedicated mepolish launcher runs polish subcommand');
+
+  const mebolderOut = execSync(`node "${path.join(__dirname, '..', 'bin', 'mebolder.js')}" --help`, { encoding: 'utf8' });
+  assert(mebolderOut.includes('ME-DESIGN Bolder Modifier'), 'Dedicated mebolder launcher runs bolder subcommand');
+
+  const mequietOut = execSync(`node "${path.join(__dirname, '..', 'bin', 'mequiet.js')}" --help`, { encoding: 'utf8' });
+  assert(mequietOut.includes('ME-DESIGN Quiet Modifier'), 'Dedicated mequiet launcher runs quiet subcommand');
+
+  const melintOut = execSync(`node "${path.join(__dirname, '..', 'bin', 'melint.js')}" --help`, { encoding: 'utf8' });
+  assert(melintOut.includes('ME-DESIGN Linter'), 'Dedicated melint launcher runs lint subcommand');
+
+  const mesearchOut = spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'mesearch.js'), '--help'], { encoding: 'utf8' });
+  assert(mesearchOut.stdout.includes('medesign search') && mesearchOut.stdout.includes('cadastre survey'), 'Dedicated mesearch launcher displays search usage');
+
+  const mesnapshotOut = spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'mesnapshot.js'), '--help'], { encoding: 'utf8' });
+  assert(mesnapshotOut.stdout.includes('ME-DESIGN Snapshot Engine'), 'Dedicated mesnapshot launcher displays snapshot usage');
+
+  // 12. Test --help flags across commands
+  const polishHelp = execSync(`node "${cliPath}" polish --help`, { encoding: 'utf8' });
+  assert(polishHelp.includes('ME-DESIGN Self-Healing Polish'), 'Polish command displays usage on --help');
+
+  const tokensHelp = execSync(`node "${cliPath}" tokens --help`, { encoding: 'utf8' });
+  assert(tokensHelp.includes('ME-DESIGN Token Exporter'), 'Tokens command displays usage on --help');
+
+  const presetsHelp = execSync(`node "${cliPath}" presets --help`, { encoding: 'utf8' });
+  assert(presetsHelp.includes('ME-DESIGN Presets Inspector'), 'Presets command displays usage on --help');
+
+  const masterHelp = execSync(`node "${cliPath}" help`, { encoding: 'utf8' });
+  assert(masterHelp.includes(`ME-DESIGN CLI v${pkg.version}`), `Master help displays dynamic version v${pkg.version}`);
 
 } catch (err) {
   assert(false, `Unexpected error in test-cli: ${err.message}`);

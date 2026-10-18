@@ -1,0 +1,8 @@
+dist/
+node_modules/
+*.sarif
+*.log
+*.bak
+user-profile.json
+.DS_Store
+Thumbs.db

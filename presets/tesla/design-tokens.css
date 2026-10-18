@@ -1,0 +1,112 @@
+/**
+ * ME-DESIGN Preset: Tesla Cybertruck & In-Vehicle Telemetry
+ * Version: 1.0.0
+ * Architecture: 3-Layer Design Tokens (Global -> Semantic -> Component)
+ */
+
+:root {
+  /* 01. Typography */
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", monospace;
+  --tracking-heading: -0.015em;
+  --tracking-badge: 0.08em;
+  --leading-ui: 1.22;
+  --leading-prose: 1.55;
+  --thai-headroom: 2px;
+
+  /* 02. Color Tokens */
+  --color-canvas: #050505;
+  --color-surface-raised: #111111;
+  --color-surface-inset: #0a0a0a;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #8e8e93;
+  --color-text-tertiary: #48484a;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.20);
+  --color-border-focus: oklch(0.65 0.24 28);
+
+  --color-accent: oklch(0.58 0.24 28);
+  --color-accent-hover: oklch(0.64 0.24 28);
+  --color-accent-fg: #ffffff;
+
+  --color-status-info: oklch(0.78 0.15 200);
+  --color-status-success: oklch(0.72 0.20 142);
+  --color-status-warning: oklch(0.80 0.18 75);
+  --color-status-critical: oklch(0.60 0.25 28);
+
+  /* 03. Optical Geometry (Strict Low-Radius Chamfer) */
+  --radius-outer: 4px;
+  --radius-inner: 2px;
+  --hit-target-min: 44px;
+
+  /* 04. Motion Tokens (High-Velocity Precision) */
+  --duration-entry: 100ms;
+  --duration-exit: 70ms;
+  --ease-entry: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Light Mode Overrides */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-canvas: #f4f4f4;
+    --color-surface-raised: #ffffff;
+    --color-surface-inset: #e5e5e5;
+    --color-text-primary: #111111;
+    --color-text-secondary: #5c5c5c;
+    --color-border-subtle: rgba(0, 0, 0, 0.10);
+    --color-border-strong: rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Core Component Utilities */
+.tesla-panel {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-outer);
+  padding: 16px 20px;
+  transition: border-color var(--duration-entry) var(--ease-entry);
+}
+
+.tesla-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--hit-target-min);
+  padding: 0 16px;
+  border-radius: var(--radius-outer);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-badge);
+  background: var(--color-accent);
+  color: var(--color-accent-fg);
+  border: 1px solid transparent;
+  cursor: pointer;
+  outline-offset: 2px;
+  transition: background var(--duration-entry) var(--ease-entry);
+}
+
+.tesla-btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+}
+
+.tesla-btn:active .visual-surface {
+  transform: scale(0.98);
+}
+
+.telemetry-val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

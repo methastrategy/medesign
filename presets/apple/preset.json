@@ -1,0 +1,53 @@
+{
+  "$schema": "../schema.json",
+  "id": "apple",
+  "name": "Apple Human Interface & Product Showcase",
+  "version": "1.0.0",
+  "archetype": "Archetype 02: High-End Hardware Showcase",
+  "description": "Cupertino optical precision: generous negative space, concentric squircles, frosted vibrancy glass, and restrained typographic hierarchy.",
+  "typography": {
+    "display": "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif",
+    "sans": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif",
+    "mono": "'SF Mono', 'Menlo', 'Fira Code', monospace",
+    "headingTracking": "-0.022em",
+    "uiLineHeight": "1.28",
+    "proseLineHeight": "1.65",
+    "thaiHeadroom": "3px"
+  },
+  "color": {
+    "canvas": "#000000",
+    "surfaceRaised": "#1c1c1e",
+    "surfaceInset": "#161618",
+    "borderSubtle": "rgba(255, 255, 255, 0.12)",
+    "borderFocus": "oklch(0.62 0.22 255)",
+    "accent": "oklch(0.58 0.22 255)",
+    "accentForeground": "#ffffff",
+    "status": {
+      "info": "oklch(0.65 0.18 245)",
+      "success": "oklch(0.70 0.19 145)",
+      "warning": "oklch(0.78 0.18 70)",
+      "critical": "oklch(0.62 0.22 25)"
+    }
+  },
+  "geometry": {
+    "radiusBase": "16px",
+    "radiusOuter": "24px",
+    "concentricFormula": "max(0px, 24px - 1px - 8px) = 15px",
+    "scalingFormula": "clamp(0.96, 1 - 2.5/max(W, H), 0.995)",
+    "hitTargetMinTouch": "44px"
+  },
+  "motion": {
+    "profile": "soft-settle",
+    "durationEntry": "240ms",
+    "durationExit": "160ms",
+    "easingEntry": "cubic-bezier(0.16, 1, 0.3, 1)",
+    "easingExit": "cubic-bezier(0.4, 0, 0.7, 0.2)"
+  },
+  "rules": [
+    "MD001_FOCUS_RING",
+    "MD002_REDUCED_MOTION",
+    "MD003_HIT_TARGET_ISOLATION",
+    "MD004_DEAD_BUTTON_CONTRACT",
+    "MD101_BENTO_ROW_FLOW"
+  ]
+}

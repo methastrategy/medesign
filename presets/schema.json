@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MEDesignPreset",
+  "description": "Schema for ME-DESIGN reusable style and engineering presets",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "version",
+    "archetype",
+    "description",
+    "typography",
+    "color",
+    "geometry",
+    "motion",
+    "rules"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "archetype": {
+      "type": "string",
+      "description": "Reference to one of the 38 ME-DESIGN Archetypes (e.g. Archetype 02, Archetype 32)"
+    },
+    "description": {
+      "type": "string"
+    },
+    "typography": {
+      "type": "object",
+      "required": ["display", "sans", "mono", "headingTracking", "uiLineHeight", "proseLineHeight"],
+      "properties": {
+        "display": { "type": "string" },
+        "sans": { "type": "string" },
+        "mono": { "type": "string" },
+        "headingTracking": { "type": "string" },
+        "uiLineHeight": { "type": "string" },
+        "proseLineHeight": { "type": "string" },
+        "thaiHeadroom": { "type": "string" }
+      }
+    },
+    "color": {
+      "type": "object",
+      "required": ["canvas", "surfaceRaised", "surfaceInset", "borderSubtle", "borderFocus", "accent", "accentForeground", "status"],
+      "properties": {
+        "canvas": { "type": "string" },
+        "surfaceRaised": { "type": "string" },
+        "surfaceInset": { "type": "string" },
+        "borderSubtle": { "type": "string" },
+        "borderFocus": { "type": "string" },
+        "accent": { "type": "string" },
+        "accentForeground": { "type": "string" },
+        "status": {
+          "type": "object",
+          "required": ["info", "success", "warning", "critical"],
+          "properties": {
+            "info": { "type": "string" },
+            "success": { "type": "string" },
+            "warning": { "type": "string" },
+            "critical": { "type": "string" }
+          }
+        }
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "required": ["radiusBase", "radiusOuter", "concentricFormula", "scalingFormula", "hitTargetMinTouch"],
+      "properties": {
+        "radiusBase": { "type": "string" },
+        "radiusOuter": { "type": "string" },
+        "concentricFormula": { "type": "string" },
+        "scalingFormula": { "type": "string" },
+        "hitTargetMinTouch": { "type": "string" }
+      }
+    },
+    "motion": {
+      "type": "object",
+      "required": ["profile", "durationEntry", "durationExit", "easingEntry", "easingExit"],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "enum": ["precision", "soft-settle", "spring-settle", "instant"]
+        },
+        "durationEntry": { "type": "string" },
+        "durationExit": { "type": "string" },
+        "easingEntry": { "type": "string" },
+        "easingExit": { "type": "string" }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valid Tailwind Ring with Transparent Outline (forced-colors compliant)</title>
+  <style>
+    :root {
+      --color-canvas: #0f172a;
+      --color-text: #f8fafc;
+      --color-primary: #3b82f6;
+    }
+
+    body {
+      background: var(--color-canvas);
+      color: var(--color-text);
+      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 24px;
+      --corner-r: 12px;
+      border-radius: max(0px, 12px);
+      background-image: linear-gradient(in oklch shorter hue, #1e293b 0%, #334155 100%);
+    }
+
+    /* Standard Tailwind Ring Pattern with Transparent Outline for forced-colors: active */
+    .btn-ring {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 12px 24px;
+      background: var(--color-primary);
+      color: #ffffff;
+      border: none;
+      --corner-r: 8px;
+      border-radius: max(0px, 8px);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .btn-ring:hover {
+      background: #2563eb;
+    }
+
+    .btn-ring:active {
+      transform: scale(0.98);
+    }
+
+    /* MD001 & MD005 Compliant: transparent outline persists into Highlight in forced-colors: active */
+    .btn-ring:focus-visible {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px #3b82f6;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Tailwind Ring Test</h2>
+    <button class="btn-ring" type="button">Focus Me</button>
+  </div>
+</body>
+</html>

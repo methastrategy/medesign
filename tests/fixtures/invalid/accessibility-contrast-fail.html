@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deliberately Flawed UI — Accessibility & Hard Invariant Violations</title>
+  <style>
+    body {
+      background: #111;
+      color: #777; /* Poor low contrast */
+      font-family: sans-serif;
+    }
+
+    /* VIOLATION MD001: Focus outline killed without visible indicator */
+    button:focus {
+      outline: none;
+    }
+
+    /* VIOLATION MD002: Transition present without prefers-reduced-motion */
+    .animated-banner {
+      transition: all 0.5s ease-in-out;
+      transform: translateY(10px);
+    }
+
+    /* VIOLATION MD003: Uncontrolled button scale collapsing 44px touch hit-target */
+    .broken-btn {
+      padding: 8px 12px;
+      background: #333;
+      color: #fff;
+    }
+    .broken-btn:active {
+      transform: scale(0.92);
+    }
+  </style>
+</head>
+<body>
+  <h1>Deliberately Failing Test Fixture</h1>
+  <div class="animated-banner">Banner</div>
+  <!-- Button with broken states and scale crushing -->
+  <button class="broken-btn">Click Me</button>
+</body>
+</html>

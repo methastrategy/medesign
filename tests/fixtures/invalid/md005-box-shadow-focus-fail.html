@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invalid Fixture: MD005 Box Shadow Focus Failure</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    .btn-bad-focus {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 10px 20px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      --corner-r: 6px;
+      border-radius: max(0px, 6px);
+      cursor: pointer;
+    }
+
+    .btn-bad-focus:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-bad-focus:active {
+      transform: scale(0.98);
+    }
+
+    /* VIOLATION MD005: outline is killed and focus relies solely on box-shadow.
+       In Windows High Contrast (forced-colors: active), box-shadow disappears completely! */
+    .btn-bad-focus:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px #60a5fa;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <button class="btn-bad-focus" type="button">Box-Shadow Focus Only</button>
+</body>
+</html>

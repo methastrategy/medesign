@@ -1,0 +1,53 @@
+{
+  "$schema": "../schema.json",
+  "id": "metha",
+  "name": "Metha Engineering & Geoinformatics Cockpit",
+  "version": "1.0.0",
+  "archetype": "Archetype 32: GIS Situation Awareness & Archetype 38: Cadastral Survey & QA/QC Workbench",
+  "description": "Metha's personal engineering design signature: high-density cadastral tables, 8pt optical grid, Inter + IBM Plex Mono tabular coordinates, charcoal/deep slate dark canvas, and survey electric cyan/precision green accents.",
+  "typography": {
+    "display": "'Inter', 'SF Pro Display', sans-serif",
+    "sans": "'Inter', 'Sukhumvit Set', sans-serif",
+    "mono": "'IBM Plex Mono', 'Fira Code', monospace",
+    "headingTracking": "-0.020em",
+    "uiLineHeight": "1.25",
+    "proseLineHeight": "1.60",
+    "thaiHeadroom": "4px"
+  },
+  "color": {
+    "canvas": "#0c0e14",
+    "surfaceRaised": "#141721",
+    "surfaceInset": "#090a0f",
+    "borderSubtle": "rgba(255, 255, 255, 0.09)",
+    "borderFocus": "oklch(0.68 0.20 250)",
+    "accent": "oklch(0.65 0.20 250)",
+    "accentForeground": "#ffffff",
+    "status": {
+      "info": "oklch(0.68 0.20 250)",
+      "success": "oklch(0.72 0.18 145)",
+      "warning": "oklch(0.78 0.16 75)",
+      "critical": "oklch(0.62 0.22 25)"
+    }
+  },
+  "geometry": {
+    "radiusBase": "6px",
+    "radiusOuter": "8px",
+    "concentricFormula": "max(0px, 8px - 1px - 4px) = 3px",
+    "scalingFormula": "clamp(0.97, 1 - 2.2/max(W, H), 0.995)",
+    "hitTargetMinTouch": "44px"
+  },
+  "motion": {
+    "profile": "precision",
+    "durationEntry": "140ms",
+    "durationExit": "90ms",
+    "easingEntry": "cubic-bezier(0.16, 1, 0.3, 1)",
+    "easingExit": "cubic-bezier(0.4, 0, 1, 1)"
+  },
+  "rules": [
+    "MD001_FOCUS_RING",
+    "MD002_REDUCED_MOTION",
+    "MD003_HIT_TARGET_ISOLATION",
+    "MD004_DEAD_BUTTON_CONTRACT",
+    "MD101_BENTO_ROW_FLOW"
+  ]
+}

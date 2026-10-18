@@ -1,0 +1,26 @@
+---
+description: Enforce ME-DESIGN vNext Optical Craft, 5-Engine Architecture, and 4-Tier Quality Governance.
+alwaysApply: true
+---
+
+# ME-DESIGN vNext Quality Guidelines (Cursor Rules)
+
+When generating or refactoring UI components, web pages, or engineering dashboards:
+
+1. **Optical Geometry:**
+   - Use Safe Concentric Radius formula: `border-radius: max(0px, calc(var(--r-outer) - var(--border-w, 0px) - var(--pad)))`.
+   - Area-Proportional scaling on press: preserve 44px hit-target container, transform only inner `.visual-surface`.
+2. **Perceptual Color Science:**
+   - Use `in oklch shorter hue` for vibrant gradient paths, and `in oklab` for neutral/white/black blends.
+   - Use `color-mix(in oklch, ...)` for token derivations instead of raw static hex codes.
+   - Respect Dark Mode functional tokens (`--surface-canvas`, `--surface-raised`, `--surface-inset`, `--border-subtle`, `--border-focus`).
+3. **Motion Profiles:**
+   - Choose from 4 profiles: `precision` (0-100ms no overshoot), `soft-settle` (240-280ms), `spring-settle` (linear/spring), `instant` (0ms).
+   - Mandatory `@media (prefers-reduced-motion: reduce)` bypass.
+4. **Typography & Script:**
+   - Enforce dual-context line-height: UI Chrome `1.25` (EN) / `1.38` (TH), Prose `1.60` (EN) / `1.70-1.75` (TH).
+   - Provide 2-4px optical headroom for Thai tone marks and top vowels.
+5. **Anti-AI Tells:**
+   - Zero em-dash (`—`) or en-dash (`–`) in visible UI text.
+   - Zero decisionless 3-card uniformity.
+   - All interactive controls must satisfy `:focus-visible` outline.

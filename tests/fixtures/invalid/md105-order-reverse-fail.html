@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invalid Fixture: MD105 Visual DOM Sequence Scramble</title>
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* VIOLATION MD105: flex-direction: row-reverse scrambles tab sequence away from visual order */
+    .button-toolbar {
+      display: flex;
+      flex-direction: row-reverse;
+      gap: 12px;
+    }
+
+    button {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+
+    button:hover { background: #333; }
+    button:active { transform: scale(0.98); }
+
+    button:focus-visible {
+      outline: 2px solid cyan;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="button-toolbar">
+    <button type="button">Step 1</button>
+    <button type="button">Step 2</button>
+    <button type="button">Step 3</button>
+  </div>
+</body>
+</html>

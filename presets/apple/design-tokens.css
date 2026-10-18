@@ -1,0 +1,115 @@
+/**
+ * ME-DESIGN Preset: Apple Human Interface & Product Showcase
+ * Version: 1.0.0
+ * Architecture: 3-Layer Design Tokens (Global -> Semantic -> Component)
+ */
+
+:root {
+  /* 01. Typography */
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  --font-mono: "SF Mono", "Menlo", "Fira Code", monospace;
+  --tracking-heading: -0.022em;
+  --leading-ui: 1.28;
+  --leading-prose: 1.65;
+  --thai-headroom: 3px;
+
+  /* 02. Color Tokens (OKLCH / P3 Ready) */
+  --color-canvas: #000000;
+  --color-surface-raised: #1c1c1e;
+  --color-surface-inset: #161618;
+  --color-surface-glass: rgba(28, 28, 30, 0.72);
+  --color-text-primary: #f5f5f7;
+  --color-text-secondary: #86868b;
+  --color-text-tertiary: #6e6e73;
+  --color-border-subtle: rgba(255, 255, 255, 0.12);
+  --color-border-strong: rgba(255, 255, 255, 0.24);
+  --color-border-focus: oklch(0.62 0.22 255);
+
+  --color-accent: oklch(0.58 0.22 255);
+  --color-accent-hover: oklch(0.64 0.22 255);
+  --color-accent-fg: #ffffff;
+
+  --color-status-info: oklch(0.65 0.18 245);
+  --color-status-success: oklch(0.70 0.19 145);
+  --color-status-warning: oklch(0.78 0.18 70);
+  --color-status-critical: oklch(0.62 0.22 25);
+
+  /* 03. Optical Geometry */
+  --radius-outer: 24px;
+  --radius-inner: calc(var(--radius-outer) - 8px);
+  --radius-pill: 9999px;
+  --hit-target-min: 44px;
+
+  /* 04. Motion Tokens */
+  --duration-entry: 240ms;
+  --duration-exit: 160ms;
+  --ease-entry: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 0.7, 0.2);
+
+  /* 05. Blur & Vibrancy */
+  --backdrop-blur: blur(20px) saturate(180%);
+}
+
+/* Light Mode Overrides */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-canvas: #ffffff;
+    --color-surface-raised: #f5f5f7;
+    --color-surface-inset: #e8e8ed;
+    --color-surface-glass: rgba(255, 255, 255, 0.72);
+    --color-text-primary: #1d1d1f;
+    --color-text-secondary: #6e6e73;
+    --color-text-tertiary: #86868b;
+    --color-border-subtle: rgba(0, 0, 0, 0.08);
+    --color-border-strong: rgba(0, 0, 0, 0.18);
+    --color-accent: oklch(0.55 0.22 255);
+  }
+}
+
+/* Core Component Utilities */
+.apple-card {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-outer);
+  padding: 24px;
+  backdrop-filter: var(--backdrop-blur);
+  transition: transform var(--duration-entry) var(--ease-entry),
+              border-color var(--duration-entry) var(--ease-entry);
+}
+
+.apple-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--hit-target-min);
+  padding: 0 20px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  background: var(--color-accent);
+  color: var(--color-accent-fg);
+  border: none;
+  cursor: pointer;
+  outline-offset: 3px;
+  transition: transform var(--duration-entry) var(--ease-entry),
+              background var(--duration-entry) var(--ease-entry);
+}
+
+.apple-btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+}
+
+.apple-btn:active .visual-surface {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

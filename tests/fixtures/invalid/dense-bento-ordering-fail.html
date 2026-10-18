@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flawed Dashboard — Scrambled Tab Order & Legacy Gradients</title>
+  <style>
+    body {
+      background: #1a1a1a;
+      color: #f0f0f0;
+      font-family: sans-serif;
+    }
+
+    /* VIOLATION MD102: Legacy RGB gradient without perceptual space (oklch/oklab) */
+    .hero-banner {
+      background: linear-gradient(90deg, #ff0055 0%, #00ffaa 100%);
+      padding: 24px;
+    }
+
+    /* VIOLATION MD101: grid-auto-flow: dense scrambles tab order away from DOM */
+    .bento-dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-flow: dense;
+      gap: 16px;
+    }
+
+    .card {
+      background: #252525;
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    /* Focus visible provided so MD001 passes */
+    :focus-visible {
+      outline: 2px solid cyan;
+    }
+
+    /* Reduced motion provided so MD002 passes */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; }
+    }
+
+    /* VIOLATION MD004: Dead button with NO :hover or :active feedback */
+    .dead-action-button {
+      padding: 10px 16px;
+      background: #444;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-banner">
+    <h1>Dashboard with Scrambled Tab Flow</h1>
+  </div>
+
+  <div class="bento-dashboard">
+    <div class="card" style="grid-column: span 2;">
+      <h3>Card 1</h3>
+      <!-- Dead button violates MD004 -->
+      <button class="dead-action-button">Dead Action</button>
+    </div>
+    <div class="card">
+      <h3>Card 2</h3>
+    </div>
+    <div class="card">
+      <h3>Card 3</h3>
+    </div>
+  </div>
+</body>
+</html>

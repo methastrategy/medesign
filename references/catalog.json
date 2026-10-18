@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "name": "medesign-catalog",
+  "archetypes": [
+    {
+      "id": "cyber-saas",
+      "name": "Cyber-SaaS & Stark Ink",
+      "inspiration": ["Vercel", "Linear", "Supabase", "Mintlify"],
+      "tokens": {
+        "canvas_light": "#fafafa",
+        "canvas_dark": "#0a0a0a",
+        "ink_primary": "#171717",
+        "ink_primary_dark": "#ededed",
+        "hairline_border": "rgba(255, 255, 255, 0.08)",
+        "hairline_border_light": "rgba(0, 0, 0, 0.08)",
+        "mesh_gradient": "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.15), transparent)",
+        "heading_tracking": "-0.035em",
+        "button_radius": "9999px",
+        "card_radius": "14px"
+      },
+      "shadows": {
+        "card": "0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 12px 32px -8px rgba(0, 0, 0, 0.5)",
+        "button": "0 0 0 1px rgba(255, 255, 255, 0.15) inset, 0 2px 8px rgba(0, 0, 0, 0.12)"
+      }
+    },
+    {
+      "id": "warm-editorial",
+      "name": "Warm Editorial & Intelligent Workspace",
+      "inspiration": ["Claude", "Notion", "Starbucks"],
+      "tokens": {
+        "canvas_light": "#fbfaf8",
+        "canvas_dark": "#1a1917",
+        "accent": "#cc785c",
+        "ink_primary": "#1e1e1d",
+        "ink_muted": "#6b6a67",
+        "hairline_border": "rgba(0, 0, 0, 0.06)",
+        "heading_tracking": "-0.02em",
+        "button_radius": "8px",
+        "card_radius": "12px"
+      },
+      "shadows": {
+        "card": "0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03)",
+        "button": "0 1px 2px rgba(0, 0, 0, 0.08)"
+      }
+    },
+    {
+      "id": "electric-media",
+      "name": "Electric Neon & Charcoal Dark Mode",
+      "inspiration": ["Spotify", "PlayStation", "Replicate"],
+      "tokens": {
+        "canvas_dark": "#121212",
+        "surface_1": "#181818",
+        "surface_2": "#282828",
+        "accent_volt": "#1ed760",
+        "ink_primary": "#ffffff",
+        "ink_muted": "#b3b3b3",
+        "heading_tracking": "-0.025em",
+        "button_radius": "9999px",
+        "card_radius": "8px"
+      },
+      "shadows": {
+        "card": "0 8px 24px rgba(0, 0, 0, 0.5)",
+        "button": "0 4px 16px rgba(30, 215, 96, 0.3)"
+      }
+    },
+    {
+      "id": "precision-luxury",
+      "name": "Precision Luxury & Minimal Industrial",
+      "inspiration": ["BMW", "Apple", "Stripe"],
+      "tokens": {
+        "canvas_light": "#ffffff",
+        "canvas_dark": "#050505",
+        "surface_metal": "linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)",
+        "accent": "#0066b1",
+        "hairline_border": "1px solid rgba(255, 255, 255, 0.12)",
+        "heading_tracking": "-0.04em",
+        "button_radius": "4px",
+        "card_radius": "16px"
+      },
+      "shadows": {
+        "card": "0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+        "button": "inset 0 1px 0 rgba(255, 255, 255, 0.2)"
+      }
+    },
+    {
+      "id": "dense-fintech",
+      "name": "Dense Pro Dashboard & High-Speed Fintech",
+      "inspiration": ["Binance", "Coinbase", "Raycast"],
+      "tokens": {
+        "canvas_dark": "#0b0e11",
+        "surface_card": "#181a20",
+        "accent_gold": "#fcd535",
+        "accent_green": "#0ecb81",
+        "accent_red": "#f6465d",
+        "ink_primary": "#eaecef",
+        "ink_muted": "#848e9c",
+        "font_mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas",
+        "heading_tracking": "-0.015em",
+        "button_radius": "6px",
+        "card_radius": "8px"
+      },
+      "shadows": {
+        "card": "0 2px 8px rgba(0, 0, 0, 0.3)",
+        "button": "none"
+      }
+    }
+  ]
+}

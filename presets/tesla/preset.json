@@ -1,0 +1,53 @@
+{
+  "$schema": "../schema.json",
+  "id": "tesla",
+  "name": "Tesla Cybertruck & In-Vehicle Telemetry",
+  "version": "1.0.0",
+  "archetype": "Archetype 18: Industrial / Hardware Product & Archetype 32: GIS / Telemetry",
+  "description": "Brutal hardware minimalism: razor-sharp 2px-4px chamfer radii, deep obsidian/pure black contrast, precision 90-120ms telemetry response, and electric red/cyan telemetry accents.",
+  "typography": {
+    "display": "'Gotham', 'Inter', 'Space Grotesk', sans-serif",
+    "sans": "'Inter', 'Roboto', sans-serif",
+    "mono": "'IBM Plex Mono', 'JetBrains Mono', monospace",
+    "headingTracking": "-0.015em",
+    "uiLineHeight": "1.22",
+    "proseLineHeight": "1.55",
+    "thaiHeadroom": "2px"
+  },
+  "color": {
+    "canvas": "#050505",
+    "surfaceRaised": "#111111",
+    "surfaceInset": "#0a0a0a",
+    "borderSubtle": "rgba(255, 255, 255, 0.08)",
+    "borderFocus": "oklch(0.65 0.24 28)",
+    "accent": "oklch(0.58 0.24 28)",
+    "accentForeground": "#ffffff",
+    "status": {
+      "info": "oklch(0.78 0.15 200)",
+      "success": "oklch(0.72 0.20 142)",
+      "warning": "oklch(0.80 0.18 75)",
+      "critical": "oklch(0.60 0.25 28)"
+    }
+  },
+  "geometry": {
+    "radiusBase": "2px",
+    "radiusOuter": "4px",
+    "concentricFormula": "max(0px, 4px - 1px - 2px) = 1px",
+    "scalingFormula": "clamp(0.97, 1 - 2.0/max(W, H), 0.995)",
+    "hitTargetMinTouch": "44px"
+  },
+  "motion": {
+    "profile": "precision",
+    "durationEntry": "100ms",
+    "durationExit": "70ms",
+    "easingEntry": "cubic-bezier(0.2, 0, 0, 1)",
+    "easingExit": "cubic-bezier(0.4, 0, 1, 1)"
+  },
+  "rules": [
+    "MD001_FOCUS_RING",
+    "MD002_REDUCED_MOTION",
+    "MD003_HIT_TARGET_ISOLATION",
+    "MD004_DEAD_BUTTON_CONTRACT",
+    "MD101_BENTO_ROW_FLOW"
+  ]
+}

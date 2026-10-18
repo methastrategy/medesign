@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastral Survey Workbench — Metha Engineering Cockpit</title>
+  <style>
+    :root {
+      --font-display: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-sans: "Inter", "Sukhumvit Set", sans-serif;
+      --font-mono: "IBM Plex Mono", "Fira Code", monospace;
+
+      --color-canvas: #0c0e14;
+      --color-surface-raised: #141721;
+      --color-surface-inset: #090a0f;
+      --color-surface-dock: rgba(20, 23, 33, 0.92);
+      --color-text-primary: #e6edf3;
+      --color-text-secondary: #8b949e;
+      --color-border-subtle: rgba(255, 255, 255, 0.09);
+      --color-border-focus: oklch(0.68 0.20 250);
+
+      --color-accent: oklch(0.65 0.20 250);
+      --color-status-success: oklch(0.72 0.18 145);
+      --color-status-warning: oklch(0.78 0.16 75);
+      --color-status-critical: oklch(0.62 0.22 25);
+
+      --radius-outer: 8px;
+      --radius-inner: max(0px, var(--radius-outer) - 1px - 4px); /* Concentric formula */
+      --hit-target-min: 44px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--color-canvas);
+      color: var(--color-text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.25;
+      padding-top: 4px; /* Thai diacritic headroom */
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Modern perceptual gradient */
+    .header-bar {
+      background: linear-gradient(in oklch shorter hue, #141721 0%, #1e2232 100%);
+      border-bottom: 1px solid var(--color-border-subtle);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.020em;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: var(--radius-inner);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: rgba(114, 219, 145, 0.12);
+      color: var(--color-status-success);
+      border: 1px solid rgba(114, 219, 145, 0.25);
+    }
+
+    .cockpit-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr 340px;
+      grid-auto-flow: row; /* Strict row ordering to preserve tab navigation */
+      gap: 16px;
+      padding: 16px;
+      flex: 1;
+    }
+
+    .panel {
+      background: var(--color-surface-raised);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-outer);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .telemetry-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .telemetry-table th {
+      text-align: left;
+      padding: 8px 6px;
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    .telemetry-table td {
+      padding: 8px 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .coord-cell {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+    }
+
+    /* Isolated Hit Target Button Contract */
+    .action-btn {
+      min-height: var(--hit-target-min);
+      min-width: var(--hit-target-min);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      padding: 0 4px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .action-btn .visual-surface {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      background: var(--color-accent);
+      color: #050811;
+      border-radius: var(--radius-inner);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 140ms cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Hover & Active States */
+    .action-btn:hover .visual-surface {
+      background: oklch(0.70 0.20 250);
+    }
+
+    .action-btn:active .visual-surface {
+      transform: scale(0.98); /* Controlled safe scale on visual surface only */
+    }
+
+    /* Hard Invariant MD001: Focus Ring */
+    .action-btn:focus-visible {
+      outline: 2px solid var(--color-border-focus);
+      outline-offset: 2px;
+    }
+
+    /* Hard Invariant MD002: Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header-bar">
+    <div>
+      <h1>ระบบบริหารจัดการรังวัดที่ดินและหมุดหลักเขต (Cadastre Workbench)</h1>
+      <span style="font-size: 12px; color: var(--color-text-secondary);">สถานีฐาน RTK CORS-TH0101 · พิกัด UTM WGS84 Zone 47N</span>
+    </div>
+    <div class="badge-status">
+      <span>●</span>
+      <span>RTK FIX 1σ &lt; 0.004m</span>
+    </div>
+  </header>
+
+  <main class="cockpit-grid">
+    <aside class="panel">
+      <h2>รายการหมุดควบคุม (Control Benchmarks)</h2>
+      <table class="telemetry-table">
+        <thead>
+          <tr>
+            <th>จุดที่</th>
+            <th>พิกัด N (Northing)</th>
+            <th>พิกัด E (Easting)</th>
+            <th>สถานะ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>BM-01</td>
+            <td class="coord-cell">1,532,410.824</td>
+            <td class="coord-cell">671,209.112</td>
+            <td style="color: var(--color-status-success);">FIX</td>
+          </tr>
+          <tr>
+            <td>BM-02</td>
+            <td class="coord-cell">1,532,580.190</td>
+            <td class="coord-cell">671,450.405</td>
+            <td style="color: var(--color-status-success);">FIX</td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="action-btn" type="button" aria-label="คำนวณวงรอบปิด">
+        <span class="visual-surface">ตรวจสอบความถูกต้องวงรอบ (Traverse QA)</span>
+      </button>
+    </aside>
+
+    <section class="panel" style="position: relative; overflow: hidden;">
+      <h2>แผนที่แปลงที่ดินดิจิทัล (Spatial GIS Viewport)</h2>
+      <div style="flex: 1; min-height: 380px; background: #090a0f; border: 1px dashed var(--color-border-subtle); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-inner);">
+        <span style="color: var(--color-text-secondary); font-size: 13px;">[100dvh Canvas Viewport: Parcel 241/88 Layer Active]</span>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h2>ผลการคำนวณเกณฑ์ความคลาดเคลื่อน</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--color-text-secondary);">ความคลาดเคลื่อนทางราบ:</span>
+          <span class="coord-cell">1 : 45,000 (ผ่านเกณฑ์ชั้น 1)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--color-text-secondary);">Misclosure:</span>
+          <span class="coord-cell">ΔN: 0.003m · ΔE: 0.002m</span>
+        </div>
+      </div>
+      <button class="action-btn" type="button" aria-label="ส่งออกข้อมูลแปลงที่ดิน">
+        <span class="visual-surface">ออกรายงานรับรองผล (Export XML/DXF)</span>
+      </button>
+    </aside>
+  </main>
+</body>
+</html>

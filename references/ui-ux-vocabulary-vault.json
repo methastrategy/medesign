@@ -1,0 +1,1223 @@
+{
+  "version": "4.0.0",
+  "title": "ME-DESIGN World-Class 50+4 Category UI/UX, WebGIS, Supplemental Mastery & Expert Design Engineer Vocabulary Vault (750+ Terms & Patterns)",
+  "principle": "Recognition over Recall — ผู้ใช้ไม่ต้องจำคำศัพท์ ระบบแปลเป็นภาพตัวอย่างและภาษาคนพร้อมโค้ด CSS อัตโนมัติ",
+  "expert_categories": [
+    {
+      "id": 51,
+      "code": "EXP-01",
+      "name": "Surface Physics & Materiality",
+      "thai_name": "ฟิสิกส์พื้นผิวและมิติความลึก",
+      "thai_keywords": "พื้นผิว การ์ด ขอบ เงา กระจกฝ้า เฉดสี มิติ ชั้นข้อมูล",
+      "terms": [
+        {
+          "term": "Tonal Layering / Surface Luminance",
+          "plain_thai": "แยกชั้นพื้นหลัง-การ์ด-ช่องกรอกด้วยเฉดสีอ่อน-เข้ม แทนการตีกรอบเส้นดำทึบรกๆ",
+          "css": "--bg: #f3f1eb; --surface: #ffffff; --surface-2: #eceae4;",
+          "dna_locked": true
+        },
+        {
+          "term": "Top Inner Hairline (Specular Highlight)",
+          "plain_thai": "เส้นแสงสะท้อนบาง 1px เฉพาะขอบบนด้านในของการ์ดโหมดมืด ดูคมเหมือนโลหะเจียระไน",
+          "css": "box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.10);",
+          "dna_locked": false
+        },
+        {
+          "term": "Exposed Hairline Grid",
+          "plain_thai": "ตารางเส้นคมกริบ 1px ชนขอบถึงกันหมดโดยไม่เว้นช่องไฟ (สไตล์ Swiss / Vercel)",
+          "css": "display: grid; gap: 1px; background: var(--border);",
+          "dna_locked": true
+        },
+        {
+          "term": "Tactile Offset Shadow",
+          "plain_thai": "เงาแข็งไม่เบลอ เยื้องขวาล่าง 3px เหมือนป้ายกระดาษแข็งหรือสมุดสนาม",
+          "css": "box-shadow: 3px 3px 0px #191715; border: 1.5px solid #191715;",
+          "dna_locked": false
+        },
+        {
+          "term": "Translucent Acrylic / Frosted Glass",
+          "plain_thai": "กระจกฝ้าเบลอฉากหลังอย่างนุ่มนวล ใช้กับแถบเมนูบนหรือกล่องลอย",
+          "css": "backdrop-filter: blur(18px) saturate(160%); background: rgba(255,255,255,0.65);",
+          "dna_locked": true
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "code": "EXP-02",
+      "name": "Typographic Micro-Mechanics",
+      "thai_name": "กลไกตัวอักษรและตัวเลขความแม่นยำสูง",
+      "thai_keywords": "ฟอนต์ ตัวเลข ตัวอักษร หัวข้อ ช่องไฟ บรรทัด พิกัด ตารางตัวเลข",
+      "terms": [
+        {
+          "term": "Tabular Numerals (tabular-nums)",
+          "plain_thai": "บังคับตัวเลขทุกตัวกว้างเท่ากันเป๊ะ เวลาเรียงในตารางหรืออัปเดตสดจะไม่สั่นดิ้น",
+          "css": "font-family: 'Geist Mono', monospace; font-variant-numeric: tabular-nums;",
+          "dna_locked": true
+        },
+        {
+          "term": "Tight Negative Tracking",
+          "plain_thai": "บีบช่องไฟหัวข้อใหญ่ให้ชิดกันเล็กน้อย (-0.025em) ทำให้หัวข้อดูคมและแพง",
+          "css": "letter-spacing: -0.025em; line-height: 1.08;",
+          "dna_locked": true
+        },
+        {
+          "term": "Eyebrow / Kicker Label",
+          "plain_thai": "ป้ายกำกับตัวพิมพ์เล็กสีจางวางเหนือหัวข้อใหญ่ เพื่อบอกหมวดหมู่หรือรหัสสถานะ",
+          "css": "font-family: 'Geist Mono'; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;",
+          "dna_locked": true
+        },
+        {
+          "term": "Typographic Contrast (Serif × Sans × Mono)",
+          "plain_thai": "ผสมฟอนต์ 3 อารมณ์: หัวข้อมีเชิงหรูหรา + เนื้อหาอ่านง่าย + ตัวเลขฟอนต์วิศวกรรม",
+          "css": "--font-heading: 'Fraunces'; --font-body: 'Plus Jakarta Sans'; --font-mono: 'Geist Mono';",
+          "dna_locked": true
+        },
+        {
+          "term": "Optimal Measure (60ch–70ch)",
+          "plain_thai": "จำกัดความกว้างบรรทัดเนื้อหาให้อ่านสบายตา ไม่ยาวพาดเต็มจอจนหลงบรรทัด",
+          "css": "max-width: 65ch; line-height: 1.65;",
+          "dna_locked": true
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "code": "EXP-03",
+      "name": "Spatial Topology & Choreographed Layout",
+      "thai_name": "สถาปัตยกรรมการจัดวางพื้นที่หน้าจอ",
+      "thai_keywords": "โครงสร้าง การจัดวาง แถบเมนูบน แท็บขีดเส้นใต้ แผนที่เต็มจอ แบ่งครึ่งจอ เบนโตะ",
+      "terms": [
+        {
+          "term": "Zero-Sidebar Top-Nav Workspace",
+          "plain_thai": "ตัดแถบเมนูซ้ายทิ้งทั้งหมด ใช้เฉพาะแถบเมนูบนเพื่อให้ตารางและแผนที่กางเต็มตา",
+          "css": "max-width: 1152px; margin: 0 auto; /* No fixed left sidebar */",
+          "dna_locked": true
+        },
+        {
+          "term": "Underline Tab Switcher (Zero-Box Tabs)",
+          "plain_thai": "แท็บสลับหน้าที่ใช้แค่เส้นขีดใต้บางๆ 2px บนแท็บที่เลือก ไม่ตีกรอบปุ่มทึบครอบแท็บ",
+          "css": "border-bottom: 2px solid var(--accent); background: transparent;",
+          "dna_locked": true
+        },
+        {
+          "term": "Asymmetric Bento Split (8:4 / 7:5)",
+          "plain_thai": "จัดการ์ดไม่สมมาตร ให้การ์ดหลักใหญ่ 2 ใน 3 และการ์ดสรุปย่อยซ้อนกันด้านขวา 1 ใน 3",
+          "css": "grid-template-columns: repeat(12, 1fr); /* 8 cols + 4 cols */",
+          "dna_locked": true
+        },
+        {
+          "term": "Canvas-First with Floating HUD Pods",
+          "plain_thai": "แผนที่หรือกราฟิกเต็มจอ 100% แล้ววางแผงควบคุมลอยทับที่มุมจอเหมือน ArcGIS/Figma",
+          "css": "width: 100vw; height: 100vh; position: relative;",
+          "dna_locked": false
+        },
+        {
+          "term": "Master-Detail 50/50 Synced Split",
+          "plain_thai": "แบ่งครึ่งจอซ้าย-ขวา คลิกแถวข้อมูลฝั่งซ้ายแล้วกราฟิกฝั่งขวาอัปเดตตามทันที",
+          "css": "display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;",
+          "dna_locked": true
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "code": "EXP-04",
+      "name": "High-Craft Interaction & Engineering Density",
+      "thai_name": "ความแม่นยำของการโต้ตอบและความคมชัดของข้อมูล",
+      "thai_keywords": "ปุ่มกด สถานะ ป้ายกำกับ ตาราง ข้อมูลคมชัด คำกริยา ปุ่มอยู่ใกล้ตาราง",
+      "terms": [
+        {
+          "term": "High Signal-to-Noise Ratio (SNR)",
+          "plain_thai": "ตัดคำโฆษณาเวิ่นเว้อและเส้นขอบรกตาออก เหลือเฉพาะข้อมูลจริงที่ต้องใช้งาน",
+          "css": "border: 1px solid rgba(20,36,27,0.14);",
+          "dna_locked": true
+        },
+        {
+          "term": "Controls Co-located with Data",
+          "plain_thai": "วางปุ่มคำนวณ ตัวกรอง และปุ่มส่งออกไว้ติดกับหัวตารางข้อมูลชุดนั้นเลย",
+          "css": "display: flex; justify-content: space-between; align-items: center;",
+          "dna_locked": true
+        },
+        {
+          "term": "Tactile Micro-Press (active:scale-[0.97])",
+          "plain_thai": "กดปุ่มแล้วยุบตัวลงนิดเดียว (3%) แบบรวดเร็ว 150ms ห้ามทำการ์ดเด้งลอยกวนสายตา",
+          "css": "transition: all 150ms ease; transform: scale(0.97);",
+          "dna_locked": true
+        },
+        {
+          "term": "Pulsing Telemetry Status Pill",
+          "plain_thai": "ป้ายสถานะขนาดเล็กที่มีจุดไฟกะพริบบอกความพร้อมของระบบ (เช่น RTSD READY)",
+          "css": "border-radius: 9999px; font-family: 'Geist Mono';",
+          "dna_locked": true
+        },
+        {
+          "term": "Semantic Tinted Badges",
+          "plain_thai": "ป้ายบอกระดับหรือสถานะที่ใช้พื้นหลังสีจาง 10% คู่กับตัวหนังสือสีเข้มโทนเดียวกัน",
+          "css": "background: rgba(21,128,61,0.12); color: #15803d;",
+          "dna_locked": true
+        }
+      ]
+    }
+  ],
+  "core_categories": [
+    {
+      "id": 1,
+      "name": "Website Structure",
+      "thai_name": "โครงสร้างหลักของหน้าเว็บ",
+      "thai_keywords": "หัวเว็บ ท้ายเว็บ แถบเมนูบน แถบข้าง ส่วนต้อนรับ ฮีโร่ กรอบเนื้อหา เส้นทางหน้า ปุ่มลอย",
+      "terms": [
+        "Header (หัวเว็บ)",
+        "Navbar (แถบเมนูนำทาง)",
+        "Primary Navigation (เมนูหลัก)",
+        "Secondary Navigation (เมนูรอง)",
+        "Sidebar (แถบข้าง - Disabled in MESURV)",
+        "Topbar (แถบบนสุด)",
+        "Footer (ส่วนท้ายเว็บ)",
+        "Hero Section (ส่วนต้อนรับหลัก)",
+        "Main Content (เนื้อหาหลัก)",
+        "Container (กรอบจำกัดความกว้าง max-w-6xl)",
+        "Wrapper (กรอบหุ้มกลุ่มข้อมูล)",
+        "Page Shell (โครงหน้าเว็บหลัก)",
+        "Breadcrumb (แถบบอกเส้นทางหน้า)",
+        "Floating Action Button - FAB (ปุ่มกลมลอย)",
+        "Bottom Navigation (แถบเมนูด้านล่างมือถือ)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Navigation",
+      "thai_name": "ระบบนำทางและสลับหน้า",
+      "thai_keywords": "แท็บ เมนู ค้นหาด่วน คีย์ลัด แบ่งหน้า เลื่อนเรื่อยๆ ลิ้นชัก แคปซูล",
+      "terms": [
+        "Underline Tab Nav (แท็บขีดเส้นใต้ 2px - Locked DNA)",
+        "Segmented Control (ปุ่มสลับแบบแคปซูล)",
+        "Pill Nav (เมนูทรงแคปซูล)",
+        "Command Palette ⌘K (หน้าต่างค้นหาคำสั่งด่วน)",
+        "Hamburger Menu (ปุ่มเมนู 3 ขีด)",
+        "Dropdown Menu (เมนูกางลง)",
+        "Mega Menu (เมนูขนาดใหญ่หลายคอลัมน์)",
+        "Context Menu (เมนูคลิกขวา)",
+        "Overflow Menu ⋯ (เมนูเก็บคำสั่งรอง)",
+        "Breadcrumb Trail (เส้นทางย้อนกลับ)",
+        "Pagination (ปุ่มกดเปลี่ยนเลขหน้า)",
+        "Infinite Scroll (เลื่อนโหลดข้อมูลต่อเนื่อง)",
+        "Sticky Nav (แถบเมนูเกาะติดขอบบน)",
+        "Scrollspy (ไฮไลต์หัวข้อตามตำแหน่งที่เลื่อนอ่าน)",
+        "Navigation Drawer (ลิ้นชักเมนูด้านข้าง)",
+        "Off-canvas Menu (เมนูซ่อนนอกกรอบจอ)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Layout",
+      "thai_name": "ระบบตารางและการจัดเรียง",
+      "thai_keywords": "ตาราง กริด คอลัมน์ แถว ช่องไฟ แนวบรรทัด จัดเรียงแนวนอน แนวตั้ง",
+      "terms": [
+        "12-Column Grid (โครงตาราง 12 คอลัมน์)",
+        "CSS Grid (ตารางจัดวาง 2 มิติ)",
+        "Gutter (ร่องช่องว่างระหว่างคอลัมน์)",
+        "Baseline Grid (เส้นบรรทัดอ้างอิงสายตา)",
+        "Flexbox (การจัดเรียงยืดหยุ่น 1 มิติ)",
+        "Stack Layout (เรียงซ้อนแนวตั้ง)",
+        "Inline Layout (เรียงต่อกันแนวนอน)"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Spacing",
+      "thai_name": "ระยะห่างและความหนาแน่น",
+      "thai_keywords": "ระยะห่าง ช่องไฟ ขอบใน ขอบนอก พื้นที่ว่าง ความแน่น โปร่ง สบายตา",
+      "terms": [
+        "Padding (ระยะห่างด้านในกล่อง)",
+        "Margin (ระยะห่างด้านนอกกล่อง)",
+        "Gap (ช่องไฟระหว่างการ์ดในตาราง)",
+        "Gutter Spacing (ระยะร่องคอลัมน์)",
+        "Inset (ระยะร่นขอบด้านใน)",
+        "Vertical Rhythm (จังหวะเว้นบรรทัดแนวตั้ง)",
+        "Whitespace (พื้นที่ว่างพักสายตา)",
+        "Negative Space (พื้นที่ว่างรอบจุดเด่น)",
+        "Content Density - Compact (ข้อมูลแน่นพิเศษ)",
+        "Content Density - Comfortable (ความแน่นสมดุล)",
+        "Content Density - Spacious (โปร่งโล่งสบายตา)"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "UI Components",
+      "thai_name": "ปุ่มกดและตัวรับข้อมูล",
+      "thai_keywords": "ปุ่ม ปุ่มกด ช่องกรอก สวิตช์ สไลเดอร์ เลือกวันที่ ตัวเลือก ค้นหา",
+      "terms": [
+        "Primary Button (ปุ่มสั่งงานหลัก - Locked DNA)",
+        "Secondary Button (ปุ่มคำสั่งรอง)",
+        "Tertiary Button (ปุ่มลำดับที่สาม)",
+        "Ghost Button (ปุ่มพื้นใสขอบบาง)",
+        "Outline Button (ปุ่มตีเส้นขอบ)",
+        "Icon Button (ปุ่มไอคอนล้วน)",
+        "Destructive Button (ปุ่มลบ/ล้างข้อมูลสีแดง)",
+        "Split Button (ปุ่มคู่แยกตัวเลือกย่อย)",
+        "CTA - Call to Action (ปุ่มกระตุ้นการทำงานหลัก)",
+        "Input Field (ช่องกรอกข้อมูลและตัวเลข)",
+        "Combobox / Autocomplete (ช่องเลือกที่พิมพ์ค้นหาได้)",
+        "Toggle Switch (สวิตช์เปิด-ปิด)",
+        "Range Slider (แถบเลื่อนปรับค่าระดับ)",
+        "Date Picker (ตัวเลือกวันที่และเวลา)"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Information Components",
+      "thai_name": "กล่องข้อมูลและการแจ้งเตือน",
+      "thai_keywords": "การ์ด กล่อง ป๊อปอัป หน้าต่างลอย คำอธิบาย แจ้งเตือน ป้ายสถานะ แถบโหลด",
+      "terms": [
+        "Card (การ์ดแสดงกลุ่มข้อมูล)",
+        "Panel (แผงกรอบข้อมูล)",
+        "Modal (หน้าต่างป๊อปอัปกลางจอ)",
+        "Dialog (กล่องถามยืนยันคำสั่ง)",
+        "Drawer (ลิ้นชักข้อมูลสไลด์จากขอบจอ)",
+        "Popover (กล่องข้อมูลย่อยเด้งเมื่อคลิก)",
+        "Tooltip (ป้ายอธิบายสั้นๆ เมื่อชี้เมาส์)",
+        "Toast Notification (ป้ายแจ้งเตือนชั่วคราวมุมจอ)",
+        "Snackbar (แถบแจ้งเตือนพร้อมปุ่มย้อนกลับ)",
+        "Banner (แถบประกาศคาดหัวหน้าเว็บ)",
+        "Alert Callout (กล่องแจ้งเตือนสถานะสำคัญ)",
+        "Badge (ป้ายกำกับสถานะขนาดเล็ก - Locked DNA)",
+        "Chip / Tag (ป้ายตัวกรองที่กดเลือกหรือลบได้)",
+        "Avatar (รูปหรืออักษรย่อผู้ใช้งาน)",
+        "Accordion (กล่องพับ-กางเนื้อหา)",
+        "Stepper (แถบบอกลำดับขั้นตอน 1-2-3)",
+        "Progress Bar (แถบแสดงเปอร์เซ็นต์ความคืบหน้า)",
+        "Skeleton Loader (โครงกล่องจำลองขณะรอโหลด)"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Dashboard Design",
+      "thai_name": "องค์ประกอบแดชบอร์ดและเครื่องมือวิศวกรรม",
+      "thai_keywords": "ตาราง ตารางข้อมูล การ์ดตัวเลข สถิติ ตัวกรอง แถบเครื่องมือ แผงควบคุม แผนที่ แบ่งครึ่งจอ",
+      "terms": [
+        "KPI Card (การ์ดตัวเลขดัชนีชี้วัดหลัก - Locked DNA)",
+        "Metric Card (การ์ดแสดงค่าสถิติและหน่วย)",
+        "Stat Card (การ์ดสรุปตัวเลขเปรียบเทียบ)",
+        "Data Table (ตารางแสดงข้อมูลแถวและคอลัมน์ - Locked DNA)",
+        "Data Grid (ตารางคำนวณและแก้ไขค่าสด)",
+        "Filter Bar (แถบกรองหมวดหมู่ข้อมูล)",
+        "Toolbar (แถบเครื่องมือปฏิบัติการ)",
+        "Action Bar (แถบปุ่มคำสั่งรวม)",
+        "Control Panel (แผงตั้งค่าพารามิเตอร์)",
+        "Inspector Panel (แผงตรวจสอบรายละเอียดหมุด)",
+        "Properties Panel (แผงแก้ไขคุณสมบัติวัตถุ)",
+        "Utility Panel (แผงเครื่องมือเสริม)",
+        "Command Bar (แถบสั่งงานด่วน)",
+        "Status Bar (แถบสถานะระบบและพิกัดล่างสุด)",
+        "Map Panel (กรอบหน้าต่างแผนที่พิกัด)",
+        "Detail Panel (กรอบแสดงข้อมูลเชิงลึก)",
+        "Master-Detail View (ตารางหลักคู่กับหน้าต่างรายละเอียด)",
+        "Split View (การแบ่งหน้าจอทำงาน 2 ฝั่งคู่กัน)",
+        "Resizable Panel (หน้าต่างที่ลากปรับขนาดกว้าง-แคบได้)",
+        "Collapsible Panel (หน้าต่างที่พับเก็บซ่อนได้)"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Micro-interactions",
+      "thai_name": "การตอบสนองจุดเล็กๆ เมื่อใช้งาน",
+      "thai_keywords": "ชี้เมาส์ คลิก กดปุ่ม โหลด สำเร็จ ผิดพลาด ลากวางไฟล์",
+      "terms": [
+        "Hover State (เอฟเฟกต์เมื่อชี้เมาส์)",
+        "Focus State (กรอบไฮไลต์เมื่อกดเลือก)",
+        "Active State (จังหวะที่กำลังทำงานอยู่)",
+        "Pressed State (จังหวะกดปุ่มยุบตัว active:scale-[0.97] - Locked)",
+        "Disabled State (สถานะปิดไม่ให้กด)",
+        "Loading Spinner / Shimmer (สถานะกำลังประมวลผล)",
+        "Success Feedback (แจ้งเตือนเมื่อคำนวณผ่านเกณฑ์)",
+        "Error Feedback (แจ้งเตือนเมื่อข้อมูลผิดพลาด)",
+        "Empty State Prompt (หน้าจอแนะนำเมื่อยังไม่มีข้อมูล)",
+        "Skeleton Placeholder (โครงร่างระหว่างรอข้อมูล)",
+        "Ripple Effect (คลื่นวงกลมเมื่อคลิก)",
+        "Tooltip Reveal (การเผยคำอธิบายเมื่อชี้เมาส์)",
+        "Drag Feedback (เอฟเฟกต์ขณะกำลังคลิกลากไฟล์)",
+        "Drop Feedback (เอฟเฟกต์เมื่อวางไฟล์ลงกล่องสำเร็จ)"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Motion Design",
+      "thai_name": "จังหวะการเคลื่อนไหว (150ms Precision)",
+      "thai_keywords": "อนิเมชัน แอนิเมชัน การเคลื่อนไหว ความเร็ว สมูท เฟด เลื่อน",
+      "terms": [
+        "Easing Function (จังหวะความเร่งของการเคลื่อนไหว)",
+        "Duration 150ms–200ms (ความเร็วคมกริบ - Locked DNA)",
+        "Spring Animation (การเคลื่อนไหวแบบสปริง)",
+        "Fade Transition (การค่อยๆ ปรากฏหรือจางหาย)",
+        "Slide Transition (การสไลด์เลื่อนเข้า-ออก)",
+        "Scale Transition (การย่อ-ขยายขนาด)",
+        "Expand / Collapse Motion (จังหวะกางออกและพับเก็บ)",
+        "Morph Transition (การเปลี่ยนรูปร่างต่อเนื่อง)",
+        "Parallax Effect (ฉากหลังเลื่อนต่างความเร็ว - Forbidden in DNA)",
+        "Staggered Animation (การเรียงลำดับปรากฏทีละใบ)",
+        "Shared Element Transition (การเชื่อมชิ้นส่วนเดิมข้ามหน้า)"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Responsive Design",
+      "thai_name": "การรองรับทุกขนาดหน้าจอ",
+      "thai_keywords": "มือถือ แท็บเล็ต คอมพิวเตอร์ หน้าจอ ย่อขยาย ความกว้าง",
+      "terms": [
+        "Desktop-first Design (ออกแบบเน้นจอคอมพิวเตอร์เป็นหลัก)",
+        "Mobile-first Design (ออกแบบเน้นจอมือถือภาคสนามก่อน)",
+        "Breakpoint (จุดตัดเปลี่ยนโครงสร้างตามความกว้างจอ)",
+        "Viewport (ขนาดพื้นที่หน้าจอที่มองเห็นจริง)",
+        "Fluid Layout (โครงสร้างยืดหยุ่นเป็นเปอร์เซ็นต์)",
+        "Fixed Layout (โครงสร้างล็อกความกว้างตายตัว)",
+        "Max-width Container (จำกัดความกว้างสูงสุดไม่ให้ล้นจอใหญ่)",
+        "Container Query (ปรับขนาดชิ้นส่วนตามความกว้างของการ์ดแม่)"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Typography",
+      "thai_name": "ลำดับชั้นตัวอักษรและฟอนต์",
+      "thai_keywords": "ฟอนต์ ตัวหนังสือ ตัวอักษร ตัวเลข หัวข้อ ขนาด ความหนา ช่องไฟ",
+      "terms": [
+        "Font Family (ตระกูลฟอนต์ Plus Jakarta Sans / Fraunces)",
+        "Font Weight (ความหนาของตัวอักษร 400 / 600 / 700)",
+        "Font Size (ขนาดตัวอักษร)",
+        "Line Height / Leading (ระยะห่างระหว่างบรรทัด)",
+        "Letter Spacing / Tracking (-0.025em บีบช่องไฟหัวข้อ - Locked)",
+        "Text Hierarchy (ลำดับความสำคัญของข้อความ)",
+        "Visual Hierarchy (ลำดับจุดนำสายตา)",
+        "Display Type (หัวข้อขนาดใหญ่พิเศษหน้าแรก)",
+        "Heading H1–H4 (หัวข้อหลักและหัวข้อย่อย)",
+        "Body Copy (เนื้อหาบทความหลัก)",
+        "Caption Text (คำบรรยายใต้ภาพหรือตาราง)",
+        "Label Text (ป้ายชื่อกำกับช่องกรอกข้อมูล)",
+        "Monospace Font (ฟอนต์ตัวเลขพิกัด Geist Mono - Locked)",
+        "Variable Font (ฟอนต์ปรับความหนาได้ละเอียดต่อเนื่อง)",
+        "Typographic Scale (สัดส่วนขนาดฟอนต์ทั้งระบบ)"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Visual Design",
+      "thai_name": "หลักทัศนศิลป์และการจัดจุดสนใจ (CRAP)",
+      "thai_keywords": "ความคมชัด การจัดแนว จุดเด่น สมดุล สัดส่วน น้ำหนักสายตา",
+      "terms": [
+        "Contrast (ความตัดกันชัดเจนระหว่างสีและขนาด)",
+        "Repetition (การใช้รูปแบบซ้ำอย่างมีมาตรฐาน)",
+        "Alignment (การจัดแนวเส้นให้ตรงกันเป๊ะ)",
+        "Proximity (การจัดกลุ่มสิ่งที่เกี่ยวข้องไว้ใกล้กัน)",
+        "Visual Balance (ความสมดุลซ้าย-ขวาของหน้าจอ)",
+        "Scale & Proportion (สัดส่วนขนาดใหญ่-เล็ก)",
+        "Visual Density (ความหนาแน่นขององค์ประกอบ)",
+        "Visual Weight (น้ำหนักความเด่นที่ดึงดูดสายตา)",
+        "Focal Point (จุดโฟกัสสายตาอันดับแรกของหน้า)"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Design System",
+      "thai_name": "ระบบตัวแปรดีไซน์และธีม",
+      "thai_keywords": "ตัวแปร โทเคน ธีมสว่าง ธีมมืด มาตรฐานสี มุมโค้ง",
+      "terms": [
+        "Design Tokens (ตัวแปรศูนย์กลางควบคุมดีไซน์)",
+        "Color Tokens (ตัวแปรรหัสสี --bg, --surface, --accent)",
+        "Spacing Tokens (ตัวแปรระยะห่างมาตรฐาน)",
+        "Typography Tokens (ตัวแปรฟอนต์และขนาด)",
+        "Radius Tokens (ตัวแปรความโค้งมน --card-radius)",
+        "Shadow Tokens (ตัวแปรเงาตกกระทบ)",
+        "Motion Tokens (ตัวแปรความเร็วแอนิเมชัน)",
+        "Component Library (คลังชิ้นส่วน UI มาตรฐาน)",
+        "Component Variant (รูปแบบย่อยของชิ้นส่วน เช่น Primary/Ghost)",
+        "Component State (สถานะของชิ้นส่วน)",
+        "Semantic Colors (สีตามความหมาย เช่น เขียว=ผ่าน, แดง=ผิดพลาด)",
+        "Brand Colors (สีเอกลักษณ์ประจำโปรเจกต์)"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Modern UI Style Vocabulary",
+      "thai_name": "ตระกูลสไตล์ดีไซน์ยุคใหม่",
+      "thai_keywords": "สไตล์ กระจกฝ้า มินิมอล สวิส เบนโตะ โหมดมืด นิตยสาร สมุดสนาม",
+      "terms": [
+        "Fieldbook Daylight Editorial (สมุดสนามสว่างสะอาดตา - Locked DNA)",
+        "Carbon Pro Terminal (จอมอนิเตอร์วิศวกรรมโหมดมืด - Locked DNA)",
+        "Glassmorphism (พื้นผิวกระจกฝ้าโปร่งแสง)",
+        "Neumorphism (พื้นผิวนูนต่ำนุ่มนวล)",
+        "Minimalism (เรียบง่ายตัดสิ่งเกินจำเป็น)",
+        "Brutalism (ดิบเท่โชว์โครงสร้างเส้นตารางจริง)",
+        "Neo-Brutalism (กรอบดำคมชัดพร้อมเงาแข็งสีสด)",
+        "Bento Grid Style (จัดวางการ์ดแบบกล่องข้าวญี่ปุ่น - Locked)",
+        "Editorial Design (จัดหน้าหรูหราสไตล์นิตยสาร)",
+        "Swiss International Style (กริดคณิตศาสตร์เส้นคมกริบ)",
+        "Flat Design (พื้นผิวเรียบแบนไม่ง้อเงาลึก)",
+        "Material Design (ระบบชั้นกระดาษและแสงเงา)",
+        "Skeuomorphism (เลียนแบบวัสดุเครื่องมือจริง)",
+        "Dark UI (โหมดมืดถนอมสายตา)",
+        "OLED Black #050505 (พื้นดำสนิทความคมชัดสูง - Locked)",
+        "Spatial UI (หน้าต่างลอยตัวในมิติพื้นที่)"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "UX Vocabulary",
+      "thai_name": "หลักจิตวิทยาการใช้งาน",
+      "thai_keywords": "ไม่ต้องจำศัพท์ ใช้งานง่าย ลดขั้นตอน ป้องกันผิดพลาด ทางเดินผู้ใช้",
+      "terms": [
+        "Recognition over Recall (เห็นภาพแล้วเลือกได้เลยไม่ต้องจำศัพท์ - Locked)",
+        "Progressive Disclosure (แสดงข้อมูลสำคัญก่อนแล้วค่อยกางรายละเอียด)",
+        "User Flow (ลำดับขั้นตอนการทำงานของผู้ใช้)",
+        "User Journey (ประสบการณ์ผู้ใช้ตั้งแต่ต้นจนจบงาน)",
+        "Information Architecture - IA (การจัดหมวดหมู่โครงสร้างข้อมูล)",
+        "Affordance (รูปลักษณ์ที่สื่อชัดเจนว่ากดหรือเลื่อนได้)",
+        "Cognitive Load (ภาระสมองในการทำความเข้าใจหน้าจอ)",
+        "UX Friction (ความฝืดเคืองหรือขั้นตอนเกะกะที่ต้องตัดทิ้ง)",
+        "Error Prevention (ระบบป้องกันไม่ให้กรอกค่าผิดตั้งแต่แรก)",
+        "Error Recovery (ปุ่มกู้คืนหรือแก้ไขเมื่อเกิดข้อผิดพลาด)",
+        "Happy Path (เส้นทางการใช้งานหลักที่ราบรื่นที่สุด)",
+        "Edge Case Handling (การรองรับกรณีข้อมูลสุดขอบหรือค่าว่าง)"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Accessibility (A11y)",
+      "thai_name": "การเข้าถึงและใช้งานได้ทุกสภาพแสง",
+      "thai_keywords": "กลางแจ้ง สู้แสง คีย์บอร์ด ความคมชัดสี กดง่าย",
+      "terms": [
+        "WCAG Compliance (มาตรฐานความชัดเจนในการเข้าถึงเว็บ)",
+        "Keyboard Navigation (กด Tab/Enter สั่งงานได้ครบโดยไม่ต้องใช้เมาส์)",
+        "Focus Ring (กรอบเส้นชัดเจนรอบปุ่มที่กำลังโฟกัส)",
+        "Screen Reader Support (โครงสร้างรองรับระบบอ่านหน้าจอ)",
+        "ARIA Attributes (ป้ายกำกับสถานะสำหรับเทคโนโลยีช่วยเหลือ)",
+        "Semantic HTML (ใช้แท็ก HTML ตรงตามความหมายจริง)",
+        "High Color Contrast (สีตัวหนังสือตัดกับพื้นหลังชัดเจนสู้แดด)",
+        "Reduced Motion (โหมดลดแอนิเมชันไม่ให้เวียนหัว)",
+        "Touch Target 44px+ (ขนาดปุ่มใหญ่พอให้กดบนจอมือถือภาคสนามไม่พลาด)"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "UX States",
+      "thai_name": "สถานะของข้อมูลและชั้นแผนที่",
+      "thai_keywords": "สถานะ ปกติ กำลังโหลด สำเร็จ ผิดพลาด ว่างเปล่า ชั้นแผนที่",
+      "terms": [
+        "Default State (สถานะตั้งต้นปกติ)",
+        "Hover State (สถานะชี้เมาส์)",
+        "Focus State (สถานะกำลังพิมพ์หรือเลือกอยู่)",
+        "Active State (สถานะเปิดใช้งานอยู่)",
+        "Pressed State (สถานะขณะคลิกกด)",
+        "Disabled State (สถานะปิดใช้งานชั่วคราว)",
+        "Loading State (สถานะกำลังดึงข้อมูล)",
+        "Success State (สถานะคำนวณผ่านเกณฑ์)",
+        "Error State (สถานะแจ้งเตือนค่าผิดพลาด)",
+        "Empty State (สถานะยังไม่มีข้อมูลในตาราง)",
+        "Selected State (สถานะแถวหรือหมุดที่ถูกเลือก)",
+        "Expanded State (สถานะกางรายละเอียดออก)",
+        "Collapsed State (สถานะพับเก็บรายละเอียด)",
+        "Map Layer States (สถานะชั้นแผนที่: เปิด/ซ่อน/กำลังโหลด Tile)"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Web Layout Patterns",
+      "thai_name": "แม่แบบการจัดวางหน้าเว็บ",
+      "thai_keywords": "คอลัมน์เดี่ยว สองคอลัมน์ สามคอลัมน์ แบ่งจอ แดชบอร์ด แผนที่เต็มจอ",
+      "terms": [
+        "Single Column Stream (คอลัมน์เดี่ยวโฟกัสการอ่านและคำนวณ)",
+        "Two Column Split (แบ่ง 2 คอลัมน์ซ้าย-ขวา)",
+        "Three Column Workbench (แบ่ง 3 คอลัมน์สไตล์ IDE)",
+        "Split Screen / Split View (แบ่งครึ่งจอทำงานคู่ขนาน)",
+        "Master-Detail Pattern (รายการหลักคู่กับแผงรายละเอียด)",
+        "Sidebar Layout (โครงสร้างแถบข้าง)",
+        "Dashboard Grid (ตารางแดชบอร์ดสรุปผล)",
+        "Card Grid (ตารางเรียงการ์ดเท่ากัน)",
+        "Bento Grid (ตารางการ์ดขนาดไม่สมมาตร)",
+        "Masonry Grid (ตารางเรียงการ์ดตามความสูงจริง)",
+        "Full-screen Canvas (พื้นที่กราฟิกหรือแผนที่เต็มจอ 100%)",
+        "Overlay HUD (แผงข้อมูลลอยทับฉากหลัง)",
+        "Floating Panel (กล่องเครื่องมือลอยตัว)",
+        "Command Center (หน้าจอศูนย์ควบคุมข้อมูลหนาแน่นสูง)",
+        "GIS Workspace (พื้นที่ทำงานระบบแผนที่และพิกัดสำรวจ)"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "UX Patterns",
+      "thai_name": "ฟีเจอร์ช่วยทำงานเร็ว",
+      "thai_keywords": "แก้ไขสด ย้อนกลับ คีย์ลัด ลากวาง บันทึกอัตโนมัติ คำสั่งด่วน",
+      "terms": [
+        "Progressive Disclosure (ซ่อนค่าขั้นสูงไว้กางเมื่อต้องการ)",
+        "Contextual Actions (ปุ่มคำสั่งที่โผล่ตรงจุดที่คลิกเลือก)",
+        "Quick Actions (ปุ่มลัดทำงานเสร็จใน 1 คลิก)",
+        "Bulk Actions (เลือกหลายหมุดแล้วสั่งลบหรือส่งออกพร้อมกัน)",
+        "Inline Editing (คลิกแก้ตัวเลขในช่องตารางได้ทันทีไม่ต้องเปิดหน้าใหม่)",
+        "Undo / Redo (ปุ่มย้อนกลับและทำซ้ำการแก้ไข)",
+        "Command Palette (แถบค้นหาคำสั่งด่วน ⌘K)",
+        "Keyboard Shortcuts (คีย์ลัดสั่งคำนวณและสลับหน้า)",
+        "Drag & Drop Import (ลากไฟล์ CSV/GeoJSON มาวางเพื่อนำเข้าทันที)",
+        "Multi-select (ติ๊กเลือกหลายรายการพร้อมกัน)",
+        "Optimistic UI (อัปเดตหน้าจอทันทีโดยไม่ต้องรอโหลดค้าง)",
+        "Autosave to localStorage (บันทึกข้อมูลที่กรอกค้างไว้ให้อัตโนมัติ)"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Performance / Technical UI",
+      "thai_name": "เทคนิคความเร็วและกราฟิก",
+      "thai_keywords": "ความเร็ว โหลดไว ตารางหมื่นแถว แผนที่ลื่น กราฟิก",
+      "terms": [
+        "Lazy Loading (โหลดเฉพาะส่วนที่เลื่อนมาถึง)",
+        "Skeleton Loading (แสดงโครงตารางทันทีไม่ปล่อยหน้าขาว)",
+        "Progressive Loading (ทยอยแสดงข้อมูลจากหยาบไปละเอียด)",
+        "Code Splitting (แยกโหลดโค้ดเฉพาะแท็บที่เปิดใช้)",
+        "Table Virtualization (เรนเดอร์ตารางหมื่นหมุดให้ลื่นไม่กระตุก)",
+        "Optimistic Update (แสดงผลลัพธ์ทันทีที่กดปุ่ม)",
+        "Debouncing (หน่วงจังหวะค้นหาขณะพิมพ์ไม่ให้กระตุก)",
+        "Throttling (จำกัดความถี่การอัปเดตพิกัดเมาส์)",
+        "FCP - First Contentful Paint (แสดงผลชิ้นแรกเร็วที่สุด)",
+        "LCP - Largest Contentful Paint (โหลดตาราง/แผนที่หลักเสร็จไว)",
+        "CLS - Cumulative Layout Shift (หน้าเว็บไม่กระตุกเลื่อนเอง)",
+        "WebGL Rendering (วาดกราฟิกและแผนที่ด้วยการ์ดจอ)",
+        "Tile Loading (โหลดภาพแผนที่ทีละตารางย่อย)",
+        "Viewport Culling (ซ่อนหมุดที่อยู่นอกกรอบจออัตโนมัติ)",
+        "Spatial Indexing R-Tree (ค้นหาหมุดบนแผนที่ด้วยความเร็วสูง)"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Advanced Visual Effects",
+      "thai_name": "เอฟเฟกต์มิติความลึกและพื้นผิวขั้นสูง",
+      "thai_keywords": "เงา ความลึก ชั้นความสูง กระจกฝ้า เบลอ โปร่งแสง ไล่สี พื้นผิวกระดาษ",
+      "terms": [
+        "Elevation System (ระบบลำดับชั้นความสูงของการ์ด)",
+        "Z-index Hierarchy (ลำดับการวางซ้อนทับหน้า-หลัง)",
+        "Drop Shadow (เงาตกกระทบด้านนอกกล่อง)",
+        "Inner Shadow (เงาเว้าด้านในช่องกรอกข้อมูล)",
+        "Box Shadow (เงารอบกรอบการ์ด)",
+        "Shadow Depth (ระดับความนุ่มลึกของเงา)",
+        "Tonal Layering (การจัดซ้อนชั้นด้วยเฉดสี)",
+        "Stacking Context (บริบทการเรียงซ้อนเลเยอร์)",
+        "Surface Material (พื้นผิวของการ์ดและตาราง)",
+        "Backdrop (ฉากหลังของหน้าต่างป๊อปอัป)",
+        "Backdrop Blur (การเบลอฉากหลังอย่างนุ่มนวล)",
+        "Frosted Glass (เอฟเฟกต์กระจกฝ้า)",
+        "Translucency (ความโปร่งแสงที่เห็นสีพื้นหลังซึมผ่าน)",
+        "Opacity Control (ระดับความทึบ-โปร่งใส)",
+        "Linear / Radial Gradient (การไล่เฉดสี)",
+        "Gradient Mesh (การผสมจุดแสงสีหลายทิศทาง)",
+        "Noise Texture (พื้นผิวเม็ดทรายละเอียดแบบกระดาษจริง)",
+        "Grain Effect (เอฟเฟกต์เกรนฟิล์มอนาล็อก)"
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Color System",
+      "thai_name": "ระบบสีและทฤษฎีการจับคู่สีระดับมืออาชีพ",
+      "thai_keywords": "สี พาเลตสี โทนสี สีหลัก สีรอง สีสถานะ โทนอุ่น โทนเย็น เส้นขอบ",
+      "terms": [
+        "Color Palette (ชุดสีแม่บทของระบบ)",
+        "Primary Color (สีหลักประจำระบบ)",
+        "Secondary Color (สีรองสนับสนุน)",
+        "Accent Color (สีจุดเน้นสายตา เช่น เขียวสำรวจ #15803d / #34d399)",
+        "Neutral Colors (สีพื้นกลาง ครีม/เทา/ดำคาร์บอน)",
+        "Semantic Colors (สีบอกสถานะ ผ่าน/เตือน/ผิดพลาด)",
+        "Brand Colors (สีอัตลักษณ์แบรนด์)",
+        "Tint (สีที่ผสมสีขาวให้สว่างขึ้น)",
+        "Shade (สีที่ผสมสีดำให้เข้มขึ้น)",
+        "Tone (สีที่ผสมสีเทาให้นุ่มนวลลง)",
+        "Saturation (ความอิ่มตัวหรือความสดของสี)",
+        "Hue (เฉดสีหลักในวงล้อสี)",
+        "Color Temperature (อุณหภูมิสี โทนอุ่น Fieldbook vs โทนเข้ม Terminal)",
+        "Color Harmony (ความกลมกลืนของชุดสี)",
+        "Monochromatic Scheme (การใช้สีโทนเดียวไล่น้ำหนักอ่อน-เข้ม)",
+        "Analogous Scheme (การใช้สีข้างเคียงกันในวงล้อสี)",
+        "Complementary Scheme (การใช้สีคู่ตรงข้ามตัดกันให้เด่นชัด)",
+        "Triadic Scheme (การใช้สี 3 มุมสมดุล)",
+        "Surface Color (สีพื้นของการ์ด)",
+        "On-surface Color (สีตัวอักษรที่วางทับบนการ์ด)",
+        "Background Color (สีพื้นหลังสุดของหน้าจอ)",
+        "Foreground Color (สีเนื้อหาหลักด้านหน้า)",
+        "Border Color (สีเส้นกรอบการ์ดและตาราง)",
+        "Divider Color (สีเส้นคั่นแบ่งหมวดหมู่)",
+        "Overlay Scrim Color (สีฉากมืดโปร่งแสงหลัง Modal)"
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Interactive States (Detailed)",
+      "thai_name": "เมทริกซ์สถานะการโต้ตอบครบทุกมิติ",
+      "thai_keywords": "สถานะโต้ตอบ คลิก เลือก ติ๊กถูก กางออก พับเก็บ ลากวาง กำลังประมวลผล",
+      "terms": [
+        "Default / Rest State (สถานะปกติเมื่อยังไม่ได้แตะต้อง)",
+        "Hover State (สถานะเมื่อเลื่อนเมาส์มาชี้)",
+        "Focus State (สถานะเมื่อกด Tab หรือคลิกช่องกรอก)",
+        "Active / Pressed State (สถานะจังหวะกำลังคลิกกดลงไป)",
+        "Visited State (สถานะลิงก์หรือบทความที่เคยเปิดอ่านแล้ว)",
+        "Loading State (สถานะกำลังดึงข้อมูลจากระบบ)",
+        "Processing / Computing State (สถานะกำลังคำนวณปรับแก้พิกัด)",
+        "Success / Valid State (สถานะคำนวณสำเร็จและผ่านเกณฑ์)",
+        "Error / Invalid State (สถานะแจ้งเตือนค่ามุมหรือระยะผิดรูปแบบ)",
+        "Warning State (สถานะเตือนเมื่อค่าคลาดเคลื่อนปริ่มเกณฑ์)",
+        "Disabled State (สถานะปิดปุ่มไม่ให้กดซ้ำ)",
+        "Read-only State (สถานะอ่านและคัดลอกค่าได้แต่ห้ามแก้ไข)",
+        "Selected State (สถานะแถวหรือหมุดที่ถูกคลิกเลือก)",
+        "Unselected State (สถานะรายการที่ไม่ได้ถูกเลือก)",
+        "Indeterminate State (สถานะติ๊กเลือกบางส่วนในกลุ่มย่อย [-])",
+        "Checked State (สถานะติ๊กเครื่องหมายถูกแล้ว [✓])",
+        "Unchecked State (สถานะยังไม่ได้ติ๊กเลือก [ ])",
+        "Expanded State (สถานะกางกล่องข้อมูลออกดูรายละเอียด)",
+        "Collapsed State (สถานะพับเก็บกล่องข้อมูล)",
+        "Open State (สถานะเปิดหน้าต่างหรือลิ้นชัก)",
+        "Closed State (สถานะปิดหน้าต่างหรือลิ้นชัก)",
+        "Empty State (สถานะตารางว่างเปล่ารอการนำเข้าข้อมูล)",
+        "Zero Results State (สถานะค้นหาแล้วไม่พบรายการที่ตรงกัน)",
+        "Partial Data State (สถานะกรอกข้อมูลหมุดยังไม่ครบวงรอบ)",
+        "Full / Complete State (สถานะข้อมูลครบสมบูรณ์พร้อมคำนวณ)",
+        "Skeleton Loading State (สถานะแสดงโครงตารางจำลองขณะโหลด)",
+        "Dragging State (สถานะกำลังคลิกลากไฟล์หรือแถวข้อมูล)",
+        "Drag Over State (สถานะลากไฟล์มาจ่อเหนือพื้นที่รับไฟล์)",
+        "Drop Target State (สถานะกรอบพื้นที่รับไฟล์สว่างขึ้นรอรับ)",
+        "Dropped State (สถานะวางไฟล์สำเร็จและเริ่มอ่านข้อมูล)"
+      ]
+    },
+    {
+      "id": 24,
+      "name": "Advanced Layout Techniques",
+      "thai_name": "เทคนิคการจัดวางด้วย CSS ยุคใหม่",
+      "thai_keywords": "ตารางขั้นสูง ซับกริด ย่อขยายอัตโนมัติ ตรึงหัวตาราง โครงสร้างพิเศษ",
+      "terms": [
+        "CSS Subgrid (ให้การ์ดลูกยึดแนวเส้นตารางเดียวกับการ์ดแม่เป๊ะ)",
+        "Grid Template Areas (กำหนดโซนหน้าเว็บด้วยชื่อแผนผังชัดเจน)",
+        "Auto-fit Columns (เรียงคอลัมน์อัตโนมัติและขยายเต็มพื้นที่ว่าง)",
+        "Auto-fill Columns (เรียงช่องคอลัมน์อัตโนมัติตามความกว้างจอ)",
+        "Minmax() Function (กำหนดความกว้างต่ำสุดและสูงสุดของการ์ด)",
+        "Clamp() Fluid Sizing (คำนวณขนาดฟอนต์และช่องไฟยืดหยุ่นตามจอ)",
+        "Flex Grow (ขยายกล่องกินพื้นที่ว่างที่เหลือ)",
+        "Flex Shrink (หดกล่องอัตโนมัติเมื่อพื้นที่แคบ)",
+        "Flex Basis (กำหนดขนาดตั้งต้นของกล่องใน Flexbox)",
+        "Flex Wrap (ปัดการ์ดตกบรรทัดใหม่อัตโนมัติเมื่อล้นจอ)",
+        "Flex / Grid Order (สลับลำดับการแสดงผลซ้าย-ขวาหรือบน-ล่าง)",
+        "Position Relative (จัดตำแหน่งอ้างอิงจุดเดิม)",
+        "Position Absolute (วางลอยอ้างอิงกรอบแม่ เช่น ป้ายมุมแผนที่)",
+        "Position Fixed (ตรึงติดหน้าจอตลอดเวลา เช่น แถบสลับหน้า)",
+        "Position Sticky (เลื่อนตามปกติแต่เกาะติดขอบบนเมื่อถึงจุดที่กำหนด)",
+        "Z-axis Control (การคุมลำดับชั้นความลึกไม่ให้ซ้อนทับกันมั่ว)",
+        "Holy Grail Layout (โครงสร้างคลาสสิก หัวเว็บ + 3 คอลัมน์ + ท้ายเว็บ)",
+        "Pancake Stack Layout (โครงสร้าง 3 ชั้นแนวตั้ง auto 1fr auto)",
+        "Sidebar Says Layout (โครงสร้างแถบข้างปรับขนาดตามเนื้อหา)",
+        "12-Span Architectural Grid (ตารางสถาปัตยกรรม 12 ช่องมาตรฐาน)",
+        "RAM Pattern - Repeat-Auto-Minmax (สูตรตารางการ์ดยืดหยุ่นไม่ต้องพึ่ง Media Query)",
+        "Deconstructed Pancake (การ์ดเรียงแถวเดียวบนจอใหญ่แล้วพับลงมาเมื่อจอแคบ)"
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Data Visualization UI",
+      "thai_name": "การออกแบบกราฟและการแสดงผลข้อมูลเชิงวิเคราะห์",
+      "thai_keywords": "กราฟ แผนภูมิ กราฟเส้น กราฟแท่ง กราฟวงกลม เส้นกากบาท ซูมกราฟ สถิติ",
+      "terms": [
+        "Line Chart (กราฟเส้นดูแนวโน้มระดับความสูงและค่าคลาดเคลื่อน)",
+        "Bar Chart (กราฟแท่งเปรียบเทียบค่าสถิติรายหมุด)",
+        "Area Chart (กราฟพื้นที่แสดงรูปตัดตามยาว Profile Leveling)",
+        "Pie Chart (กราฟวงกลมแสดงสัดส่วน)",
+        "Donut Chart (กราฟโดนัทแสดงเปอร์เซ็นต์ความสำเร็จ)",
+        "Scatter Plot (กราฟจุดแสดงการกระจายตัวของค่าพิกัด Error Scatter)",
+        "Heatmap (แผนที่ความร้อนแสดงความหนาแน่นของจุดข้อมูล)",
+        "Treemap (แผนผังสี่เหลี่ยมแสดงสัดส่วนโครงสร้างข้อมูล)",
+        "Funnel Chart (กราฟกรวยแสดงลำดับการคัดกรองข้อมูล)",
+        "Gauge Chart (มาตรวัดเข็มบอกระดับความแม่นยำ)",
+        "Sparkline (กราฟเส้นขนาดจิ๋ววางคู่กับตัวเลขในตารางหรือ KPI Card)",
+        "Chart Tooltip (กล่องแสดงค่าพิกัดละเอียดเมื่อชี้จุดบนกราฟ)",
+        "Chart Legend (แถบอธิบายความหมายของสีและสัญลักษณ์กราฟ)",
+        "Axis X / Y (แกนแนวนอนและแนวตั้งพร้อมหน่วยวัดชัดเจน)",
+        "Grid Lines (เส้นตารางอ้างอิงด้านหลังกราฟ)",
+        "Data Labels (ตัวเลขกำกับบนจุดหรือแท่งกราฟโดยตรง)",
+        "Crosshair Cursor (เส้นกากบาทเล็งค่าพิกัด X, Y บนกราฟและผังวงรอบ)",
+        "Zoom / Pan Control (ปุ่มซูมขยายและลากเลื่อนดูช่วงข้อมูลในกราฟ)",
+        "No Data State (สถานะกราฟว่างพร้อมปุ่มโหลดข้อมูลตัวอย่าง)",
+        "Chart Loading State (โครงกราฟจำลองขณะกำลังคำนวณ)",
+        "Chart Error State (แจ้งเตือนเมื่อข้อมูลไม่เพียงพอที่จะวาดกราฟ)",
+        "Filtered Data State (การไฮไลต์เฉพาะชุดข้อมูลหรือหมุดที่กรองเลือก)",
+        "Drill-down Interaction (คลิกที่แท่งกราฟเพื่อเจาะลึกดูข้อมูลรายหมุด)",
+        "Drill-up Navigation (ปุ่มย้อนกลับจากข้อมูลย่อยสู่กราฟภาพรวม)"
+      ]
+    },
+    {
+      "id": 26,
+      "name": "GIS-Specific UI",
+      "thai_name": "คำศัพท์เฉพาะทางระบบแผนที่และงานสำรวจ WebGIS (Locked MESURV)",
+      "thai_keywords": "แผนที่ พิกัด หมุด วงรอบ ชั้นข้อมูล ดาวเทียม ซูม มาตราส่วน ทิศเหนือ วัดระยะ วัดพื้นที่",
+      "terms": [
+        "Map Canvas / Viewport (หน้าต่างแสดงแผนที่พิกัดหลัก - Locked)",
+        "Base Layer / Basemap (แผนที่พื้นหลัง เช่น ภาพถ่ายดาวเทียม / แผนที่ภูมิประเทศ)",
+        "Overlay Layer (ชั้นข้อมูลที่วางซ้อนทับบนแผนที่พื้นหลัง)",
+        "Feature Layer (ชั้นข้อมูลวัตถุ เช่น จุดหมุด เส้นวงรอบ รูปแปลงที่ดิน)",
+        "Tile Layer (ชั้นภาพแผนที่แบบแบ่งตารางย่อยโหลดไว)",
+        "Vector Layer (ชั้นข้อมูลจุด-เส้น-รูปหลายเหลี่ยมที่ซูมแล้วคมกริบไม่แตก)",
+        "Raster Layer (ชั้นข้อมูลภาพถ่ายทางอากาศหรือแบบจำลองระดับสูง DEM)",
+        "Zoom In / Out Controls (ปุ่มซูมเข้า-ออกแผนที่)",
+        "Pan Tool (เครื่องมือคลิกลากเลื่อนแผนที่)",
+        "Extent Control (ตัวควบคุมขอบเขตพื้นที่แสดงผล)",
+        "Full Extent Button (ปุ่มซูมถอยออกดูภาพรวมทั้งโครงการ)",
+        "Fit Bounds Action (ปุ่มซูมเข้าหาหมุดทั้งหมดให้พอดีกรอบจอใน 1 คลิก)",
+        "Scale Bar (แถบมาตราส่วนแผนที่ เช่น 1:1,000 หรือ 50m)",
+        "North Arrow / Compass (เข็มทิศชี้ทิศเหนือมาตรฐานงานสำรวจ)",
+        "Geolocation / GNSS Live Dot (ปุ่มดึงพิกัดปัจจุบันจากดาวเทียม RTK/GPS)",
+        "Layer Panel / Switcher (แผงสลับเลือกแผนที่พื้นหลังและชั้นข้อมูล)",
+        "Visibility Toggle (ปุ่มรูปดวงตาเปิด-ปิดการแสดงชั้นข้อมูล)",
+        "Layer Opacity Slider (สไลเดอร์ปรับความโปร่งแสงของชั้นภาพถ่ายดาวเทียม)",
+        "Layer Order / Z-Order (การจัดลำดับชั้นข้อมูลว่าชั้นไหนอยู่บนหรือล่าง)",
+        "Layer Group (การจัดกลุ่มชั้นข้อมูลหมุดบังคับและหมุดย่อย)",
+        "Select by Click (คลิกเลือกหมุดเดี่ยวบนแผนที่)",
+        "Select by Rectangle / Box (ลากกรอบสี่เหลี่ยมคลุมเพื่อเลือกหลายหมุด)",
+        "Select by Polygon / Lasso (วาดรูปหลายเหลี่ยมคลุมพื้นที่เพื่อเลือกหมุด)",
+        "Spatial Query (ค้นหาข้อมูลจากเงื่อนไขขอบเขตพื้นที่และระยะรัศมี)",
+        "Attribute Query (ค้นหาหมุดจากรหัสหมุดหรือค่าความคลาดเคลื่อนในตาราง)",
+        "Feature Popup / Info Window (กล่องข้อมูลเด้งเหนือหมุดโชว์ค่า N, E, Elevation)",
+        "Draw Point / Line / Polygon (เครื่องมือลงจุดหมุด ลากเส้นวงรอบ และวาดรูปแปลง)",
+        "Draw Circle / Rectangle (เครื่องมือวาดวงกลมรัศมีและกรอบสี่เหลี่ยม)",
+        "Measure Distance / Area (เครื่องมือวัดระยะทางแนวราบและคำนวณเนื้อที่ ไร่-งาน-วา)",
+        "Snapping & Vertex Editing (ระบบแม่เหล็กดูดเข้าจุดหมุดเป๊ะและดึงแก้ไขจุดหักมุม)"
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Premium UI Patterns",
+      "thai_name": "แม่แบบองค์ประกอบเว็บระดับพรีเมียม",
+      "thai_keywords": "ฮีโร่ แบ่งครึ่ง ตารางเปรียบเทียบ ไทม์ไลน์ คำสั่งด่วน ลากจัดลำดับ",
+      "terms": [
+        "Full-screen Hero (ส่วนหัวขนาดเต็มหน้าจอ)",
+        "Split Hero 2-Column (ส่วนหัวแบ่งครึ่ง ซ้ายชื่อเรื่อง+ปุ่ม ขวาการ์ด 4 KPIs - Locked DNA)",
+        "Video / Animated Hero (ส่วนหัวพร้อมภาพเคลื่อนไหวสาธิตการใช้งาน)",
+        "Interactive Hero (ส่วนหัวที่ลองกรอกตัวเลขหรือกดคำนวณสดได้ทันที)",
+        "Feature Bento Grid (ตารางสรุปความสามารถหลักของระบบ)",
+        "Alternating Content Blocks (บล็อกเนื้อหาสลับซ้าย-ขวาอ่านไม่น่าเบื่อ)",
+        "Step-by-Step Timeline (แถบลำดับขั้นตอนการสำรวจและคำนวณ)",
+        "Comparison / Tolerance Table (ตารางเทียบเกณฑ์มาตรฐานงานสำรวจชั้น 1, 2, 3)",
+        "Pricing / Tier Matrix (ตารางเปรียบเทียบระดับฟีเจอร์)",
+        "Testimonial / Reference Cards (การ์ดอ้างอิงมาตรฐานและแหล่งที่มา)",
+        "Top Navigation Bar (แถบเมนูบนไร้ Sidebar ซ้าย - Locked DNA)",
+        "Bottom Tab Bar (แถบเมนูล่างสำหรับจอมือถือภาคสนาม)",
+        "Floating Command Pill (แถบเมนูแคปซูลลอยตัว)",
+        "Command Menu Cmd+K (หน้าต่างค้นหาและเรียกใช้เครื่องมือด่วน)",
+        "Infinite Scroll / Load More (ระบบโหลดรายการเพิ่มเมื่อเลื่อนถึงท้ายตาราง)",
+        "Pull to Refresh (ดึงหน้าจอลงเพื่อรีเฟรชข้อมูลบนมือถือ)",
+        "Swipe Actions (ปัดซ้าย-ขวาบนแถวตารางเพื่อแก้ไขหรือลบด่วน)",
+        "Drag to Reorder Stations (คลิกลากสลับลำดับหมุดในตารางวงรอบ)",
+        "Co-located Quick Actions (ปุ่มลัดคำนวณและส่งออกวางติดกับหัวตาราง)"
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Modern Design Trends",
+      "thai_name": "เทรนด์การออกแบบสมัยใหม่และเอฟเฟกต์พิเศษ",
+      "thai_keywords": "เทรนด์ ฟอนต์ยักษ์ ผสมฟอนต์ เบนโตะ ไม่สมมาตร สามมิติ",
+      "terms": [
+        "Claymorphism (สไตล์พื้นผิวดินปั้นนูนนุ่ม)",
+        "Neubrutalism (สไตล์กรอบดำคมชัดเงาแข็งสีตัดกัน)",
+        "Y2K Revival (สไตล์เรโทรดิจิทัลยุค 2000)",
+        "Frutiger Aero (สไตล์กระจกใสสะท้อนแสงธรรมชาติ)",
+        "Abstract Atmospheric Glow (แสงเรืองรองจางๆ ระดับ <=10% opacity)",
+        "Organic Shapes (รูปทรงโค้งมนธรรมชาติ)",
+        "3D Elements & Micro 3D Icons (ไอคอนและวัตถุสามมิติขนาดเล็ก)",
+        "Variable Fonts (ฟอนต์ปรับน้ำหนักและความกว้างแบบไร้รอยต่อ)",
+        "Kinetic Typography (ตัวอักษรเคลื่อนไหวตามจังหวะ)",
+        "Oversized Swiss Type (ตัวเลขสถิติหรือหัวข้อขนาดใหญ่พิเศษคมกริบ)",
+        "Mixed Fonts - Serif × Sans × Mono (ผสม 3 ตระกูลฟอนต์ - Locked DNA)",
+        "Bento Grid Architecture (การจัดวางกล่องข้อมูลแบบ Bento - Locked DNA)",
+        "Broken / Asymmetric Layout (การจัดวางแบบไม่สมมาตรแต่สมดุลสายตา)",
+        "Scroll-triggered Reveal (การเผยข้อมูลเมื่อเลื่อนหน้าจอมาถึง)",
+        "Horizontal Scroll Strip (แถบเลื่อนดูการ์ดในแนวนอน)",
+        "Custom Cursor Effects (ตัวชี้เมาส์เปลี่ยนสถานะตามเครื่องมือที่ถือ)",
+        "Magnetic Buttons (ปุ่มที่ดูดเข้าหาเคอร์เซอร์เมาส์เบาๆ)",
+        "Morphing Shapes (การเปลี่ยนรูปทรงต่อเนื่อง)",
+        "Liquid / Fluid Effects (เอฟเฟกต์การไหลลื่นเหมือนของเหลว)",
+        "WebGL / Shader / Physics Animation (กราฟิกคำนวณแสงและฟิสิกส์ความเร็วสูง)"
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Performance & Optimization",
+      "thai_name": "การรีดประสิทธิภาพและความเร็วระดับสูงสุด",
+      "thai_keywords": "โหลดเร็ว ประสิทธิภาพ ฟอนต์ไม่กระพริบ รูปภาพ ความเร็วเว็บ",
+      "terms": [
+        "Above the Fold Priority (โหลดส่วนครึ่งบนของจอให้พร้อมใช้งานทันที)",
+        "Critical CSS Inlining (ฝัง CSS ส่วนสำคัญให้เรนเดอร์ได้ในเสี้ยววินาที)",
+        "Font Loading Strategy - font-display: swap (แสดงข้อความทันทีไม่ต้องรอฟอนต์โหลดเสร็จ)",
+        "Image Optimization WebP/AVIF (บีบอัดภาพแผนที่และกราฟิกให้ไฟล์เล็กและคมชัด)",
+        "Lazy Load Offscreen Assets (ชะลอการโหลดภาพที่ยังเลื่อนไปไม่ถึง)",
+        "Responsive Images srcset (เลือกขนาดภาพให้เหมาะกับความละเอียดจออัตโนมัติ)",
+        "SSR - Server-Side Rendering (ประมวลผลหน้าเว็บมาจากเซิร์ฟเวอร์)",
+        "CSR - Client-Side Rendering (คำนวณและวาดหน้าเว็บบนเบราว์เซอร์โดยตรง)",
+        "SSG - Static Site Generation (สร้างไฟล์ HTML สำเร็จรูปความเร็วสูงสุด)",
+        "ISR - Incremental Static Regeneration (อัปเดตหน้าเว็บเฉพาะส่วนที่ข้อมูลเปลี่ยน)",
+        "Partial Hydration (โหลด JavaScript เฉพาะคอมโพเนนต์ที่ต้องกดโต้ตอบ)",
+        "Islands Architecture (แยกกล่องคำนวณสดเป็นเกาะอิสระบนหน้าเว็บที่เบาและเร็ว)",
+        "Core Web Vitals - LCP / CLS / INP (ดัชนีวัดความเร็วและความเสถียรของหน้าเว็บ)",
+        "TTI & INP - Interaction to Next Paint (กดปุ่มคำนวณแล้วหน้าจอตอบสนองทันทีไม่ค้าง)"
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Accessibility (A11y Detailed)",
+      "thai_name": "มาตรฐานการเข้าถึงเชิงลึกสำหรับมืออาชีพ",
+      "thai_keywords": "มาตรฐานการเข้าถึง ตาบอดสี คอนทราสต์ ลำดับหัวข้อ คีย์บอร์ด",
+      "terms": [
+        "WCAG Level A / AA / AAA (เกณฑ์มาตรฐานความคมชัดและการเข้าถึง 3 ระดับ)",
+        "POUR - Perceivable (มองเห็นและแยกแยะตัวเลข/สถานะได้ชัดเจน)",
+        "POUR - Operable (สั่งงานด้วยเมาส์ คีย์บอร์ด หรือนิ้วสัมผัสได้ครบถ้วน)",
+        "POUR - Understandable (เข้าใจข้อความแจ้งเตือนและวิธีกรอกข้อมูลได้ทันที)",
+        "POUR - Robust (ทำงานได้เสถียรทุกเบราว์เซอร์และอุปกรณ์)",
+        "Skip to Content Link (ปุ่มลัดข้ามเมนูบนไปที่ตารางคำนวณหลักทันที)",
+        "Landmark Regions - header/nav/main (แบ่งโซนโครงสร้างหน้าเว็บชัดเจน)",
+        "Heading Hierarchy H1→H2→H3 (เรียงลำดับหัวข้อหลัก-รองอย่างเป็นระบบไม่ข้ามขั้น)",
+        "Focus Visible Ring (แสดงกรอบชัดเจนเมื่อเลื่อนเลือกด้วยปุ่ม Tab)",
+        "Focus Trap in Modals (ล็อกเคอร์เซอร์ให้อยู่ในหน้าต่างป๊อปอัปจนกว่าจะกดปิด)",
+        "ARIA Label & Describedby (คำอธิบายปุ่มและช่องกรอกสำหรับระบบช่วยเหลือ)",
+        "ARIA Live Region (แจ้งเตือนทันทีเมื่อผลการคำนวณพิกัดอัปเดตเสร็จ)",
+        "Visually Hidden Helper Text (ข้อความกำกับสำหรับระบบอ่านหน้าจอโดยไม่รกสายตา)",
+        "Contrast Ratio 4.5:1 / 7:1 (ความเข้มตัวหนังสือตัดกับพื้นหลังสู้แสงแดดภาคสนาม)",
+        "Color Blind Safe Indicators (ใช้ไอคอนและข้อความกำกับคู่กับสีเสมอ ไม่พึ่งแต่สีแดง/เขียว)",
+        "Prefers Reduced Motion & Vestibular Safe (ตัดแอนิเมชันเด้งหมุนที่ทำให้ตาลายออกทั้งหมด)"
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Design Handoff & Dev Collaboration",
+      "thai_name": "ศัพท์เชื่อมโยงงานดีไซน์สู่การเขียนโค้ดจริง",
+      "thai_keywords": "สเปก โค้ด คู่มือดีไซน์ ตรวจสอบความเป๊ะ ตัวแปรคอมโพเนนต์",
+      "terms": [
+        "Design Handoff (การส่งต่อสเปกดีไซน์ไปสู่ขั้นตอนเขียนโค้ดจริง)",
+        "Design Specs (รายละเอียดขนาดฟอนต์ สี และระยะห่างทุกจุด)",
+        "Redline Annotations (เส้นบอกระยะห่างและขนาดพิกเซลอ้างอิง)",
+        "Style Guide / DESIGN.md (คัมภีร์คุมโทนสี ฟอนต์ และกฎดีไซน์ประจำโปรเจกต์)",
+        "Component Documentation (คู่มือวิธีเรียกใช้งานชิ้นส่วน UI แต่ละตัว)",
+        "Design QA Audit (การตรวจเช็กหน้าเว็บจริงเทียบกับต้นแบบ)",
+        "Pixel Perfect Execution (ความแม่นยำของระยะห่างและแนวเส้นตรงเป๊ะทุกจุด)",
+        "Design Debt Cleanup (การล้างโค้ดหน้าตาเก่าที่สะเปะสะปะให้กลับมาคลีนตาม DNA)",
+        "Component API (โครงสร้างการรับค่าของชิ้นส่วน UI)",
+        "Component Props (พารามิเตอร์ที่ส่งเข้าไปปรับพฤติกรรมของชิ้นส่วน)",
+        "Theme & Style Variants (การสลับโหมด เช่น data-theme='fieldbook' หรือ 'terminal')"
+      ]
+    },
+    {
+      "id": 32,
+      "name": "Professional Jargon",
+      "thai_name": "คำศัพท์ประเมินคุณภาพดีไซน์ (Quality Targets vs Anti-Slop)",
+      "thai_keywords": "เนี๊ยบ คมกริบ สะอาดตา หรูหรา ห้ามรก ห้ามจืด ปรับปรุงโค้ด",
+      "terms": [
+        "Polished (ขัดเกลาจนเนี๊ยบเรียบร้อยทุกจุด - Locked Target)",
+        "Refined (ประณีตละเอียดอ่อนระดับงานมืออาชีพ - Locked Target)",
+        "Crisp (เส้นขอบ 1px และตัวอักษรคมกริบไม่เบลอ - Locked Target)",
+        "Clean (สะอาดตาจัดระเบียบดีเยี่ยม - Locked Target)",
+        "Minimal (เรียบง่ายตัดสิ่งรกตาออกหมด)",
+        "Sophisticated (ดูฉลาดและน่าเชื่อถือระดับวิศวกรรม)",
+        "Elegant (สง่างามมีรสนิยม)",
+        "Delightful (ใช้งานลื่นไหลประทับใจ)",
+        "Intuitive (เห็นปุ๊บเข้าใจวิธีใช้งานทันทีไม่ต้องอ่านคู่มือ)",
+        "Avoid: Cluttered (ห้ามวางของอัดแน่นจนรกสายตา - Anti-Slop)",
+        "Avoid: Busy / Noisy (ห้ามใช้สีและเส้นขอบแย่งซีนกันมั่วซั่ว - Anti-Slop)",
+        "Avoid: Inconsistent (ห้ามใช้ฟอนต์หรือมุมโค้งต่างกันสะเปะสะปะ - Anti-Slop)",
+        "Avoid: Clunky (ห้ามทำปุ่มหรือตารางเทอะทะใช้งานยาก - Anti-Slop)",
+        "Avoid: Jarring (ห้ามใช้สีแสบตาหรือการกระตุกกวนสายตา - Anti-Slop)",
+        "Avoid: Heavy Shadows/Borders (ห้ามใช้เงาดำทึบหรือกรอบหนาหนักอึ้ง - Anti-Slop)",
+        "Iterate (ปรับจูนต่อยอดให้ดียิ่งขึ้นทีละรอบ)",
+        "Refactor UI (รื้อจัดระเบียบโค้ดหน้าเว็บใหม่ให้คลีนโดยไม่เสียฟีเจอร์เดิม)",
+        "Optimize (รีดความเร็วและลดความซ้ำซ้อน)",
+        "Streamline & Simplify (ลดขั้นตอนเกะกะให้ทำงานจบในคลิกเดียว)",
+        "Enhance & Scale (ยกระดับความสวยงามและขยายรองรับโมดูลใหม่)"
+      ]
+    },
+    {
+      "id": 33,
+      "name": "AI Prompt-Friendly Terms",
+      "thai_name": "คำสำคัญสำหรับสั่ง AI หรือตั้งโหมดอัตโนมัติ",
+      "thai_keywords": "คำสั่งสร้างอัตโนมัติ มาตรฐานองค์กร วิศวกรรม นิตยสาร ข้อมูลแน่น น่าเชื่อถือ",
+      "terms": [
+        "Contemporary Modern (ร่วมสมัยทันสมัย)",
+        "Modern Minimalist (มินิมอลคลีนยุคใหม่)",
+        "Enterprise Grade (มาตรฐานระดับองค์กรและระบบราชการ - Locked DNA)",
+        "Consumer Friendly (เป็นมิตรเข้าใจง่ายสำหรับผู้ใช้ทั่วไป)",
+        "Professional Instrument (คมชัดแม่นยำระดับเครื่องมือวิศวกร - Locked DNA)",
+        "Playful & Engaging (สดใสมีชีวิตชีวา)",
+        "Serious / Formal Standard (ทางการและเป็นมาตรฐานวิชาการ)",
+        "Technical Engineering UI (หน้าตาเครื่องมือคำนวณและตรวจสอบทางเทคนิค - Locked DNA)",
+        "Editorial Magazine Style (จัดวางหัวข้อและบทความสวยหรูเหมือนนิตยสาร - Locked DNA)",
+        "Information Dense (แสดงข้อมูลตารางและพิกัดได้ครบถ้วนในจอเดียวโดยไม่รก)",
+        "Spacious & Airy (โปร่งโล่งสบายตาเหมาะกับหน้าคลังความรู้)",
+        "Compact Workbench (กระชับประหยัดพื้นที่หน้าจอ)",
+        "Structured Swiss Grid (จัดเรียงในตารางระเบียบสูง)",
+        "Fluid & Adaptive (ยืดหยุ่นลื่นไหลตามขนาดหน้าจอ)",
+        "Trustworthy & Authoritative (น่าเชื่อถือและแม่นยำตามหลักวิชาการ)",
+        "Confident & Crisp (ชัดเจนตรงประเด็นไม่คลุมเครือ)",
+        "Welcoming & Calming (โทนสีกระดาษถนอมสายตา ใช้งานนานๆ ไม่ล้า)",
+        "Energetic Live Telemetry (กระฉับกระเฉงสำหรับหน้าสกอร์สดและพิกัดเรียลไทม์)",
+        "Luxurious High-Craft (พรีเมียมประณีตทุกรายละเอียด)"
+      ]
+    },
+    {
+      "id": 34,
+      "name": "Visual Rhythm & Eye-Tracking Flow",
+      "thai_name": "จังหวะสายตาและการนำทางสายตาอัตโนมัติ (หมวดเสริม 01)",
+      "thai_keywords": "สายตา การกวาดสายตา จุดโฟกัส จังหวะหน้าเว็บ F-Pattern Z-Pattern",
+      "terms": [
+        "F-Pattern Scanning (กวาดสายตารูปตัว F สำหรับตารางและบทความ - Locked DNA)",
+        "Z-Pattern Scanning (กวาดสายตารูปตัว Z สำหรับส่วนหัว Split Hero - Locked DNA)",
+        "Layer-Cake Scanning (กวาดสายตาจับเฉพาะแถบหัวข้อหลักที่แบ่งชัดเจน)",
+        "Spotted Pattern (จับจุดเฉพาะตัวเลขใหญ่ tabular-nums และป้ายสถานะ)",
+        "Gutenberg Diagram (ผัง 4 โซนสายตาจากซ้ายบนสู่ปุ่มคำสั่งขวาล่าง)",
+        "Primary Optical Area (โซนรับสายตาจุดแรกที่มุมซ้ายบน)",
+        "Terminal Anchor Area (โซนตัดสินใจกดปุ่มที่มุมขวาล่าง)",
+        "Visual Path / Reading Gravity (เส้นทางไหลของสายตาตามธรรมชาติ)",
+        "Primary Focal Point (จุดดึงสายตาอันดับหนึ่ง 1 จุดต่อ 1 ช่วงจอ)",
+        "Directional Cues (สัญลักษณ์หรือแนวเส้นที่ชี้ทางสายตาไปยังผลลัพธ์)",
+        "Section Alternation & Cadence (จังหวะสลับความแน่นและโปร่งของแต่ละท่อนหน้าเว็บ)"
+      ]
+    },
+    {
+      "id": 35,
+      "name": "Grid Sophistication",
+      "thai_name": "สถาปัตยกรรมตารางขั้นสูงระดับ Swiss & Editorial (หมวดเสริม 02)",
+      "thai_keywords": "ตารางผสม สัดส่วนทองคำ กริดไม่สมมาตร เส้นตาราง 1px",
+      "terms": [
+        "Compound Grid 4+3 on 12-Col (ซ้อนแถวบน 4 KPIs กับแถวล่าง 3 การ์ดความรู้ - Locked DNA)",
+        "Asymmetric Ratio Grid 8:4 / 7:5 (แบ่งตารางซ้าย 7 ส่วน คู่ผังเวกเตอร์ขวา 5 ส่วน - Locked DNA)",
+        "50:50 Synchronized Split Grid (แบ่งครึ่งจอเท่ากันสำหรับเทียบข้อมูลคู่ขนาน)",
+        "Golden Ratio Grid 1:1.618 (สัดส่วนทองคำพื้นที่หลัก 62% ต่อพื้นที่รอง 38%)",
+        "Rule of Thirds 3×3 Grid (จุดตัดเก้าช่องสำหรับวางจุดเด่นบนแผนที่/กราฟิก)",
+        "Modular Grid Columns×Rows (ตารางควบคุมทั้งแนวตั้งและแนวนอนให้ขอบการ์ดตรงกันเป๊ะ)",
+        "Exposed 1px Swiss Hairline Grid (ตารางเส้นคมกริบ 1px ชนขอบไร้ช่องว่าง - Locked)",
+        "Subgrid Cross-Card Alignment (บังคับให้หัวข้อและปุ่มของการ์ดทุกใบอยู่แนวเดียวกัน)",
+        "8pt Baseline Grid (เส้นบรรทัดอ้างอิงทุกๆ 8px)"
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Typography Mastery",
+      "thai_name": "กฎสัดส่วนฟอนต์และตัวเลขระดับโรงพิมพ์ดิจิทัล (หมวดเสริม 03)",
+      "thai_keywords": "สัดส่วนฟอนต์ ตัวเลขตรงหลัก เลขศูนย์มีขีด ตัดคำสมดุล",
+      "terms": [
+        "1.200 Minor Third Type Scale (สัดส่วนฟอนต์กระชับสำหรับตารางและแผงควบคุม - Locked)",
+        "1.250 Major Third Type Scale (สัดส่วนฟอนต์มาตรฐานสำหรับหัวข้อหลัก - Locked)",
+        "1.333 Perfect Fourth Type Scale (สัดส่วนฟอนต์ตัดกันเด่นชัดสำหรับหน้า Hero)",
+        "Tabular Lining Figures tabular-nums (ตัวเลขสูงและกว้างเท่ากันทุกหลัก 100% - Locked DNA)",
+        "Slashed Zero slashed-zero (เลขศูนย์มีขีดกลางป้องกันสับสนกับตัว O ในรหัสหมุด)",
+        "Tight Negative Tracking -0.025em (บีบช่องไฟหัวข้อใหญ่ให้คมเข้ม - Locked DNA)",
+        "Uppercase Eyebrow Tracking +0.08em (ถ่างช่องไฟป้ายกำกับตัวพิมพ์ใหญ่เหนือหัวข้อ - Locked)",
+        "Optimal Reading Measure 60ch–70ch (ความกว้างบรรทัดอ่านสบายตาที่สุด)",
+        "Text Wrap Balance text-wrap:balance (ตัดบรรทัดหัวข้อให้สมดุลไม่มีคำหล่นเดี่ยว)",
+        "Optical Margin Alignment (จัดแนวขอบตัวอักษรให้ตรงด้วยสายตาจริง)"
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Color Psychology & 60-30-10 Rule",
+      "thai_name": "กฎสัดส่วนสี 60-30-10 และจิตวิทยาสีหน้างาน (หมวดเสริม 04)",
+      "thai_keywords": "กฎสี 60-30-10 สัดส่วนสี โหมดกลางวัน โหมดกลางคืน สีสถานะ",
+      "terms": [
+        "60% Dominant Canvas Color (สีพื้นหลังหลัก 60% พักสายตา #f3f1eb / #050505 - Locked DNA)",
+        "30% Secondary Surface & Structure (สีพื้นการ์ดและตาราง 30% #ffffff / #111111 - Locked DNA)",
+        "10% Accent Voltage Rule (สีจุดเน้นสายตา 10% เฉพาะปุ่ม CTA และแท็บขีดเส้นใต้ - Locked DNA)",
+        "Daylight Fieldbook Polarity (โหมดสว่างสู้แดดภาคสนาม พื้นครีมหมึกเขียวเข้ม - Locked)",
+        "Night Instrument Terminal Polarity (โหมดมืดห้องประมวลผล พื้นดำคาร์บอนไฟเขียวมรกต - Locked)",
+        "OKLCH Perceptual Contrast (ความสว่างที่ตัดกันจริงตามการรับรู้ของดวงตา)",
+        "Semantic Pass Tinted Badge (สีเขียวผ่านเกณฑ์ พื้นจาง 10% + ตัวหนังสือเข้ม - Locked)",
+        "Semantic Warning Tinted Badge (สีเหลืองอำพันเตือนค่าปริ่มเกณฑ์)",
+        "Semantic Error Tinted Badge (สีแดงส้มแจ้งเตือนค่าความคลาดเคลื่อนเกินเกณฑ์)",
+        "Zero Rainbow/Neon Slop Rule (ห้ามใช้สีรุ้งหรือสีม่วง-ฟ้า AI มาตรฐานเด็ดขาด - Locked)"
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Spacing System (8pt & T-Shirt Sizing)",
+      "thai_name": "ระบบระยะห่าง 8pt Grid และ T-Shirt Tokens (หมวดเสริม 05)",
+      "thai_keywords": "ระยะห่าง 8px กฎความใกล้ชิด ช่องไฟในการ์ด ช่องไฟนอกการ์ด",
+      "terms": [
+        "8pt Spatial Grid System (ระยะห่างมาตรฐานทวีคูณของ 8px: 8, 16, 24, 32, 48, 64px - Locked)",
+        "4pt Micro-Grid (ระยะห่างละเอียด 4px, 12px สำหรับไอคอน ป้าย Badge และช่องตาราง - Locked)",
+        "T-Shirt Spacing Tokens (ตัวแปรระยะห่าง 2xs, xs, sm, md, lg, xl, 2xl, 3xl)",
+        "Internal <= External Spacing Rule (ระยะห่างในการ์ดต้องน้อยกว่าระยะห่างระหว่างการ์ดเสมอ - Locked)",
+        "Optical Button Padding 1:2 (ระยะห่างซ้าย-ขวาของปุ่มเป็น 2 เท่าของบน-ล่าง เช่น py-2 px-4)",
+        "Card Inset Rhythm (ขอบในการ์ดมาตรฐาน 16px–20px สม่ำเสมอทั้งหน้า)",
+        "Section Vertical Cadence (ระยะห่างระหว่างหมวดใหญ่ 24px–32px)"
+      ]
+    },
+    {
+      "id": 39,
+      "name": "Complete 9-State Component Checklist",
+      "thai_name": "เช็กลิสต์ 9 สถานะมาตรฐานที่ห้ามตกหล่น (หมวดเสริม 06)",
+      "thai_keywords": "ครบ 9 สถานะ หน้าว่าง ปุ่มโหลดตัวอย่าง กำลังคำนวณ ผ่านเกณฑ์",
+      "terms": [
+        "State 1: Default / Rest (สถานะตั้งต้นสะอาดตาอ่านง่าย - Locked)",
+        "State 2: Hover Border Glow (ชี้เมาส์แล้วเส้นขอบเข้มขึ้นโดยการ์ดไม่เด้งลอย - Locked)",
+        "State 3: Focus-Visible 2px Ring (กด Tab แล้วมีกรอบสี Accent ชัดเจน - Locked)",
+        "State 4: Active / Pressed scale(0.97) (กดปุ่มแล้วยุบตัว 3% ทันที - Locked)",
+        "State 5: Disabled Guard (ปิดปุ่มสีจางเมื่อข้อมูลยังไม่ครบ)",
+        "State 6: Loading / Computing Skeleton (แสดงโครงรอผลโดยหน้าจอไม่กระตุก)",
+        "State 7: Empty State + 1-Click Sample Loader (ตารางว่างต้องมีปุ่มโหลดข้อมูลตัวอย่างเสมอ - Locked)",
+        "State 8: Error / Out-of-Tolerance Highlight (ไฮไลต์หมุดที่ค่าคลาดเคลื่อนเกินเกณฑ์พร้อมวิธีแก้)",
+        "State 9: Success / Standard Verified (ป้ายยืนยันผ่านเกณฑ์มาตรฐานชั้น 1/2/3 - Locked)",
+        "Long-Text / Numeric Overflow Truncation (ป้องกันตัวเลขหรือชื่อหมุดยาวทะลุกรอบตาราง)"
+      ]
+    },
+    {
+      "id": 40,
+      "name": "Animation Principles & Micro-Physics",
+      "thai_name": "กฎฟิสิกส์การเคลื่อนไหวระดับ Micro-Precision (หมวดเสริม 07)",
+      "thai_keywords": "ความเร็ว 150ms ไม่กระตุก ห้ามการ์ดเด้ง สมูท",
+      "terms": [
+        "150ms–200ms Micro-Response Law (ทุกการกดปุ่มและสลับแท็บต้องจบใน 150ms–200ms - Locked DNA)",
+        "Ease-Out Quint Curve (จังหวะออกตัวไวและหยุดนุ่มนวลแม่นยำ)",
+        "GPU-Safe Transform & Opacity Only (แอนิเมตเฉพาะค่าที่ไม่ทำให้ตารางกระตุก - Locked)",
+        "Origin-Aware Popover Expansion (หน้าต่างย่อยกางออกจากจุดที่กดปุ่มจริง)",
+        "Choreographed Stagger <= 30ms (การเรียงปรากฏของการ์ดแบบกระชับไม่ถ่วงเวลา)",
+        "Zero Hover Bounce Discipline (ห้ามทำการ์ดลอยเด้ง -translate-y บนหน้าเครื่องมือเด็ดขาด - Locked)"
+      ]
+    },
+    {
+      "id": 41,
+      "name": "Professional Layout Terminology",
+      "thai_name": "ศัพท์โซนหน้าเว็บระดับบรรณาธิการและวิศวกร (หมวดเสริม 08)",
+      "thai_keywords": "ครึ่งบนหน้าจอ ป้ายเหนือหัวข้อ คำโปรย สัดส่วนพื้นที่ทำงาน",
+      "terms": [
+        "Above the Fold Workspace (เห็นเมนูบน + 4 KPIs + ตารางหลักครบในจอแรกไม่ต้องเลื่อน - Locked)",
+        "Below the Fold Deep Reference (ส่วนคลังความรู้และรายงานละเอียดด้านล่าง)",
+        "Eyebrow / Kicker Monospace Tag (ป้ายรหัสหมวดหมู่ตัวพิมพ์เล็กเหนือชื่อเรื่อง - Locked)",
+        "Deck / Lead Subtitle (คำอธิบายสั้น 1 บรรทัดใต้หัวข้อใหญ่)",
+        "Chrome vs Canvas Ratio 12:88 (เมนูควบคุมไม่เกิน 12% ยกพื้นที่ 88% ให้ข้อมูลและแผนที่ - Locked)",
+        "Callout / Field Pitfall Box (กล่องข้อควรระวังหน้างานตีแถบสีด้านซ้าย 3px)",
+        "Pinned Action Header (แถบปุ่มคำสั่งที่เกาะติดหัวตารางเสมอ)",
+        "Technical Colophon Footer (ส่วนท้ายระบุระบบพิกัด EPSG และเวอร์ชันมาตรฐาน)"
+      ]
+    },
+    {
+      "id": 42,
+      "name": "Advanced Interaction Patterns",
+      "thai_name": "รูปแบบการโต้ตอบขั้นสูงสำหรับงานข้อมูลและพิกัด (หมวดเสริม 09)",
+      "thai_keywords": "คลิกตารางไฮไลต์แผนที่ แก้เลขในตาราง วางจาก Excel คีย์ลัด",
+      "terms": [
+        "Synchronized Table ↔ Map Highlighting (คลิกหมุดในตารางแล้วจุดบนผังวงรอบสว่างขึ้นทันที - Locked)",
+        "Inline Cell Direct Editing (คลิกแก้ไขค่ามุมและระยะในตารางได้ทันที - Locked)",
+        "Smart Excel/CSV Clipboard Paste (คัดลอกตารางจาก Excel มาวางลงเว็บได้ทันที)",
+        "1-Click Sample Preset Switching (ปุ่มสลับชุดข้อมูลตัวอย่างในคลิกเดียว - Locked)",
+        "Keyboard-First Tab/Arrow Ergonomics (กดปุ่มลูกศรและ Tab เลื่อนช่องกรอกข้อมูลรวดเร็ว)",
+        "Scrubbable Parameter Input (ลากปรับค่าตัวเลขพารามิเตอร์พร้อมดูกราฟเปลี่ยนสด)",
+        "Multi-Station Batch Selection (ติ๊กเลือกหลายหมุดเพื่อส่งออกหรือคำนวณพร้อมกัน)"
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Dashboard-Specific Patterns",
+      "thai_name": "แม่แบบเฉพาะทางสำหรับแดชบอร์ดและระบบคำนวณ (หมวดเสริม 10)",
+      "thai_keywords": "ปุ่มติดหัวตาราง แถวผลรวมท้ายตาราง ป้ายผ่านเกณฑ์ แถบสถานะ",
+      "terms": [
+        "Co-located Table Action Bar (วางปุ่มคำนวณ โหลดตัวอย่าง และ Export ติดกับหัวตาราง - Locked DNA)",
+        "Pinned Summary / Misclosure Row (แถวสรุปผลรวมมุม ระยะทาง และ ΔN/ΔE ท้ายตาราง - Locked)",
+        "KPI Card with Tolerance Badge (การ์ดตัวเลขพร้อมป้ายสถานะ ผ่าน/ไม่ผ่านเกณฑ์ - Locked)",
+        "Pulsing Telemetry Status Pill (ป้ายไฟกะพริบ ● RTSD READY บนแถบเมนู - Locked)",
+        "Cross-Filtering KPI to Table (คลิกการ์ดตัวเลขเพื่อกรองเฉพาะหมุดที่มีปัญหาในตาราง)",
+        "Column Density Toggle (สลับความแน่นของแถวตาราง Compact / Comfort)",
+        "1-Click Multi-Format Export (ส่งออกครบทั้ง CSV, GeoJSON และรายงาน PDF สนาม)"
+      ]
+    },
+    {
+      "id": 44,
+      "name": "Responsive Priority+ & Adaptive Ergonomics",
+      "thai_name": "การปรับหน้าตาตามขนาดจออย่างฉลาด (หมวดเสริม 11)",
+      "thai_keywords": "แสดงแท็บหลักเสมอ ตารางไม่ล้นจอมือถือ ตรึงคอลัมน์รหัสหมุด",
+      "terms": [
+        "Priority+ Top Navigation (แสดงแท็บสำคัญไว้ด้านบนเสมอ ไม่ซ่อนทุกอย่างใน Hamburger - Locked)",
+        "Desktop Split → Mobile Tabbed View (จอใหญ่แบ่งซ้าย-ขวา จอมือถือสลับดูตาราง/แผนที่ลื่นไหล)",
+        "Sticky Station Column on Scroll (ตรึงคอลัมน์รหัสหมุด BM-01 ซ้ายสุดเวลาเลื่อนตารางบนมือถือ)",
+        "RAM Fluid Card Grid (ใช้ repeat(auto-fit, minmax(280px, 1fr)) เรียงการ์ดสวยทุกจอ)",
+        "Thumb-Zone Mobile Action Bar (วางปุ่มคำนวณหลักในระยะนิ้วโป้งกดง่ายบนมือถือภาคสนาม)"
+      ]
+    },
+    {
+      "id": 45,
+      "name": "Error Prevention & Recovery (Poka-Yoke UX)",
+      "thai_name": "ระบบกันพลาดและกู้คืนข้อมูลอัตโนมัติ (หมวดเสริม 12)",
+      "thai_keywords": "ป้องกันกรอกผิด บอกหน่วยชัดเจน จำค่าในเครื่อง ปุ่มรีเซ็ตตัวอย่าง",
+      "terms": [
+        "1-Click Sample Data Cure (แก้ปัญหาหน้าโล่งด้วยปุ่มโหลดข้อมูลตัวอย่างทันที - Locked DNA)",
+        "Explicit Unit & Format Column Headers (ระบุหน่วย m, DDD°MM'SS\", UTM 47N ชัดเจนทุกคอลัมน์ - Locked)",
+        "Real-Time Misclosure Pre-Check (เตือนทันทีเมื่อผลรวมมุมคลาดเคลื่อนเกินพิกัดก่อนกดส่ง)",
+        "LocalStorage Theme & State Persistence (จดจำธีมและค่าที่เลือกไว้ในเครื่องอัตโนมัติ - Locked DNA)",
+        "Constructive Error Recovery Hint (แจ้งเตือนสาเหตุที่ผิดพร้อมปุ่มกดแก้ไขหรือคืนค่าตัวอย่าง)",
+        "Non-Destructive Reset Guard (ป้องกันการเผลอกดล้างตารางข้อมูลโดยไม่ตั้งใจ)"
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Performance Budget & Rendering Discipline",
+      "thai_name": "วินัยความเร็วระดับ 60fps และสลับธีมทันที (หมวดเสริม 13)",
+      "thai_keywords": "เร็ว 60fps ตัวเลขไม่สั่น สลับธีมทันทีไม่ต้องโหลดใหม่",
+      "terms": [
+        "Zero Layout Shift CLS=0 (ตารางและตัวเลขไม่ขยับดิ้นขณะคำนวณด้วย tabular-nums - Locked)",
+        "Instant CSS Variable Theme Switch (สลับธีม Fieldbook ↔ Terminal ทันทีผ่าน data-theme - Locked)",
+        "Sub-16ms 60fps Interactive Rendering (ตอบสนองการเลื่อนสไลเดอร์และแก้ไขตารางแบบเรียลไทม์)",
+        "Lightweight Inline SVG Topology (วาดผังวงรอบด้วย SVG คมกริบโหลดไวไม่ง้อไลบรารีหนัก)",
+        "Zero-Bloat Token CSS (ใช้ตัวแปร CSS มาตรฐานสะอาดตาดูแลรักษาง่าย)"
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Accessibility (A11y) Pre-Flight Checklist",
+      "thai_name": "เช็กลิสต์ความคมชัดและการใช้งานกลางแจ้ง (หมวดเสริม 14)",
+      "thai_keywords": "สู้แดด กลางแจ้ง ไม่พึ่งสีอย่างเดียว ลำดับหัวข้อถูกต้อง",
+      "terms": [
+        "Outdoor Daylight AAA Contrast >12:1 (สีหมึกเข้ม #14241b บนพื้น #f3f1eb อ่านชัดกลางแดด - Locked)",
+        "Icon + Text + Color Redundancy (ป้ายสถานะมีทั้งสัญลักษณ์ ✓/● และข้อความกำกับเสมอ - Locked)",
+        "44px Touch & Click Target (ปุ่มและแท็บกดง่ายไม่พลาดทั้งเมาส์และนิ้วสัมผัส)",
+        "Semantic HTML5 Landmarks (ครบทั้ง header, nav, main, section, table th scope)",
+        "Single H1 Heading Discipline (จัดลำดับหัวข้อ H1 → H2 → H3 ชัดเจน)"
+      ]
+    },
+    {
+      "id": 48,
+      "name": "3-Tier Design Tokens Architecture",
+      "thai_name": "สถาปัตยกรรมตัวแปรดีไซน์ 3 ชั้นมาตรฐานโลก (หมวดเสริม 15)",
+      "thai_keywords": "ตัวแปร 3 ชั้น สีดิบ สีตามหน้าที่ ตัวแปรคอมโพเนนต์",
+      "terms": [
+        "Tier 1: Primitive Palette Tokens (ค่าสีและระยะห่างดิบ เช่น #f3f1eb, #050505, #15803d, #34d399)",
+        "Tier 2: Semantic Theme Tokens (ตัวแปรตามหน้าที่ --bg, --surface, --text-1, --accent, --border - Locked)",
+        "Tier 3: Component-Scoped Tokens (ตัวแปรเฉพาะชิ้นส่วน --card-radius, --btn-radius, --nav-bg - Locked)",
+        "Dual-Selector Root+Body Binding (ผูก :root[data-theme] และ body[data-theme] คู่กันเสมอ - Locked)"
+      ]
+    },
+    {
+      "id": 49,
+      "name": "AI Design Prompt Formula & Spec Template",
+      "thai_name": "สูตรสำเร็จ 6 องค์ประกอบสำหรับแปลงคำสั่งอัตโนมัติ (หมวดเสริม 16)",
+      "thai_keywords": "สูตรสั่งงานอัตโนมัติ โครงสร้างสเปก 6 องค์ประกอบ",
+      "terms": [
+        "Formula Part 1: Domain & High-SNR Role (ระบุบทบาทเครื่องมือวิศวกรรม/แดชบอร์ดความแม่นยำสูง)",
+        "Formula Part 2: Spatial Topology & Z/F-Flow (ล็อก Top-Nav ไร้ Sidebar + แบ่งสัดส่วน 8:4 หรือ 50:50)",
+        "Formula Part 3: Surface & 60-30-10 Polarity (ล็อกคู่ธีม Fieldbook 60/30/10 ↔ Terminal)",
+        "Formula Part 4: Typography & Tabular Numerals (ล็อก Plus Jakarta Sans -0.025em + Geist Mono tabular-nums)",
+        "Formula Part 5: Primary Headings & Auto-Filled Essentials (สกัดหัวข้อหลัก + เติมปุ่ม Sample/Export/Pass Badge)",
+        "Formula Part 6: Zero-Slop Guardrails (บล็อก Gradient, Emoji หัวข้อ, เงาดำทึบ และการ์ดเด้งลอย)"
+      ]
+    },
+    {
+      "id": 50,
+      "name": "Anti-Patterns & 12-Point Pre-Delivery QA Gate",
+      "thai_name": "ข้อห้ามเด็ดขาด & ด่านตรวจคุณภาพ 12 ข้อก่อนส่งงาน (หมวดเสริม 17)",
+      "thai_keywords": "ด่านตรวจคุณภาพ 12 ข้อ ห้ามเว็บโหล เช็กก่อนส่งงาน",
+      "terms": [
+        "QA 01: Primary Headings 100% Covered (ตรวจครบทั้งหัวข้อที่สั่งและหัวข้อเสริมที่ระบบเติมให้ - Locked)",
+        "QA 02: Zero Fixed Left Sidebar (ไร้แถบข้างซ้ายเกะกะ ใช้ Top-Nav ขีดเส้นใต้ 2px - Locked)",
+        "QA 03: 60-30-10 Dual-Theme Active (สลับ Fieldbook ☀️ ↔ Terminal 🌙 สดและจำค่าใน localStorage - Locked)",
+        "QA 04: 100% Geist Mono Tabular Numerals (ตัวเลข พิกัด มุม และสกอร์เรียงหลักตรงเป๊ะ - Locked)",
+        "QA 05: Co-located Controls & Action Verbs (ปุ่มคำกริยาวางติดกับหัวตารางข้อมูล - Locked)",
+        "QA 06: 1-Click Sample Data Ready (มีข้อมูลจริงหรือปุ่มโหลดตัวอย่างทันที ห้ามหน้าโล่ง - Locked)",
+        "QA 07: Pinned Totals / Tolerance Status (มีแถวสรุปผลรวมและป้ายแจ้งผลผ่านเกณฑ์มาตรฐาน - Locked)",
+        "QA 08: Zero Gaudy Gradients & Heavy Shadows (พื้นผิว Tonal Layering ขอบบาง 1px คมกริบ - Locked)",
+        "QA 09: Zero Emoji Spam in Section Headings (ใช้ป้าย Eyebrow Monospace แทน Emoji รกตา - Locked)",
+        "QA 10: 150ms Micro-Press Only (ห้ามทำการ์ดเด้งลอยเวลาชี้เมาส์ - Locked)"
+      ]
+    }
+  ]
+}
+

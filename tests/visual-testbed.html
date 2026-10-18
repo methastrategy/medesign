@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ME-DESIGN vNext - Optical Craft & Blind Test Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @property --corner-r {
+      syntax: "<length>";
+      inherits: false;
+      initial-value: 8px;
+    }
+
+    :root {
+      color-scheme: light dark;
+      --font-sans: "Plus Jakarta Sans", "Prompt", system-ui, sans-serif;
+      --font-mono: "Geist Mono", monospace;
+
+      /* Dark Mode Functional Tokens (vNext Manifesto) */
+      --canvas: #09090b;
+      --surface-base: oklch(0.14 0.008 260);
+      --surface-raised: color-mix(in oklch, var(--surface-base) 88%, white);
+      --surface-inset: oklch(0.11 0.006 260);
+      --border-subtle: color-mix(in oklch, var(--surface-base) 82%, white);
+      --border-focus: oklch(0.72 0.16 155);
+      
+      --accent-terracotta: oklch(0.68 0.18 42);
+      --accent-mint: oklch(0.78 0.16 155);
+      --text-1: #f4f4f5;
+      --text-2: #cbd5e1;
+      --text-3: #94a3b8;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --canvas: #f8f9fa;
+        --surface-base: #f1f3f5;
+        --surface-raised: #ffffff;
+        --surface-inset: #e9ecef;
+        --border-subtle: #dee2e6;
+        --border-focus: oklch(0.55 0.18 155);
+        --text-1: #111827;
+        --text-2: #374151;
+        --text-3: #4b5563;
+        --accent-terracotta: oklch(0.55 0.18 42);
+        --accent-mint: oklch(0.42 0.16 155);
+      }
+      .metric-val.aa { color: #0369a1 !important; }
+      .badge-vnext { color: #0369a1 !important; border-color: rgba(3, 105, 161, 0.3) !important; background: rgba(3, 105, 161, 0.08) !important; }
+      .table-id-cyan { color: #0369a1 !important; }
+      tr#row-1 { background: rgba(3, 105, 161, 0.08) !important; }
+    }
+
+    .table-id-cyan { color: #22d3ee; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--canvas);
+      color: var(--text-1);
+      font-family: var(--font-sans);
+      min-height: 100dvh;
+      padding: 2rem 1.5rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1.5rem;
+    }
+
+    .badge-vnext {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      background: color-mix(in oklch, var(--accent-mint) 12%, transparent);
+      border: 1px solid color-mix(in oklch, var(--accent-mint) 35%, transparent);
+      color: var(--accent-mint);
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 500;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-top: 0.5rem;
+    }
+    .subtitle { color: var(--text-2); font-size: 0.95rem; }
+
+    /* Lab Card Grid */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .lab-card {
+      background: var(--surface-base);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    .lab-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lab-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .lab-tag {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      background: var(--surface-inset);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-2);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Comparison Box */
+    .cmp-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      background: var(--surface-inset);
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px dashed var(--border-subtle);
+    }
+    .cmp-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+      text-align: center;
+    }
+    .cmp-label {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-3);
+    }
+    .cmp-label.pro { color: var(--accent-mint); }
+    .cmp-label.con { color: #f87171; }
+
+    /* LAB 1: Area-Proportional Scaling */
+    .btn-slop {
+      width: 180px;
+      height: 48px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 100ms ease;
+    }
+    .btn-slop:active {
+      /* medesign-disable-next-line MD003 */
+      transform: scale(0.95); /* Generic Slop: Crushes hit-area and over-displaces */
+    }
+
+    /* Pro: Isolated Hit Container + clamp displacement */
+    .btn-pro-container {
+      position: relative;
+      min-height: 44px;
+      width: 180px;
+      height: 48px;
+      display: inline-flex;
+      cursor: pointer;
+    }
+    .btn-pro-surface {
+      width: 100%;
+      height: 100%;
+      background: var(--accent-mint);
+      color: #042f1e;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      transition: transform 80ms cubic-bezier(0.2, 0, 0, 1);
+      --press-scale: 0.985; /* clamp(0.96, 1 - 2.5/180, 0.995) = 0.986 */
+    }
+    .btn-pro-container:active .btn-pro-surface {
+      transform: scale(var(--press-scale));
+    }
+    .btn-pro-container:focus-visible {
+      outline: 2px solid var(--border-focus);
+      outline-offset: 3px;
+    }
+
+    /* LAB 2: Color Science Midpoint */
+    .gradient-bar {
+      width: 100%;
+      height: 44px;
+      border-radius: 8px;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .grad-srgb {
+      background: linear-gradient(90deg, #3b82f6, #ef4444); /* Muddy middle */
+    }
+    .grad-oklab {
+      background: linear-gradient(in oklab 90deg, #3b82f6, #ef4444); /* Smooth uniform */
+    }
+    .grad-oklch {
+      background: linear-gradient(in oklch shorter hue 90deg, #3b82f6, #ef4444); /* Saturated */
+    }
+
+    /* LAB 3: Typography Thai Diacritic Headroom */
+    .thai-crop-bad {
+      font-size: 1.15rem;
+      background: #1e1e24;
+      border: 1px solid #333;
+      padding: 0 12px;
+      height: 38px;
+      line-height: 1.25;
+      overflow: hidden; /* Simulates clipping of top tone marks */
+    }
+    .thai-crop-good {
+      font-size: 1.15rem;
+      background: #1e1e24;
+      border: 1px solid var(--accent-mint);
+      padding: 3px 12px 1px 12px; /* Optical Headroom */
+      height: 38px;
+      line-height: 1.38;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* LAB 4: Motion Profiles */
+    .motion-box {
+      width: 44px;
+      height: 44px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      transition-property: transform;
+    }
+    .box-precision { transition: transform 90ms ease-out; }
+    .box-soft      { transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1); }
+    .box-spring    { transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .box-instant   { transition: none !important; }
+
+    .motion-trigger-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .pill-btn {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem 0.85rem;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      color: var(--text-2);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      outline-offset: 2px;
+      transition: color 140ms ease, border-color 140ms ease;
+    }
+    .pill-btn:focus-visible {
+      outline: 2px solid var(--border-focus);
+    }
+    .pill-btn:hover { color: var(--text-1); border-color: var(--text-2); }
+
+    /* 4-Tier Audit Score Simulator */
+    .audit-bar {
+      background: var(--surface-base);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .audit-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .metric-name { font-size: 0.75rem; color: var(--text-3); font-family: var(--font-mono); text-transform: uppercase; }
+    .metric-val { font-size: 1.1rem; font-weight: 700; color: var(--accent-mint); font-family: var(--font-mono); }
+    .metric-val.aa { color: #38bdf8; }
+
+    .code-snippet {
+      background: #000;
+      border: 1px solid var(--border-subtle);
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #34d399;
+      width: 100%;
+      overflow-x: auto;
+    }
+  
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div>
+        <span class="badge-vnext">ME-DESIGN vNext Engine</span>
+        <h1>Optical Craft & Blind-Test Workbench</h1>
+        <p class="subtitle">ระบบทดสอบทางสายตาและเครื่องมือตรวจสอบ Optical Mathematics เทียบกับ Generic AI Slop</p>
+      </div>
+      <div class="audit-metric" style="align-items: flex-end;">
+        <span class="metric-name">Quality Gate Status</span>
+        <span class="metric-val">4-TIER PASS (100%)</span>
+      </div>
+    </header>
+
+    <!-- 4-Tier Live Score HUD -->
+    <div class="audit-bar">
+      <div class="audit-metric">
+        <span class="metric-name">Tier 1: Contrast AA/AAA</span>
+        <span class="metric-val">10.8 : 1 (AAA)</span>
+      </div>
+      <div class="audit-metric">
+        <span class="metric-name">Tier 1: Hit Target 44px</span>
+        <span class="metric-val">PASS (HIG-Safe)</span>
+      </div>
+      <div class="audit-metric">
+        <span class="metric-name">Tier 2: Press Displacement</span>
+        <span class="metric-val aa">1.35px Optical</span>
+      </div>
+      <div class="audit-metric">
+        <span class="metric-name">Tier 2: Motion Exit Ratio</span>
+        <span class="metric-val aa">0.65x (180ms)</span>
+      </div>
+      <div class="audit-metric">
+        <span class="metric-name">Tier 3: Color Interpolation</span>
+        <span class="metric-val">OKLCH / OKLab</span>
+      </div>
+    </div>
+
+    <!-- 4 Lab Experiments -->
+    <div class="lab-grid">
+      
+      <!-- LAB 1: Area-Proportional Scaling -->
+      <div class="lab-card">
+        <div class="lab-header">
+          <span class="lab-title">01. Area-Proportional Press Scaling</span>
+          <span class="lab-tag">Rule 1 Invariant</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-2);">
+          ลองกดปุ่มค้างไว้เพื่อดูความต่าง: ด้านซ้ายใช้ Generic `scale(0.95)` ซึ่งทำให้ Hit Area หดตัวและขอบกระตุก ส่วนด้านขวาใช้ `clamp()` แปรผันผกผัน พร้อมแยก Interactive Hit Container
+        </p>
+
+        <div class="cmp-stage">
+          <div class="cmp-col">
+            <span class="cmp-label con">Generic AI Slop (scale-95)</span>
+            <button class="btn-slop">Press & Hold</button>
+            <span style="font-size: 0.75rem; color: #f87171;">ยุบตัว 9.0px (รุนแรงเกินไป)</span>
+          </div>
+          <div class="cmp-col">
+            <span class="cmp-label pro">ME-DESIGN (clamp + isolated)</span>
+            <div class="btn-pro-container" tabindex="0">
+              <div class="btn-pro-surface">Press & Hold</div>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--accent-mint);">ยุบตัว 1.35px (Optical 2-3px)</span>
+          </div>
+        </div>
+
+        <div class="code-snippet">
+/* ME-DESIGN vNext Isolated Press Scaling */
+.btn-surface { transform: scale(clamp(0.96, 1 - 2.5/max(W,H), 0.995)); }
+        </div>
+      </div>
+
+      <!-- LAB 2: Color Science Midpoint Spectrogram -->
+      <div class="lab-card">
+        <div class="lab-header">
+          <span class="lab-title">02. Color Interpolation Space (Blue -> Red)</span>
+          <span class="lab-tag">Perceptual Intent</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-2);">
+          เปรียบเทียบ Gradient ข้ามขั้ว: แถบบน (sRGB Hex) จะเกิด Middle-Gray Muddy Band สีม่วงหม่นตรงกลาง แถบล่าง (OKLab / OKLCH) รักษาความสว่างและความสดของแสง
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div>
+            <span class="cmp-label con">sRGB Hex (Middle-Gray Dead Zone)</span>
+            <div class="gradient-bar grad-srgb"></div>
+          </div>
+          <div>
+            <span class="cmp-label pro">OKLab (Uniform Lightness Blending)</span>
+            <div class="gradient-bar grad-oklab"></div>
+          </div>
+          <div>
+            <span class="cmp-label pro">OKLCH Shorter Hue (Vibrant Trajectory)</span>
+            <div class="gradient-bar grad-oklch"></div>
+          </div>
+        </div>
+
+        <div class="code-snippet">
+/* Midpoint Inspection: 25%, 50%, 75% checked for zero mud */
+linear-gradient(in oklab 90deg, #3b82f6, #ef4444);
+        </div>
+      </div>
+
+      <!-- LAB 3: Typography & Thai Diacritic Headroom -->
+      <div class="lab-card">
+        <div class="lab-header">
+          <span class="lab-title">03. Thai Diacritic Clearance Invariant</span>
+          <span class="lab-tag">Script Engine</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-2);">
+          ตัวอักษรไทยที่มีสระบนและวรรณยุกต์ (ปิ๊, ผู้, ที่) หากตัดด้วย `text-box-trim` แบบภาษาอังกฤษ วรรณยุกต์จะถูกเฉือนขาด ต้องสำรอง Optical Headroom 2-4px
+        </p>
+
+        <div class="cmp-stage">
+          <div class="cmp-col">
+            <span class="cmp-label con">Trimmed Without Headroom</span>
+            <div class="thai-crop-bad">พื้นที่ติดตั้ง ปิ๊ง!</div>
+            <span style="font-size: 0.75rem; color: #f87171;">ไม้โทและสระอิถูกเฉือน</span>
+          </div>
+          <div class="cmp-col">
+            <span class="cmp-label pro">Script-Aware Headroom (2px)</span>
+            <div class="thai-crop-good">พื้นที่ติดตั้ง ปิ๊ง!</div>
+            <span style="font-size: 0.75rem; color: var(--accent-mint);">วรรณยุกต์คมชัด 100%</span>
+          </div>
+        </div>
+
+        <div class="code-snippet">
+@supports (text-box: trim-both text alphabetic) {
+  .ui-label-th { text-box: trim-both text alphabetic; padding-top: 2px; }
+}
+        </div>
+      </div>
+
+      <!-- LAB 4: 4 Motion Profiles -->
+      <div class="lab-card">
+        <div class="lab-header">
+          <span class="lab-title">04. The 4 Behavioral Motion Profiles</span>
+          <span class="lab-tag">Motion Engine</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-2);">
+          ทดสอบความรู้สึกทางกายภาพของการเปลี่ยนสถานะ คลิกปุ่มด้านล่างเพื่อทดสอบ 4 Motion Profiles
+        </p>
+
+        <div style="display: flex; justify-content: space-around; padding: 1rem 0; background: var(--surface-inset); border-radius: 8px;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <div class="motion-box box-precision" id="box-1">P</div>
+            <span style="font-size: 0.7rem; font-family: var(--font-mono);">precision</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <div class="motion-box box-soft" id="box-2">S</div>
+            <span style="font-size: 0.7rem; font-family: var(--font-mono);">soft-settle</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <div class="motion-box box-spring" id="box-3">SP</div>
+            <span style="font-size: 0.7rem; font-family: var(--font-mono);">spring</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <div class="motion-box box-instant" id="box-4">I</div>
+            <span style="font-size: 0.7rem; font-family: var(--font-mono);">instant</span>
+          </div>
+        </div>
+
+        <div class="motion-trigger-row">
+          <button class="pill-btn" onclick="triggerMotion()">Trigger Animation</button>
+          <button class="pill-btn" onclick="resetMotion()">Reset</button>
+        </div>
+
+        <div class="code-snippet">
+/* 4 Profiles: precision (0-100ms), soft-settle (280ms), spring (WAAPI/linear), instant (0ms) */
+        </div>
+      </div>
+
+    
+      <!-- LAB 5: Operational Engineering Blueprint (Archetypes 31 & 32) -->
+      <div class="lab-card" style="grid-column: 1 / -1;">
+        <div class="lab-header">
+          <span class="lab-title">05. Geospatial Situation Awareness & Mission-Critical HMI (Archetypes 31 & 32)</span>
+          <span class="lab-tag">5-Axis Operational Blueprint</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-2);">
+          การประกอบร่าง 5-Axis Matrix: Operational (Geospatial) × Visual (Linear Minimal) × Spatial (Map + Table Workbench) × Motion (Precision 90ms) × Governance (Tier 1 Passed). คลิกเลือกแปลงที่ดินในตารางเพื่อดูการซิงก์ตำแหน่งบนแผนที่ (Linked Views)
+        </p>
+
+        <!-- ISA-101 Alarm & Telemetry Status Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #121316; border: 1px solid var(--border-subtle); padding: 0.5rem 1rem; border-radius: 8px;">
+          <div style="display: flex; gap: 1rem; align-items: center; font-size: 0.8rem; font-family: var(--font-mono);">
+            <span style="color: #64748b; display: inline-flex; align-items: center; gap: 0.35rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span> GNSS RTK FIX
+            </span>
+            <span style="color: #64748b;">CRS: EPSG:32647 (WGS84 UTM 47N)</span>
+            <span style="color: #64748b;">1-Sigma: Hz 0.008m | Vt 0.012m</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <span style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-family: var(--font-mono);">ISA-101: 1 Advisory</span>
+            <span style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); color: #22c55e; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-family: var(--font-mono);">0 Critical</span>
+          </div>
+        </div>
+
+        <!-- Linked Map + Controls + Table Stage -->
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem;">
+          <!-- Map Canvas Simulator -->
+          <div style="height: 240px; background: #0c0d10; border: 1px solid var(--border-subtle); border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+            <svg id="cadastral-map" width="100%" height="100%" viewBox="0 0 400 240" style="position: absolute; inset: 0;">
+              <!-- Grid Hairlines -->
+              <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+              <!-- Parcels -->
+              <polygon id="poly-1" points="60,40 160,50 140,140 50,120" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" stroke-width="1.5" style="cursor: pointer; transition: all 120ms ease;"/>
+              <polygon id="poly-2" points="175,55 280,45 295,150 155,145" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.5" style="cursor: pointer; transition: all 120ms ease;"/>
+              <polygon id="poly-3" points="80,155 220,165 200,220 70,210" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5" style="cursor: pointer; transition: all 120ms ease;"/>
+              <text x="90" y="95" fill="#06b6d4" font-size="11" font-family="monospace">PARCEL-101</text>
+              <text x="210" y="105" fill="#f59e0b" font-size="11" font-family="monospace">PARCEL-102</text>
+              <text x="125" y="190" fill="#10b981" font-size="11" font-family="monospace">PARCEL-103</text>
+            </svg>
+            <div style="position: absolute; bottom: 8px; right: 10px; font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-3); background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px;">
+              Scale 1:1,000 | 100dvh Canvas
+            </div>
+          </div>
+
+          <!-- Inspector & Selected Metadata -->
+          <div style="background: var(--surface-inset); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-3); text-transform: uppercase;">Selected Feature Inspector</div>
+              <div id="inspector-title" style="font-size: 1.15rem; font-weight: 700; color: var(--accent-mint); margin-top: 0.25rem;">PARCEL-101</div>
+              <div style="margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-2);">
+                <div>UTM Easting: <span id="insp-easting" style="color: var(--text-1); font-weight: 600;">672,410.824 m</span></div>
+                <div>UTM Northing: <span id="insp-northing" style="color: var(--text-1); font-weight: 600;">1,524,891.105 m</span></div>
+                <div>Area (Computed): <span id="insp-area" style="color: var(--text-1); font-weight: 600;">1,248.50 sq.m</span></div>
+                <div>Survey Method: <span style="color: var(--text-1);">Network RTK CORS</span></div>
+              </div>
+            </div>
+            <button class="pill-btn" style="width: 100%; justify-content: center; background: var(--surface-base); border-color: var(--accent-mint); color: var(--accent-mint); font-weight: 600;" onclick="alert('Exporting Land Parcel GeoJSON...')">Export Cadastral Proof (.GeoJSON)</button>
+          </div>
+        </div>
+
+        <!-- Linked Data Table -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; font-family: var(--font-mono); text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border-subtle); color: var(--text-2);">
+              <th style="padding: 0.5rem;">ID</th>
+              <th style="padding: 0.5rem;">PARCEL NO.</th>
+              <th style="padding: 0.5rem;">EASTING (M)</th>
+              <th style="padding: 0.5rem;">NORTHING (M)</th>
+              <th style="padding: 0.5rem;">TOLERANCE</th>
+              <th style="padding: 0.5rem;">STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="row-1" style="border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; background: rgba(6,182,212,0.08);" onclick="selectParcel(1, 'PARCEL-101', '672,410.824 m', '1,524,891.105 m', '1,248.50 sq.m', '#06b6d4')">
+              <td class="table-id-cyan" style="padding: 0.5rem; font-weight: 600;">01</td>
+              <td style="padding: 0.5rem; font-weight: 600;">PARCEL-101</td>
+              <td style="padding: 0.5rem;">672,410.824</td>
+              <td style="padding: 0.5rem;">1,524,891.105</td>
+              <td style="padding: 0.5rem; color: #10b981;">±0.008 m</td>
+              <td style="padding: 0.5rem;"><span style="color: #10b981;">VERIFIED</span></td>
+            </tr>
+            <tr id="row-2" style="border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;" onclick="selectParcel(2, 'PARCEL-102', '672,550.120 m', '1,524,912.440 m', '1,890.20 sq.m', '#f59e0b')">
+              <td style="padding: 0.5rem; color: #f59e0b;">02</td>
+              <td style="padding: 0.5rem; font-weight: 600;">PARCEL-102</td>
+              <td style="padding: 0.5rem;">672,550.120</td>
+              <td style="padding: 0.5rem;">1,524,912.440</td>
+              <td style="padding: 0.5rem; color: #f59e0b;">±0.018 m</td>
+              <td style="padding: 0.5rem;"><span style="color: #f59e0b;">ADVISORY</span></td>
+            </tr>
+            <tr id="row-3" style="cursor: pointer;" onclick="selectParcel(3, 'PARCEL-103', '672,490.660 m', '1,524,780.310 m', '940.80 sq.m', '#10b981')">
+              <td style="padding: 0.5rem; color: #10b981;">03</td>
+              <td style="padding: 0.5rem; font-weight: 600;">PARCEL-103</td>
+              <td style="padding: 0.5rem;">672,490.660</td>
+              <td style="padding: 0.5rem;">1,524,780.310</td>
+              <td style="padding: 0.5rem; color: #10b981;">±0.005 m</td>
+              <td style="padding: 0.5rem;"><span style="color: #10b981;">VERIFIED</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="code-snippet">
+/* Bento Named Areas Blueprint (Zero CLS Guarantee) */
+.workspace { grid-template-areas: "map controls" "table table"; grid-auto-flow: row; }
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let toggled = false;
+    function triggerMotion() {
+      toggled = !toggled;
+      const dist = toggled ? 'translateY(-16px)' : 'translateY(0px)';
+      document.getElementById('box-1').style.transform = dist;
+      document.getElementById('box-2').style.transform = dist;
+      document.getElementById('box-3').style.transform = dist;
+      document.getElementById('box-4').style.transform = dist;
+    }
+    function resetMotion() {
+      toggled = false;
+      document.getElementById('box-1').style.transform = 'translateY(0px)';
+      document.getElementById('box-2').style.transform = 'translateY(0px)';
+      document.getElementById('box-3').style.transform = 'translateY(0px)';
+      document.getElementById('box-4').style.transform = 'translateY(0px)';
+    }
+  </script>
+<script>
+    function selectParcel(id, title, east, north, area, color) {
+      document.getElementById('inspector-title').innerText = title;
+      document.getElementById('inspector-title').style.color = color;
+      document.getElementById('insp-easting').innerText = east;
+      document.getElementById('insp-northing').innerText = north;
+      document.getElementById('insp-area').innerText = area;
+
+      [1, 2, 3].forEach(i => {
+        const row = document.getElementById('row-' + i);
+        const poly = document.getElementById('poly-' + i);
+        if (i === id) {
+          row.style.background = 'rgba(255,255,255,0.08)';
+          poly.setAttribute('stroke-width', '3');
+          poly.style.filter = 'drop-shadow(0 0 8px ' + color + ')';
+        } else {
+          row.style.background = 'transparent';
+          poly.setAttribute('stroke-width', '1.5');
+          poly.style.filter = 'none';
+        }
+      });
+    }
+</script>
+</body>
+</html>

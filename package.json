@@ -1,0 +1,39 @@
+{
+  "name": "@metha-design/medesign",
+  "version": "1.2.0",
+  "description": "Autonomous Design Engineering Toolkit & Automated Linter for AI Coding Assistants",
+  "main": "bin/medesign.js",
+  "bin": {
+    "medesign": "./bin/medesign.js"
+  },
+  "scripts": {
+    "test": "node tests/runner.js && node tests/validate-sarif.js && node tests/test-tokens.js",
+    "test:unit": "node tests/runner.js",
+    "test:sarif": "node tests/validate-sarif.js",
+    "test:tokens": "node tests/test-tokens.js",
+    "test:browser": "node tests/runner.js --browser",
+    "lint": "node bin/medesign.js lint",
+    "tokens": "node bin/medesign.js tokens",
+    "doctor": "node bin/medesign.js doctor"
+  },
+  "keywords": [
+    "design-tokens",
+    "linter",
+    "accessibility",
+    "design-systems",
+    "oklch",
+    "tailwind",
+    "dtcg",
+    "sarif",
+    "ai-coding-assistant",
+    "antigravity",
+    "claude-code"
+  ],
+  "author": "Metha Tripraphankit (Survey Engineering & Geoinformatics, Kasetsart University)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

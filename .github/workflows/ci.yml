@@ -1,0 +1,44 @@
+name: ME-DESIGN CI & Governance Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  verify:
+    name: Verify Design Invariants & SARIF Audit
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run ME-DESIGN Doctor
+        run: node bin/medesign.js doctor
+
+      - name: Run Deterministic AST & Semantic Test Suite
+        run: node bin/medesign.js test
+
+      - name: Generate SARIF Security & Invariant Report
+        run: node bin/medesign.js lint tests/visual-testbed.html --format sarif > medesign-results.sarif
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+        with:
+          sarif_file: medesign-results.sarif
+          category: medesign-linter
+
+      - name: Verify Token Export (Tailwind v4 @theme & W3C DTCG)
+        run: node bin/medesign.js tokens export --out dist/tokens

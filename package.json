@@ -19,10 +19,11 @@
     "medesign.config.js"
   ],
   "scripts": {
-    "test": "node tests/runner.js && node tests/validate-sarif.js && node tests/test-tokens.js",
+    "test": "node tests/runner.js && node tests/validate-sarif.js && node tests/test-tokens.js && node tests/test-cli.js",
     "test:unit": "node tests/runner.js",
     "test:sarif": "node tests/validate-sarif.js",
     "test:tokens": "node tests/test-tokens.js",
+    "test:cli": "node tests/test-cli.js",
     "test:browser": "node tests/runner.js --browser",
     "search": "node bin/medesign.js search",
     "polish": "node bin/medesign.js polish",

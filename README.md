@@ -133,6 +133,7 @@ DESIGN ARCHETYPE RECOMMENDATION
   Archetype         Cadastral Survey & Data Provenance (38)
   Spatial Model     16:10 / 100dvh Map-Centric with Split Data Grid
   Primary Color     Electric Cyan (oklch(0.85 0.18 200))
+  Secondary Color   Passed Emerald (oklch(0.72 0.18 145))
   Surface Contrast  Ultra-Dark Obsidian (#0a0d14)
   Typography        JetBrains Mono + IBM Plex Sans Thai
   Motion Profile    Precision Linear (120ms max)
@@ -147,7 +148,7 @@ Automatically inspect and repair Hard Invariants in your HTML/CSS files without 
 - **MD104:** Replaces unstable `100vh` on containers with dynamic `100dvh` (`min-height: 100vh; min-height: 100dvh;`).
 - **MD004:** Injects hover and active states for buttons without defined interactive contracts.
 - **MD002:** Adds `@media (prefers-reduced-motion)` accessibility gates.
-- **MD201:** Cleans up decorative AI-tell em-dashes `—` into clean hyphens `-`.
+- **MD201:** Cleans up decorative AI-tell em-dashes `—` (including entity `&mdash;`) into clean hyphens `-`.
 
 ```bash
 npx medesign polish path/to/dashboard.html
@@ -155,21 +156,21 @@ npx medesign polish path/to/dashboard.html
 
 ```text
 [POLISH COMPLETED] 3 issues automatically repaired in dashboard.html
-  Fixed: Replaced 100vh with 100dvh (MD104)
-  Fixed: Added forced-colors high contrast focus outline (MD005)
-  Fixed: Cleaned 2 AI-tell em-dashes
+  Fixed: Replaced 1 raw 100vh with 100dvh fallback (MD104)
+  Fixed: Added physical focus outline & forced-colors high contrast (MD005)
+  Fixed: Cleaned 2 AI-tell em-dash punctuation & entities
 Q-Score: 91.3 -> 95.0 [PASS]
 ```
 
 ### ⚡ Visual Density Modifiers (`medesign bolder` & `medesign quiet`)
 
-Adjust visual weight and contrast directly in your files:
+Adjust visual weight, border contrast, and color vibrancy directly in your files:
 
 ```bash
-# Elevate font weights (normal -> medium -> semibold -> bold) and deepen border contrast
+# Elevate font weights (normal -> medium -> semibold -> bold), deepen border contrast, and boost OKLCH/Tailwind accent saturation
 npx medesign bolder path/to/dashboard.html
 
-# Soften font weights and convert borders to subtle hairlines
+# Soften font weights, convert borders to subtle hairlines, and shift OKLCH/Tailwind colors to a restrained minimalist palette
 npx medesign quiet path/to/dashboard.html
 ```
 

@@ -229,6 +229,7 @@ ${ANSI_BOLD}DESIGN ARCHETYPE RECOMMENDATION${ANSI_RESET}
   ${ANSI_BOLD}Archetype${ANSI_RESET}         ${best.archetypeTitle || best.name}
   ${ANSI_BOLD}Spatial Model${ANSI_RESET}     ${best.spatialModel || '16:10 / 100dvh Map-Centric with Split Data Grid'}
   ${ANSI_BOLD}Primary Color${ANSI_RESET}     ${best.primaryColor || 'Electric Cyan (oklch(0.85 0.18 200))'}
+  ${ANSI_BOLD}Secondary Color${ANSI_RESET}   ${best.secondaryColor || 'Passed Emerald (oklch(0.72 0.18 145))'}
   ${ANSI_BOLD}Surface Contrast${ANSI_RESET}  ${best.surfaceContrast || 'Ultra-Dark Obsidian (#0a0d14)'}
   ${ANSI_BOLD}Typography${ANSI_RESET}        ${best.typography || 'JetBrains Mono + IBM Plex Sans Thai'}
   ${ANSI_BOLD}Motion Profile${ANSI_RESET}    ${best.motionProfile || 'Precision Linear (120ms max)'}
@@ -261,26 +262,25 @@ ${ANSI_GRAY}──────────────────────�
     const fixes = [];
 
     // 1. RULE MD104: Dynamic Viewport Units (Convert raw 100vh to 100dvh fallback)
-    const cleanWithoutComments = content.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
-    const hasRaw100vh = /(?:min-height|height|max-height)\s*:\s*100vh/i.test(cleanWithoutComments);
-    const hasDvh = /100[ds]vh/i.test(cleanWithoutComments);
-    if (hasRaw100vh && !hasDvh) {
-      let count104 = 0;
-      content = content.replace(/min-height\s*:\s*100vh\s*;?/gi, () => {
-        count104++;
-        return 'min-height: 100vh; min-height: 100dvh;';
-      });
-      content = content.replace(/(?<!min-)(?<!max-)height\s*:\s*100vh\s*;?/gi, () => {
-        count104++;
-        return 'min-height: 100vh; min-height: 100dvh;';
-      });
-      if (count104 > 0) {
-        fixes.push('Replaced 100vh with 100dvh (MD104)');
-      }
+    let count104 = 0;
+    content = content.replace(/min-height\s*:\s*100vh\s*;?(?!\s*min-height\s*:\s*100[ds]vh)/gi, () => {
+      count104++;
+      return 'min-height: 100vh; min-height: 100dvh;';
+    });
+    content = content.replace(/(?<!min-)(?<!max-)height\s*:\s*100vh\s*;?(?!\s*(?:min-height|height)\s*:\s*100[ds]vh)/gi, () => {
+      count104++;
+      return 'min-height: 100vh; min-height: 100dvh;';
+    });
+    content = content.replace(/max-height\s*:\s*100vh\s*;?(?!\s*max-height\s*:\s*100[ds]vh)/gi, () => {
+      count104++;
+      return 'max-height: 100vh; max-height: 100dvh;';
+    });
+    if (count104 > 0) {
+      fixes.push(`Replaced ${count104} raw 100vh with 100dvh fallback (MD104)`);
     }
 
     // 2. RULE MD005: Focus Ring High Contrast & Physical Outline Visibility
-    const focusBlockRegex = /((?:button|a|\.[\w-]+)?:focus(?:-visible)?\s*\{)([^}]+)(\})/gi;
+    const focusBlockRegex = /((?:[a-zA-Z0-9_\-\.\#\:\*\,\[\]\="'>\s]+)?:focus(?:-visible)?\s*\{)([^}]+)(\})/gi;
     let md005Applied = false;
     content = content.replace(focusBlockRegex, (match, prefix, body, suffix) => {
       let updatedBody = body;
@@ -296,40 +296,54 @@ ${ANSI_GRAY}──────────────────────�
 
     // Ensure forced-colors high contrast outline media query is injected
     if (!/@media\s*\(forced-colors:\s*active\)/i.test(content)) {
-      const forcedColorsRule = `\n    @media (forced-colors: active) {\n      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible {\n        outline: 2px solid CanvasText !important;\n        outline-offset: 2px !important;\n      }\n    }\n`;
+      const forcedColorsRule = `\n    @media (forced-colors: active) {\n      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible, a:focus-visible {\n        outline: 2px solid CanvasText !important;\n        outline-offset: 2px !important;\n      }\n    }\n`;
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${forcedColorsRule}  </style>`);
+        md005Applied = true;
+      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+        content = content.trimEnd() + '\n' + forcedColorsRule;
         md005Applied = true;
       }
     }
     if (md005Applied) {
-      fixes.push('Added forced-colors high contrast focus outline (MD005)');
+      fixes.push('Added physical focus outline & forced-colors high contrast (MD005)');
     }
 
     // 3. RULE MD004: Broken State Contract (Dead Buttons)
-    const hasButtons = /<button/i.test(content) || /class="[^"]*btn[^"]*"/i.test(content);
+    const hasButtons = /<button/i.test(content) || /class="[^"]*btn[^"]*"/i.test(content) || /\.btn\b/i.test(content);
     const hasInteractive = /:hover/i.test(content) || /:active/i.test(content);
-    if (hasButtons && !hasInteractive && content.includes('</style>')) {
-      const buttonStates = `\n    button:hover, [class*="btn"]:hover { filter: brightness(1.1); }\n    button:active, [class*="btn"]:active { transform: scale(0.98); }\n    button:focus-visible, [class*="btn"]:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }\n`;
-      content = content.replace('</style>', `${buttonStates}  </style>`);
-      fixes.push('Injected hover and active interactive states for buttons (MD004)');
+    if (hasButtons && !hasInteractive) {
+      const buttonStates = `\n    button:hover, [class*="btn"]:hover, .btn:hover { filter: brightness(1.1); }\n    button:active, [class*="btn"]:active, .btn:active { transform: scale(0.98); }\n    button:focus-visible, [class*="btn"]:focus-visible, .btn:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }\n`;
+      if (content.includes('</style>')) {
+        content = content.replace('</style>', `${buttonStates}  </style>`);
+        fixes.push('Injected hover and active interactive states for buttons (MD004)');
+      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+        content = content.trimEnd() + '\n' + buttonStates;
+        fixes.push('Injected hover and active interactive states for buttons (MD004)');
+      }
     }
 
     // 4. RULE MD002: Reduced Motion Compliance
     const hasAnimations = /animation:|transition:/i.test(content) && !/transition:\s*none/i.test(content);
     const hasReducedMotion = /prefers-reduced-motion/i.test(content);
-    if (hasAnimations && !hasReducedMotion && content.includes('</style>')) {
+    if (hasAnimations && !hasReducedMotion) {
       const reducedMotionBlock = `\n    @media (prefers-reduced-motion: reduce) {\n      *, *::before, *::after {\n        animation-duration: 0.01ms !important;\n        animation-iteration-count: 1 !important;\n        transition-duration: 0.01ms !important;\n      }\n    }\n`;
-      content = content.replace('</style>', `${reducedMotionBlock}  </style>`);
-      fixes.push('Added prefers-reduced-motion accessibility gate (MD002)');
+      if (content.includes('</style>')) {
+        content = content.replace('</style>', `${reducedMotionBlock}  </style>`);
+        fixes.push('Added prefers-reduced-motion accessibility gate (MD002)');
+      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+        content = content.trimEnd() + '\n' + reducedMotionBlock;
+        fixes.push('Added prefers-reduced-motion accessibility gate (MD002)');
+      }
     }
 
-    // 5. Anti-AI Tells: Em-Dash Cleanup (MD201)
-    const emDashMatches = content.match(/[—–]/g);
+    // 5. Anti-AI Tells: Em-Dash / En-Dash & HTML Entities Cleanup
+    const emDashRegex = /\s*(?:[—–]|&mdash;|&ndash;|&#8212;|&#8211;|&#x2014;|&#x2013;)\s*/g;
+    const emDashMatches = content.match(emDashRegex);
     if (emDashMatches && emDashMatches.length > 0) {
       const count = emDashMatches.length;
-      content = content.replace(/\s*[—–]\s*/g, ' - ');
-      fixes.push(`Cleaned ${count} AI-tell em-dash punctuation`);
+      content = content.replace(emDashRegex, ' - ');
+      fixes.push(`Cleaned ${count} AI-tell em-dash punctuation & entities`);
     }
 
     fs.writeFileSync(resolvedPath, content, 'utf8');
@@ -364,8 +378,9 @@ ${ANSI_GRAY}──────────────────────�
     let content = fs.readFileSync(resolvedPath, 'utf8');
     let fontCount = 0;
     let borderCount = 0;
+    let accentCount = 0;
 
-    // Single-pass atomic elevation of font weights (prevents cascading replacement)
+    // 1. Single-pass atomic elevation of font weights (prevents cascading replacement)
     const bolderFontMap = {
       'font-normal': 'font-medium',
       'font-medium': 'font-semibold',
@@ -383,7 +398,7 @@ ${ANSI_GRAY}──────────────────────�
       return match;
     });
 
-    // Deepen border contrast & opacity (single pass)
+    // 2. Deepen border contrast & opacity (single pass)
     const bolderBorderMap = {
       'border-white/10': 'border-white/20',
       'border-white/5': 'border-white/15',
@@ -398,12 +413,49 @@ ${ANSI_GRAY}──────────────────────�
     content = content.replace(/rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.0[5-8]\s*\)/gi, () => { borderCount++; return 'rgba(255, 255, 255, 0.18)'; });
     content = content.replace(/rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.0[5-8]\s*\)/gi, () => { borderCount++; return 'rgba(0, 0, 0, 0.18)'; });
 
+    // 3. Boost Accent Saturation & Vibrancy
+    // OKLCH chroma boost (increase C by ~25% for chromatic colors C >= 0.04)
+    content = content.replace(/oklch\(\s*([\d\.]+)\s+([\d\.]+)(\s+[\d\.]+(?:\s*(?:\/|\s)\s*[\d\.\%]+)?)\s*\)/gi, (match, l, c, rest) => {
+      const cVal = parseFloat(c);
+      if (cVal >= 0.04) {
+        accentCount++;
+        const boostedC = Math.min(0.35, parseFloat((cVal * 1.25).toFixed(3)));
+        return `oklch(${l} ${boostedC}${rest})`;
+      }
+      return match;
+    });
+
+    // HSL saturation boost (+15% saturation)
+    content = content.replace(/hsl\(\s*([\d\.]+)\s*,\s*([\d\.]+)%\s*,\s*([\d\.]+)%\s*\)/gi, (match, h, s, l) => {
+      const sVal = parseFloat(s);
+      if (sVal > 0 && sVal <= 85) {
+        accentCount++;
+        const boostedS = Math.min(100, Math.round(sVal + 15));
+        return `hsl(${h}, ${boostedS}%, ${l}%)`;
+      }
+      return match;
+    });
+
+    // Tailwind accent vibrancy elevation
+    const bolderTailwindMap = {
+      'saturate-50': 'saturate-100',
+      'saturate-100': 'saturate-150'
+    };
+    content = content.replace(/\b(saturate-50|saturate-100)\b/g, (m) => {
+      accentCount++;
+      return bolderTailwindMap[m] || m;
+    });
+    content = content.replace(/\b(bg|text|border)-(blue|cyan|indigo|emerald|sky|violet|amber|rose|teal)-500\b/g, (match, prop, col) => {
+      accentCount++;
+      return `${prop}-${col}-600`;
+    });
+
     fs.writeFileSync(resolvedPath, content, 'utf8');
 
     console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[BOLDER APPLIED]${ANSI_RESET} Visual density boosted in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
     console.log(`  ${ANSI_BOLD}Font Weights:${ANSI_RESET}     ${fontCount} font weight declarations elevated`);
     console.log(`  ${ANSI_BOLD}Border Contrast:${ANSI_RESET}  ${borderCount} border treatments deepened`);
-    console.log(`  ${ANSI_BOLD}Accents:${ANSI_RESET}          High-contrast visual hierarchy reinforced\n`);
+    console.log(`  ${ANSI_BOLD}Accents:${ANSI_RESET}          ${accentCount} accent saturation & vibrancy rules boosted\n`);
     process.exit(0);
   }
 
@@ -422,8 +474,9 @@ ${ANSI_GRAY}──────────────────────�
     let content = fs.readFileSync(resolvedPath, 'utf8');
     let fontCount = 0;
     let borderCount = 0;
+    let toneCount = 0;
 
-    // Single-pass atomic softening of font weights (prevents cascading replacement)
+    // 1. Single-pass atomic softening of font weights (prevents cascading replacement)
     const quietFontMap = {
       'font-extrabold': 'font-bold',
       'font-bold': 'font-semibold',
@@ -442,7 +495,7 @@ ${ANSI_GRAY}──────────────────────�
       return match;
     });
 
-    // Soften borders to minimalist hairlines (single pass)
+    // 2. Soften borders to minimalist hairlines (single pass)
     const quietBorderMap = {
       'border-2': 'border',
       'border-white/20': 'border-white/10',
@@ -458,12 +511,49 @@ ${ANSI_GRAY}──────────────────────�
     content = content.replace(/rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.1[5-8]\s*\)/gi, () => { borderCount++; return 'rgba(255, 255, 255, 0.08)'; });
     content = content.replace(/rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.1[5-8]\s*\)/gi, () => { borderCount++; return 'rgba(0, 0, 0, 0.08)'; });
 
+    // 3. Shift Tone to Minimalist (Mute chroma & saturation)
+    // OKLCH chroma reduction (decrease C by ~30% for chromatic colors C >= 0.04)
+    content = content.replace(/oklch\(\s*([\d\.]+)\s+([\d\.]+)(\s+[\d\.]+(?:\s*(?:\/|\s)\s*[\d\.\%]+)?)\s*\)/gi, (match, l, c, rest) => {
+      const cVal = parseFloat(c);
+      if (cVal >= 0.04) {
+        toneCount++;
+        const softenedC = Math.max(0.01, parseFloat((cVal * 0.70).toFixed(3)));
+        return `oklch(${l} ${softenedC}${rest})`;
+      }
+      return match;
+    });
+
+    // HSL saturation reduction (-25% saturation)
+    content = content.replace(/hsl\(\s*([\d\.]+)\s*,\s*([\d\.]+)%\s*,\s*([\d\.]+)%\s*\)/gi, (match, h, s, l) => {
+      const sVal = parseFloat(s);
+      if (sVal > 15) {
+        toneCount++;
+        const softenedS = Math.max(10, Math.round(sVal - 25));
+        return `hsl(${h}, ${softenedS}%, ${l}%)`;
+      }
+      return match;
+    });
+
+    // Tailwind accent softening
+    const quietTailwindMap = {
+      'saturate-150': 'saturate-100',
+      'saturate-100': 'saturate-50'
+    };
+    content = content.replace(/\b(saturate-150|saturate-100)\b/g, (m) => {
+      toneCount++;
+      return quietTailwindMap[m] || m;
+    });
+    content = content.replace(/\b(bg|text|border)-(blue|cyan|indigo|emerald|sky|violet|amber|rose|teal)-600\b/g, (match, prop, col) => {
+      toneCount++;
+      return `${prop}-${col}-500`;
+    });
+
     fs.writeFileSync(resolvedPath, content, 'utf8');
 
     console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[QUIET APPLIED]${ANSI_RESET} Visual density softened in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
     console.log(`  ${ANSI_BOLD}Font Weights:${ANSI_RESET}     ${fontCount} font weight declarations softened`);
     console.log(`  ${ANSI_BOLD}Borders:${ANSI_RESET}          ${borderCount} border treatments converted to minimalist hairlines`);
-    console.log(`  ${ANSI_BOLD}Tone:${ANSI_RESET}             Restrained minimalist palette applied\n`);
+    console.log(`  ${ANSI_BOLD}Tone:${ANSI_RESET}             ${toneCount} color tone declarations softened to minimalist palette\n`);
     process.exit(0);
   }
 

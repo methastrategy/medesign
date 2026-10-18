@@ -71,6 +71,10 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | `/medesign test [--browser]` | **รัน Deterministic Test Suite** — ตรวจสอบทั้ง Static AST และ Headless Chromium Matrix (Mobile/Tablet/Desktop × Dark/Light) |
 | `/medesign compare` | **เปิด Blind Testbed Lab** — เปรียบเทียบ Visual Craft 5 มิติ (`tests/visual-testbed.html`) |
 | `/medesign lint [path]` | **รัน Linter ตรวจจับ Hard Invariants**, สกัดกั้น AI Slop และคำนวณคะแนน $Q$-Score |
+| `/medesign search [query]` | **ค้นหา 38 Archetypes และ Presets** ด้วย Node.js Discovery Engine พร้อม Terminal Summary Card |
+| `/medesign polish [path]` | **ซ่อมโค้ดอัตโนมัติ (Self-Healing)** แก้ไข Hard Invariants (MD005, MD104, em-dash, dead buttons) |
+| `/medesign bolder [path]` | **เพิ่มความคมชัดและน้ำหนักภาพ** เพิ่ม font-weight, ความเข้ม border, และความสดของ Accent |
+| `/medesign quiet [path]` | **ลดทอนความจัดจ้านสู่ Minimalist** ลด font-weight, เปลี่ยนเส้นขอบเป็น Hairline, ลดความสดสี |
 | `/medesign [brand]` | ใช้ Token ของแบรนด์ระดับโลกตรงๆ เช่น Linear, Vercel, Apple, Stripe *(73+ แบรนด์)* |
 
 ---

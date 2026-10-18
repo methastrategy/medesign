@@ -199,7 +199,7 @@ if (hasDenseGrid) {
 
 // 7. RULE MD102: Color Gamut Interpolation Space - Soft Heuristic (Warning)
 const hasGradient = /linear-gradient\(/i.test(cleanCode);
-const hasOklchOklab = /linear-gradient\(\s*in\s+(oklch|oklab)/i.test(cleanCode);
+const hasOklchOklab = /linear-gradient\([^)]*\bin\s+(oklch|oklab)/i.test(cleanCode);
 if (hasGradient && !hasOklchOklab) {
   diagnostics.push({
     ruleId: 'MD102',
@@ -256,7 +256,33 @@ if (hasOrderReverse) {
   });
 }
 
-// 11. RULE MD201: Editorial Style: Em-Dash Punctuation - Soft Heuristic (Info)
+// 11. RULE MD106: Container Optical Padding & Slider Boundary Clearance - Soft Heuristic (Warning)
+// When an interactive slider or pill container has a rounded background, inner tracks must maintain >= 8px optical clearance.
+const sliderPillBlocks = cleanCode.match(/(?:[a-zA-Z0-9_\-\.\#\:\*\,\[\]\="'>\s]+)?(?:slider|progress|scrubber|pill-track)\s*\{[^}]+\}/gi) || [];
+let hasBoundaryCollision = false;
+for (const block of sliderPillBlocks) {
+  const hasPillRadius = /border-radius\s*:\s*(?:var\(--radius-full\)|9999px|50%|[1-9]\d{1,}px)/i.test(block);
+  const hasVisibleBg = /background(?:-color)?\s*:\s*(?!none|transparent\b|rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\))/i.test(block);
+  const hasMinHeightTarget = /(?:min-)?height\s*:\s*(?:[3-9]\dpx|44px)/i.test(block);
+  const hasOpticalPadding = /padding(?:-inline|-left|-right)?\s*:\s*(?:[^;}]*?(?:[8-9]px|[1-9]\d+px|var\(--padding))/i.test(block);
+  if (hasPillRadius && hasVisibleBg && hasMinHeightTarget && !hasOpticalPadding) {
+    hasBoundaryCollision = true;
+    break;
+  }
+}
+if (hasBoundaryCollision) {
+  diagnostics.push({
+    ruleId: 'MD106',
+    ruleName: 'ContainerBoundaryClearance',
+    category: 'G',
+    severity: config.rules.MD106 || 'warning',
+    hardInvariant: false,
+    message: 'Detected full-width slider/progress track inside a rounded container with background but zero optical padding, causing visual boundary collision.',
+    remediation: 'Isolate outer 44px hit-target with transparent background, or provide horizontal optical padding (padding: 0 12px) to prevent the track from slamming into the curved border.'
+  });
+}
+
+// 12. RULE MD201: Editorial Style: Em-Dash Punctuation - Soft Heuristic (Info)
 const visibleTextMatch = content.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '');
 const hasEmDash = /[—–]/.test(visibleTextMatch);
 if (hasEmDash) {
@@ -314,6 +340,7 @@ if (format === 'sarif') {
     { id: 'MD103', name: 'ConcentricRadiusMath', desc: 'Concentric radius geometry', level: 'note' },
     { id: 'MD104', name: 'MobileViewportStability', desc: 'Mobile viewport dynamic unit stability (100dvh)', level: 'warning' },
     { id: 'MD105', name: 'VisualDomSequenceScramble', desc: 'Visual/DOM sequence synchronization (order / flex reverse)', level: 'warning' },
+    { id: 'MD106', name: 'ContainerBoundaryClearance', desc: 'Container boundary clearance and optical padding', level: 'warning' },
     { id: 'MD201', name: 'EditorialPunctuationHyphen', desc: 'Editorial style punctuation (hyphen vs em-dash)', level: 'note' }
   ];
 

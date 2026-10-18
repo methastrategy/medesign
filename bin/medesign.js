@@ -386,6 +386,25 @@ ${ANSI_BOLD}Repairs:${ANSI_RESET}
       fixes.push(`Cleaned ${count} AI-tell em-dash punctuation & entities`);
     }
 
+    // 6. RULE MD106: Container Optical Padding & Slider Boundary Clearance
+    let count106 = 0;
+    const sliderBlockRegex = /((?:[a-zA-Z0-9_\-\.\#\:\*\,\[\]\="'>\s]+)?(?:slider|progress|scrubber|pill-track)\s*\{)([^}]+)(\})/gi;
+    content = content.replace(sliderBlockRegex, (match, prefix, body, suffix) => {
+      const hasPillRadius = /border-radius\s*:\s*(?:var\(--radius-full\)|9999px|50%|[1-9]\d{1,}px)/i.test(body);
+      const hasVisibleBg = /background(?:-color)?\s*:\s*(?!none|transparent\b|rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\))/i.test(body);
+      const hasMinHeight = /(?:min-)?height\s*:\s*(?:[3-9]\dpx|44px)/i.test(body);
+      const hasPadding = /padding(?:-inline|-left|-right)?\s*:\s*(?:[^;}]*?(?:[8-9]px|[1-9]\d+px|var\(--padding))/i.test(body);
+      if (hasPillRadius && hasVisibleBg && hasMinHeight && !hasPadding) {
+        count106++;
+        const updatedBody = body.trimEnd() + ' padding: 0 12px;';
+        return prefix + updatedBody + ' ' + suffix;
+      }
+      return match;
+    });
+    if (count106 > 0) {
+      fixes.push(`Injected optical padding (0 12px) to prevent container boundary collision (MD106)`);
+    }
+
     fs.writeFileSync(resolvedPath, content, 'utf8');
 
     let afterQ = beforeQ;

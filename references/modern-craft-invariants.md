@@ -4,7 +4,7 @@
 
 ---
 
-## 1. 🏆 10 กฎเหล็กระดับ Apple Design Award (The 10 Golden Invariants)
+## 1. 🏆 11 กฎเหล็กระดับ Apple Design Award (The 11 Golden Invariants)
 
 ### กฎข้อที่ 1: Area-Proportional Press Scaling (กฎการยุบตัวแปรผันผกผันกับขนาดพื้นที่)
 - **ปัญหา:** การใช้ `active:scale-95` (`0.95`) กับทุกขนาดทำให้การ์ดขนาดใหญ่ (เช่น 600×400px) ขอบกระชากเข้ามาถึง 30px ซึ่งรุนแรงเกินไป
@@ -131,6 +131,12 @@
 - สำหรับฉาก 3D Background หรือ CAD/GIS Viewer ที่ไม่มีการเคลื่อนไหวตลอดเวลา **ห้ามรัน `requestAnimationFrame` ต่อเนื่อง**
 - ต้องใช้สถาปัตยกรรม **`frameloop="demand"`**: เรนเดอร์เฉพาะเฟรมที่มีการขยับเมาส์ ซูม หรือระหว่างที่สปริงกล้องยังขยับ เมื่อความเร็ว $\lvert v \rvert < 0.0001$ ให้ตัด Loop ทันทีเพื่อให้ GPU ใช้พลังงาน **0 วัตต์**
 - **งบประมาณ VRAM:** ไฟล์โมเดล 3D ต้องใช้ **Meshopt Compression + KTX2 (Basis Universal) Textures** โดยจำกัดหน่วยความจำหลังคลายบีบอัดบน GPU ไม่เกิน **$32\text{MB}$**
+
+### กฎข้อที่ 11: Optical Inset & Safe Cushioning (กฎการเว้นระยะขอบสายตาและการแยก Hit-Target ออกจาก Visual Pill)
+- **ปัญหาทางสายตา:** เมื่อนำแถบสเกลหรือเส้นสถานะ (Slider track, Progress bar, Audio Scrubber) ความกว้าง 100% ไปบรรจุในคอนเทนเนอร์ทรงมน (Pill container / `border-radius: 9999px`) ที่มีสีพื้นหลังหรือเส้นกรอบ เส้นสเกลจะพุ่งชนขอบโค้งมนที่มุมซ้าย-ขวา เกิดรอยชนหยาบ (Edge Collision) ไร้ความเนี๊ยบ
+- **สูตรบังคับ 2 แนวทาง (World-Class Standard):**
+  1. **Transparent Touch Halo (แนวทาง Apple/Spotify HIG):** กล่องคอนเทนเนอร์ขนาด 44px ต้องเป็น **สีโปร่งใส (Transparent Background)** เพื่อทำหน้าที่เป็น Hit-Target ที่เข้าถึงง่ายเท่านั้น ปล่อยให้เส้น Track ขนาด 4px อยู่ตรงกลางอย่างสง่างาม พร้อม Thumb Circle (ขนาด 12px) ปรากฏขึ้นเมื่อ Hover
+  2. **Optical Cushioning Capsule:** หากต้องการให้มีแคปซูลพื้นหลังสีทึบหรือแก้ว (Glass Pill) ครอบ **ต้องกำหนดระยะเว้นขอบสายตา `padding: 0 12px;` หรือ `padding: 0 14px;` เสมอ** เพื่อให้ปลายเส้นสเกลมีช่องว่างหายใจ (Breathing Room) จากส่วนโค้งของแคปซูล
 
 ---
 

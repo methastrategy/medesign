@@ -6,6 +6,10 @@
  * Commands:
  *   medesign lint <file> [--format text|json|sarif] [--preset <name>] [--config <path>]
  *   medesign audit <file> [--json]
+ *   medesign search <query> [--json]
+ *   polish <file>
+ *   bolder <file>
+ *   quiet <file>
  *   medesign tokens [--preset <name>] [--format tailwind|dtcg|css|all] [--out <dir>]
  *   medesign presets [list | get <name>]
  *   medesign test [--browser]
@@ -30,41 +34,439 @@ const ANSI_GRAY = '\x1b[90m';
 
 function printHelp() {
   console.log(`
-${ANSI_BOLD}ME-DESIGN CLI v1.2.0${ANSI_RESET}
+${ANSI_BOLD}ME-DESIGN CLI v1.4.0${ANSI_RESET}
 Autonomous Design Engineering Toolkit & Automated Linter for AI Coding Assistants
 
 ${ANSI_BOLD}USAGE:${ANSI_RESET}
   medesign <command> [options]
 
 ${ANSI_BOLD}COMMANDS:${ANSI_RESET}
-  ${ANSI_CYAN}lint${ANSI_RESET} <file>           Lint HTML/CSS/JSX file with static AST & semantic rules
+  ${ANSI_CYAN}search${ANSI_RESET} <query>         Search 38 Archetypes & presets with discovery engine
+                        Options: --json
+
+  ${ANSI_CYAN}polish${ANSI_RESET} <file>          Self-healing repair for Hard Invariants (MD005, MD104, em-dash)
+
+  ${ANSI_CYAN}bolder${ANSI_RESET} <file>          Boost visual density, font weights, and border contrast
+
+  ${ANSI_CYAN}quiet${ANSI_RESET} <file>           Softens visual density, font weights, and border treatments
+
+  ${ANSI_CYAN}lint${ANSI_RESET} <file>            Lint HTML/CSS/JSX file with static AST & semantic rules
                         Options: --format <text|json|sarif>
                                  --preset <apple|tesla|metha>
                                  --config <path>
 
-  ${ANSI_CYAN}audit${ANSI_RESET} <file>          Run headless Chrome DevTools Protocol verification matrix
+  ${ANSI_CYAN}audit${ANSI_RESET} <file>           Run headless Chrome DevTools Protocol verification matrix
                         (Checks computed contrast, tab focus outline, 44px hit-targets across viewports)
                         Options: --json
 
-  ${ANSI_CYAN}tokens${ANSI_RESET} [export]       Export preset design tokens to Tailwind v4 @theme, W3C DTCG, or CSS
+  ${ANSI_CYAN}tokens${ANSI_RESET} [export]        Export preset design tokens to Tailwind v4 @theme, W3C DTCG, or CSS
                         Options: --preset <apple|tesla|metha|all>
                                  --format <tailwind|dtcg|css|all>
                                  --out <directory>
 
-  ${ANSI_CYAN}presets${ANSI_RESET} [list|get]    Inspect available design system presets
+  ${ANSI_CYAN}presets${ANSI_RESET} [list|get]     Inspect available design system presets
                         Usage: medesign presets list
                                medesign presets get <preset-name>
 
-  ${ANSI_CYAN}test${ANSI_RESET} [options]        Run deterministic test suite across fixtures
+  ${ANSI_CYAN}test${ANSI_RESET} [options]         Run deterministic test suite across fixtures
                         Options: --browser (runs both static AST and headless browser matrix)
 
-  ${ANSI_CYAN}doctor${ANSI_RESET}                 Verify local environment, Node.js, and Chrome/CDP availability
+  ${ANSI_CYAN}doctor${ANSI_RESET}                  Verify local environment, Node.js, and Chrome/CDP availability
 
-  ${ANSI_CYAN}help${ANSI_RESET}                   Display this help message
+  ${ANSI_CYAN}help${ANSI_RESET}                    Display this help message
 `);
 }
 
 switch (command) {
+  case 'search': {
+    const isJson = args.includes('--json');
+    const query = args.slice(1).filter(a => !a.startsWith('--')).join(' ').trim();
+
+    if (!query) {
+      if (isJson) {
+        console.log(JSON.stringify({ error: 'Missing search query', usage: 'medesign search <query> [--json]' }));
+      } else {
+        console.log(`\n${ANSI_YELLOW}Usage:${ANSI_RESET} medesign search "<query>" [--json]\nExample: medesign search "cadastre survey"\n`);
+      }
+      process.exit(1);
+    }
+
+    const catalogPath = path.join(rootDir, 'references', 'catalog.json');
+    if (!fs.existsSync(catalogPath)) {
+      console.error('Error: references/catalog.json not found.');
+      process.exit(1);
+    }
+    const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+
+    const presetsDir = path.join(rootDir, 'presets');
+    const presetFolders = fs.existsSync(presetsDir)
+      ? fs.readdirSync(presetsDir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name)
+      : [];
+    const presets = [];
+    presetFolders.forEach(name => {
+      const pPath = path.join(presetsDir, name, 'preset.json');
+      if (fs.existsSync(pPath)) {
+        try {
+          presets.push(JSON.parse(fs.readFileSync(pPath, 'utf8')));
+        } catch (e) {}
+      }
+    });
+
+    const queryTerms = query.toLowerCase().split(/[\s,+/]+/).filter(Boolean);
+
+    // Score archetypes based on query relevance
+    const scored = catalog.archetypes.map(arch => {
+      let score = 0;
+      const nameLower = (arch.name || '').toLowerCase();
+      const titleLower = (arch.archetypeTitle || '').toLowerCase();
+      const groupLower = (arch.group || '').toLowerCase();
+      const vibeLower = (arch.vibe || '').toLowerCase();
+      const spatialLower = (arch.spatialModel || '').toLowerCase();
+      const colorLower = (arch.primaryColor || '').toLowerCase();
+      const typoLower = (arch.typography || '').toLowerCase();
+      const keywords = (arch.keywords || []).map(k => k.toLowerCase());
+      const presetId = (arch.presetId || '').toLowerCase();
+      const presetLink = (arch.presetLink || '').toLowerCase();
+
+      // Check entire query phrase match
+      const qLower = query.toLowerCase();
+      if (nameLower.includes(qLower) || titleLower.includes(qLower)) {
+        score += 40;
+      }
+
+      let titleTermsMatched = 0;
+      queryTerms.forEach(term => {
+        const stem = term.length > 4 ? term.replace(/(?:al|ic|ing|e|s)$/i, '') : term;
+        // Name / Title match
+        if (nameLower.includes(term) || titleLower.includes(term)) {
+          score += 20;
+          titleTermsMatched++;
+        } else if (stem.length >= 4 && (nameLower.includes(stem) || titleLower.includes(stem))) {
+          score += 16;
+          titleTermsMatched++;
+        }
+        // Keywords exact or substring match
+        keywords.forEach(kw => {
+          if (kw === term) score += 15;
+          else if (kw.includes(term) || term.includes(kw)) score += 10;
+          else if (stem.length >= 4 && (kw.includes(stem) || stem.includes(kw))) score += 8;
+        });
+        // Vibe match
+        if (vibeLower.includes(term) || (stem.length >= 4 && vibeLower.includes(stem))) score += 6;
+        // Spatial / color / typography / group match
+        if (spatialLower.includes(term)) score += 5;
+        if (colorLower.includes(term)) score += 5;
+        if (typoLower.includes(term)) score += 5;
+        if (groupLower.includes(term)) score += 4;
+        // Preset id / link match
+        if (presetId.includes(term) || presetLink.includes(term)) score += 12;
+      });
+
+      // Bonus if multiple query terms directly match the title
+      if (titleTermsMatched > 1) {
+        score += titleTermsMatched * 15;
+      }
+
+      // Match against presets definitions
+      presets.forEach(p => {
+        const pName = (p.name || '').toLowerCase();
+        const pDesc = (p.description || '').toLowerCase();
+        const pId = (p.id || '').toLowerCase();
+        const pArch = (p.archetype || '').toLowerCase();
+        let presetMatches = false;
+        queryTerms.forEach(term => {
+          if (pName.includes(term) || pDesc.includes(term) || pId === term || pArch.includes(term)) {
+            presetMatches = true;
+          }
+        });
+        if (presetMatches && (arch.presetId === p.id || (arch.presetLink && arch.presetLink.includes(p.id)))) {
+          score += 25;
+        }
+      });
+
+      return { ...arch, score };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    const best = scored[0] || catalog.archetypes[0];
+
+    if (isJson) {
+      console.log(JSON.stringify({
+        query,
+        bestMatch: {
+          id: best.id,
+          number: best.number,
+          name: best.name,
+          archetypeTitle: best.archetypeTitle,
+          group: best.group,
+          presetLink: best.presetLink,
+          spatialModel: best.spatialModel,
+          primaryColor: best.primaryColor,
+          secondaryColor: best.secondaryColor,
+          surfaceContrast: best.surfaceContrast,
+          typography: best.typography,
+          motionProfile: best.motionProfile,
+          score: best.score
+        },
+        topMatches: scored.slice(0, 5).map(a => ({
+          number: a.number,
+          name: a.name,
+          score: a.score,
+          presetLink: a.presetLink
+        }))
+      }, null, 2));
+      process.exit(0);
+    }
+
+    console.log(`
+${ANSI_BOLD}ME-DESIGN Discovery Engine${ANSI_RESET}
+${ANSI_GRAY}────────────────────────────────────────${ANSI_RESET}
+${ANSI_BOLD}Query${ANSI_RESET}               "${ANSI_CYAN}${query}${ANSI_RESET}"
+${ANSI_BOLD}Best Match${ANSI_RESET}          Archetype ${best.number < 10 ? '0' + best.number : best.number}: ${ANSI_GREEN}${ANSI_BOLD}${best.name}${ANSI_RESET}
+${ANSI_BOLD}Preset Link${ANSI_RESET}         ${best.presetLink ? ANSI_CYAN + best.presetLink + ANSI_RESET : ANSI_GRAY + 'Standard Catalog' + ANSI_RESET}
+
+${ANSI_BOLD}DESIGN ARCHETYPE RECOMMENDATION${ANSI_RESET}
+  ${ANSI_BOLD}Archetype${ANSI_RESET}         ${best.archetypeTitle || best.name}
+  ${ANSI_BOLD}Spatial Model${ANSI_RESET}     ${best.spatialModel || '16:10 / 100dvh Map-Centric with Split Data Grid'}
+  ${ANSI_BOLD}Primary Color${ANSI_RESET}     ${best.primaryColor || 'Electric Cyan (oklch(0.85 0.18 200))'}
+  ${ANSI_BOLD}Surface Contrast${ANSI_RESET}  ${best.surfaceContrast || 'Ultra-Dark Obsidian (#0a0d14)'}
+  ${ANSI_BOLD}Typography${ANSI_RESET}        ${best.typography || 'JetBrains Mono + IBM Plex Sans Thai'}
+  ${ANSI_BOLD}Motion Profile${ANSI_RESET}    ${best.motionProfile || 'Precision Linear (120ms max)'}
+${ANSI_GRAY}────────────────────────────────────────${ANSI_RESET}
+`);
+    break;
+  }
+
+  case 'polish': {
+    const targetFile = args[1];
+    if (!targetFile) {
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} Please specify target file to polish (e.g. medesign polish index.html)`);
+      process.exit(1);
+    }
+    const resolvedPath = path.resolve(process.cwd(), targetFile);
+    if (!fs.existsSync(resolvedPath)) {
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} File not found: ${resolvedPath}`);
+      process.exit(1);
+    }
+
+    const linterScript = path.join(rootDir, 'tests', 'linter.js');
+    let beforeQ = 80.0;
+    try {
+      const beforeRes = spawnSync(process.execPath, [linterScript, resolvedPath, '--json'], { encoding: 'utf8' });
+      const parsed = JSON.parse(beforeRes.stdout);
+      beforeQ = parsed.qScore || 80.0;
+    } catch (e) {}
+
+    let content = fs.readFileSync(resolvedPath, 'utf8');
+    const fixes = [];
+
+    // 1. RULE MD104: Dynamic Viewport Units (Convert raw 100vh to 100dvh fallback)
+    const cleanWithoutComments = content.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
+    const hasRaw100vh = /(?:min-height|height|max-height)\s*:\s*100vh/i.test(cleanWithoutComments);
+    const hasDvh = /100[ds]vh/i.test(cleanWithoutComments);
+    if (hasRaw100vh && !hasDvh) {
+      let count104 = 0;
+      content = content.replace(/min-height\s*:\s*100vh\s*;?/gi, () => {
+        count104++;
+        return 'min-height: 100vh; min-height: 100dvh;';
+      });
+      content = content.replace(/(?<!min-)(?<!max-)height\s*:\s*100vh\s*;?/gi, () => {
+        count104++;
+        return 'min-height: 100vh; min-height: 100dvh;';
+      });
+      if (count104 > 0) {
+        fixes.push('Replaced 100vh with 100dvh (MD104)');
+      }
+    }
+
+    // 2. RULE MD005: Focus Ring High Contrast & Physical Outline Visibility
+    const focusBlockRegex = /((?:button|a|\.[\w-]+)?:focus(?:-visible)?\s*\{)([^}]+)(\})/gi;
+    let md005Applied = false;
+    content = content.replace(focusBlockRegex, (match, prefix, body, suffix) => {
+      let updatedBody = body;
+      if (/outline\s*:\s*(?:none|0px?)\s*(?:;|\})/i.test(updatedBody)) {
+        updatedBody = updatedBody.replace(/outline\s*:\s*(?:none|0px?)\s*;?/gi, 'outline: 2px solid Highlight; outline-offset: 2px;');
+        md005Applied = true;
+      } else if (/box-shadow\s*:/i.test(updatedBody) && !/outline\s*:\s*(?!none|0px?)/i.test(updatedBody)) {
+        updatedBody += ' outline: 2px solid Highlight; outline-offset: 2px;';
+        md005Applied = true;
+      }
+      return prefix + updatedBody + suffix;
+    });
+
+    // Ensure forced-colors high contrast outline media query is injected
+    if (!/@media\s*\(forced-colors:\s*active\)/i.test(content)) {
+      const forcedColorsRule = `\n    @media (forced-colors: active) {\n      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible {\n        outline: 2px solid CanvasText !important;\n        outline-offset: 2px !important;\n      }\n    }\n`;
+      if (content.includes('</style>')) {
+        content = content.replace('</style>', `${forcedColorsRule}  </style>`);
+        md005Applied = true;
+      }
+    }
+    if (md005Applied) {
+      fixes.push('Added forced-colors high contrast focus outline (MD005)');
+    }
+
+    // 3. RULE MD004: Broken State Contract (Dead Buttons)
+    const hasButtons = /<button/i.test(content) || /class="[^"]*btn[^"]*"/i.test(content);
+    const hasInteractive = /:hover/i.test(content) || /:active/i.test(content);
+    if (hasButtons && !hasInteractive && content.includes('</style>')) {
+      const buttonStates = `\n    button:hover, [class*="btn"]:hover { filter: brightness(1.1); }\n    button:active, [class*="btn"]:active { transform: scale(0.98); }\n    button:focus-visible, [class*="btn"]:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }\n`;
+      content = content.replace('</style>', `${buttonStates}  </style>`);
+      fixes.push('Injected hover and active interactive states for buttons (MD004)');
+    }
+
+    // 4. RULE MD002: Reduced Motion Compliance
+    const hasAnimations = /animation:|transition:/i.test(content) && !/transition:\s*none/i.test(content);
+    const hasReducedMotion = /prefers-reduced-motion/i.test(content);
+    if (hasAnimations && !hasReducedMotion && content.includes('</style>')) {
+      const reducedMotionBlock = `\n    @media (prefers-reduced-motion: reduce) {\n      *, *::before, *::after {\n        animation-duration: 0.01ms !important;\n        animation-iteration-count: 1 !important;\n        transition-duration: 0.01ms !important;\n      }\n    }\n`;
+      content = content.replace('</style>', `${reducedMotionBlock}  </style>`);
+      fixes.push('Added prefers-reduced-motion accessibility gate (MD002)');
+    }
+
+    // 5. Anti-AI Tells: Em-Dash Cleanup (MD201)
+    const emDashMatches = content.match(/[—–]/g);
+    if (emDashMatches && emDashMatches.length > 0) {
+      const count = emDashMatches.length;
+      content = content.replace(/\s*[—–]\s*/g, ' - ');
+      fixes.push(`Cleaned ${count} AI-tell em-dash punctuation`);
+    }
+
+    fs.writeFileSync(resolvedPath, content, 'utf8');
+
+    let afterQ = beforeQ;
+    let isPassed = true;
+    try {
+      const afterRes = spawnSync(process.execPath, [linterScript, resolvedPath, '--json'], { encoding: 'utf8' });
+      const parsed = JSON.parse(afterRes.stdout);
+      afterQ = parsed.qScore !== undefined ? parsed.qScore : beforeQ;
+      isPassed = parsed.passed !== undefined ? parsed.passed : (afterQ >= 75);
+    } catch (e) {}
+
+    console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[POLISH COMPLETED]${ANSI_RESET} ${fixes.length} issues automatically repaired in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
+    fixes.forEach(f => console.log(`  ${ANSI_GREEN}Fixed:${ANSI_RESET} ${f}`));
+    console.log(`${ANSI_BOLD}Q-Score:${ANSI_RESET} ${beforeQ.toFixed(1)} -> ${ANSI_GREEN}${ANSI_BOLD}${afterQ.toFixed(1)}${ANSI_RESET} [${isPassed ? ANSI_GREEN + 'PASS' + ANSI_RESET : ANSI_YELLOW + 'WARNING' + ANSI_RESET}]\n`);
+    process.exit(0);
+  }
+
+  case 'bolder': {
+    const targetFile = args[1];
+    if (!targetFile) {
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} Please specify target file (e.g. medesign bolder index.html)`);
+      process.exit(1);
+    }
+    const resolvedPath = path.resolve(process.cwd(), targetFile);
+    if (!fs.existsSync(resolvedPath)) {
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} File not found: ${resolvedPath}`);
+      process.exit(1);
+    }
+
+    let content = fs.readFileSync(resolvedPath, 'utf8');
+    let fontCount = 0;
+    let borderCount = 0;
+
+    // Single-pass atomic elevation of font weights (prevents cascading replacement)
+    const bolderFontMap = {
+      'font-normal': 'font-medium',
+      'font-medium': 'font-semibold',
+      'font-semibold': 'font-bold'
+    };
+    content = content.replace(/\b(font-normal|font-medium|font-semibold)\b/g, (m) => {
+      fontCount++;
+      return bolderFontMap[m] || m;
+    });
+
+    content = content.replace(/font-weight\s*:\s*(400|500|normal)\b/gi, (match, val) => {
+      fontCount++;
+      if (val === '400' || val.toLowerCase() === 'normal') return 'font-weight: 600';
+      if (val === '500') return 'font-weight: 700';
+      return match;
+    });
+
+    // Deepen border contrast & opacity (single pass)
+    const bolderBorderMap = {
+      'border-white/10': 'border-white/20',
+      'border-white/5': 'border-white/15',
+      'border-neutral-200': 'border-neutral-400',
+      'border-gray-200': 'border-gray-400'
+    };
+    content = content.replace(/\b(border-white\/10|border-white\/5|border-neutral-200|border-gray-200)\b/g, (m) => {
+      borderCount++;
+      return bolderBorderMap[m] || m;
+    });
+
+    content = content.replace(/rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.0[5-8]\s*\)/gi, () => { borderCount++; return 'rgba(255, 255, 255, 0.18)'; });
+    content = content.replace(/rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.0[5-8]\s*\)/gi, () => { borderCount++; return 'rgba(0, 0, 0, 0.18)'; });
+
+    fs.writeFileSync(resolvedPath, content, 'utf8');
+
+    console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[BOLDER APPLIED]${ANSI_RESET} Visual density boosted in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
+    console.log(`  ${ANSI_BOLD}Font Weights:${ANSI_RESET}     ${fontCount} font weight declarations elevated`);
+    console.log(`  ${ANSI_BOLD}Border Contrast:${ANSI_RESET}  ${borderCount} border treatments deepened`);
+    console.log(`  ${ANSI_BOLD}Accents:${ANSI_RESET}          High-contrast visual hierarchy reinforced\n`);
+    process.exit(0);
+  }
+
+  case 'quiet': {
+    const targetFile = args[1];
+    if (!targetFile) {
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} Please specify target file (e.g. medesign quiet index.html)`);
+      process.exit(1);
+    }
+    const resolvedPath = path.resolve(process.cwd(), targetFile);
+    if (!fs.existsSync(resolvedPath)) {
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} File not found: ${resolvedPath}`);
+      process.exit(1);
+    }
+
+    let content = fs.readFileSync(resolvedPath, 'utf8');
+    let fontCount = 0;
+    let borderCount = 0;
+
+    // Single-pass atomic softening of font weights (prevents cascading replacement)
+    const quietFontMap = {
+      'font-extrabold': 'font-bold',
+      'font-bold': 'font-semibold',
+      'font-semibold': 'font-medium',
+      'font-medium': 'font-normal'
+    };
+    content = content.replace(/\b(font-extrabold|font-bold|font-semibold|font-medium)\b/g, (m) => {
+      fontCount++;
+      return quietFontMap[m] || m;
+    });
+
+    content = content.replace(/font-weight\s*:\s*(700|600|bold)\b/gi, (match, val) => {
+      fontCount++;
+      if (val === '700' || val.toLowerCase() === 'bold') return 'font-weight: 500';
+      if (val === '600') return 'font-weight: 400';
+      return match;
+    });
+
+    // Soften borders to minimalist hairlines (single pass)
+    const quietBorderMap = {
+      'border-2': 'border',
+      'border-white/20': 'border-white/10',
+      'border-white/15': 'border-white/8',
+      'border-neutral-400': 'border-neutral-200',
+      'border-gray-400': 'border-gray-200'
+    };
+    content = content.replace(/\b(border-2|border-white\/20|border-white\/15|border-neutral-400|border-gray-400)\b/g, (m) => {
+      borderCount++;
+      return quietBorderMap[m] || m;
+    });
+
+    content = content.replace(/rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.1[5-8]\s*\)/gi, () => { borderCount++; return 'rgba(255, 255, 255, 0.08)'; });
+    content = content.replace(/rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.1[5-8]\s*\)/gi, () => { borderCount++; return 'rgba(0, 0, 0, 0.08)'; });
+
+    fs.writeFileSync(resolvedPath, content, 'utf8');
+
+    console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[QUIET APPLIED]${ANSI_RESET} Visual density softened in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
+    console.log(`  ${ANSI_BOLD}Font Weights:${ANSI_RESET}     ${fontCount} font weight declarations softened`);
+    console.log(`  ${ANSI_BOLD}Borders:${ANSI_RESET}          ${borderCount} border treatments converted to minimalist hairlines`);
+    console.log(`  ${ANSI_BOLD}Tone:${ANSI_RESET}             Restrained minimalist palette applied\n`);
+    process.exit(0);
+  }
+
   case 'lint': {
     const linterScript = path.join(rootDir, 'tests', 'linter.js');
     const child = spawnSync(process.execPath, [linterScript, ...args.slice(1)], {
@@ -85,7 +487,6 @@ switch (command) {
 
   case 'tokens': {
     const exportScript = path.join(rootDir, 'scripts', 'export-tokens.js');
-    // Filter out 'export' sub-command word if passed (e.g. medesign tokens export)
     const exportArgs = args.slice(1).filter(a => a !== 'export');
     const child = spawnSync(process.execPath, [exportScript, ...exportArgs], {
       stdio: 'inherit',

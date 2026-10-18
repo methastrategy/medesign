@@ -1,6 +1,4 @@
-<div align="center">
-
-# ME-DESIGN vNext
+# ME-DESIGN v1.4.0
 
 **The Autonomous Design Engineering System & Quality Linter for AI Coding Assistants**
 
@@ -21,7 +19,25 @@
 
 Most AI-generated user interfaces suffer from **Decisionless Uniformity**: generic 3-card grids, oversaturated neon glows, clipping Thai/Latin font metrics, broken keyboard accessibility, and non-proportional press deformations.
 
-**ME-DESIGN** changes the paradigm from subjective aesthetic prompting to an **executable 5-Engine Design Architecture** coupled with a **Dual-Tier Quality Linter**.
+**ME-DESIGN** changes the paradigm from subjective aesthetic prompting to an **executable 5-Engine Design Architecture** coupled with a **Dual-Tier Quality Linter**, **Knowledge Discovery Search Engine**, and **Self-Healing Code Repair**.
+
+---
+
+## ⚔️ Multi-Dimensional Competitive Benchmark
+
+| Dimension | `medesign` (v1.4.0) | `ui-ux-pro-max-skill` | `pbakaus/impeccable` |
+| :--- | :--- | :--- | :--- |
+| **Execution Architecture** | **Autonomous Node.js CLI & Deterministic Engine** | Prompt-only System Text | Markdown Guidelines & Rules |
+| **Verification Gate** | **Mathematical Q-Score (0–100) + Hard Invariants** | Subjective LLM Self-Critique | Manual Inspection Checklist |
+| **Self-Healing Code Repair** | **Automatic AST/Regex Fixer (`medesign polish`)** | Re-prompting Prompt Loop | Manual Code Editing |
+| **Conversational Modifiers** | **Instant Code Density (`bolder` / `quiet`)** | Chat Revision Re-rolls | None |
+| **Knowledge Discovery** | **Pure Node.js Search across 38 Archetypes & Presets** | Static Markdown Reading | Static Document Browsing |
+| **Automated CI/CD Quality Gate** | **Native OASIS SARIF v2.1.0 for GitHub Code Scanning** | None | None |
+| **Perceptual Color Science** | **OKLCH / OKLab Gamut Mapping & `color-mix()`** | Standard Hex / sRGB Defaults | Hex / sRGB Recommendations |
+| **Headless Browser Matrix** | **Chrome DevTools Protocol (Real Contrast & 44px Hit-Targets)** | None | Manual Browser DevTools |
+| **Design Token Standards** | **Tailwind v4 `@theme`, W3C DTCG & CSS Custom Properties** | Unstructured CSS Snippets | None |
+| **Domain Archetype Depth** | **38 Decoupled Archetypes (HMI ISA-101, GIS Cadastre, Telemetry)** | Generic SaaS / E-commerce | General UI Polish Rules |
+| **Runtime Package Footprint** | **Zero-Dependency CLI (< 300 KB compressed on npm)** | Multi-file Prompt Repos | Docs / Repo Only |
 
 ---
 
@@ -65,33 +81,110 @@ ME-DESIGN decouples UI synthesis across 5 independent axes:
 Execute ME-DESIGN immediately without manual installation:
 
 ```bash
-# Lint an HTML, JSX, or CSS file with static AST & invariant rules
+# 1. Discover archetypes, palettes, and typography for any domain query
+npx medesign search "cadastre survey"
+npx medesign search "apple hardware"
+npx medesign search "tesla telemetry"
+
+# 2. Self-healing code repair (auto-fixes MD005 focus rings, 100dvh, dead buttons, em-dashes)
+npx medesign polish path/to/index.html
+
+# 3. Fine-tune visual density and tone directly in code
+npx medesign bolder path/to/index.html   # Boost font weights, sharpen borders, raise contrast
+npx medesign quiet path/to/index.html    # Soften font weights, reduce borders to hairlines
+
+# 4. Lint an HTML, JSX, or CSS file with static AST & invariant rules
 npx medesign lint path/to/index.html
 
-# Lint and export OASIS SARIF v2.1.0 for GitHub Code Scanning
+# 5. Lint and export OASIS SARIF v2.1.0 for GitHub Code Scanning
 npx medesign lint path/to/index.html --format sarif
 
-# Run headless Chrome DevTools Protocol verification matrix
+# 6. Run headless Chrome DevTools Protocol verification matrix
 # (Computes real contrast ratios, tab focus indicators, and 44px hit-targets)
 npx medesign audit path/to/index.html
 
-# Export design tokens to Tailwind CSS v4 @theme, W3C DTCG, or CSS variables
+# 7. Export design tokens to Tailwind CSS v4 @theme, W3C DTCG, or CSS variables
 npx medesign tokens --preset apple --format tailwind --out ./tokens
 
-# Verify system health, Node.js version, and headless browser availability
+# 8. Verify system health, Node.js version, and headless browser availability
 npx medesign doctor
 ```
 
-### The Terminal Summary Card
+### 🔎 Knowledge Discovery Engine (`medesign search`)
+
+Query the 38 production archetypes and design system presets to get immediate, actionable styling recommendations:
+
+```bash
+# Human-focused Terminal Summary Card
+npx medesign search "cadastre survey"
+
+# Output structured JSON for AI agent orchestration
+npx medesign search "luxury fintech" --json
+```
 
 ```text
-ME-DESIGN vNext
+ME-DESIGN Discovery Engine
+────────────────────────────────────────
+Query               "cadastre survey"
+Best Match          Archetype 38: Cadastral Survey & QA/QC Workbench
+Preset Link         metha (Metha Engineering Cockpit)
+
+DESIGN ARCHETYPE RECOMMENDATION
+  Archetype         Cadastral Survey & Data Provenance (38)
+  Spatial Model     16:10 / 100dvh Map-Centric with Split Data Grid
+  Primary Color     Electric Cyan (oklch(0.85 0.18 200))
+  Surface Contrast  Ultra-Dark Obsidian (#0a0d14)
+  Typography        JetBrains Mono + IBM Plex Sans Thai
+  Motion Profile    Precision Linear (120ms max)
+────────────────────────────────────────
+```
+
+### 🛠️ Self-Healing Code Repair (`medesign polish`)
+
+Automatically inspect and repair Hard Invariants in your HTML/CSS files without waiting for manual edits:
+
+- **MD005:** Injects physical `:focus-visible` outlines and `@media (forced-colors: active)` support when `box-shadow` is used without an outline.
+- **MD104:** Replaces unstable `100vh` on containers with dynamic `100dvh` (`min-height: 100vh; min-height: 100dvh;`).
+- **MD004:** Injects hover and active states for buttons without defined interactive contracts.
+- **MD002:** Adds `@media (prefers-reduced-motion)` accessibility gates.
+- **MD201:** Cleans up decorative AI-tell em-dashes `—` into clean hyphens `-`.
+
+```bash
+npx medesign polish path/to/dashboard.html
+```
+
+```text
+[POLISH COMPLETED] 3 issues automatically repaired in dashboard.html
+  Fixed: Replaced 100vh with 100dvh (MD104)
+  Fixed: Added forced-colors high contrast focus outline (MD005)
+  Fixed: Cleaned 2 AI-tell em-dashes
+Q-Score: 91.3 -> 95.0 [PASS]
+```
+
+### ⚡ Visual Density Modifiers (`medesign bolder` & `medesign quiet`)
+
+Adjust visual weight and contrast directly in your files:
+
+```bash
+# Elevate font weights (normal -> medium -> semibold -> bold) and deepen border contrast
+npx medesign bolder path/to/dashboard.html
+
+# Soften font weights and convert borders to subtle hairlines
+npx medesign quiet path/to/dashboard.html
+```
+
+---
+
+### The Terminal Quality Audit Card
+
+```text
+ME-DESIGN v1.4.0
 Design Quality & Governance Audit
 ────────────────────────────────────────
 Target        dashboard.tsx
 Archetype     Geospatial Situation Awareness (32)
 Analysis      Static AST & Semantic Rules
-Ruleset       medesign-standard@1.0.0
+Ruleset       medesign-standard@1.4.0
 
 QUALITY SCORE (Q = 0.30H + 0.25I + 0.20G + 0.15R + 0.10V)
   Hierarchy (H)       94.0 / 100

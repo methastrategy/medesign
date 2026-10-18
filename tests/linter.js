@@ -309,8 +309,8 @@ if (format === 'sarif') {
         tool: {
           driver: {
             name: 'medesign',
-            version: '1.2.0',
-            informationUri: 'https://github.com/metha-design/medesign',
+            version: '1.4.0',
+            informationUri: 'https://github.com/methastrategy/medesign',
             rules: allRules.map(r => ({
               id: r.id,
               name: r.name,
@@ -371,7 +371,7 @@ console.log(`${ANSI_GRAY}──────────────────�
 console.log(`Target        ${path.basename(targetFile)}`);
 console.log(`Preset        ${presetName.toUpperCase()}`);
 console.log(`Analysis      Static AST & Semantic Rules`);
-console.log(`Ruleset       medesign-standard@1.2.0\n`);
+console.log(`Ruleset       medesign-standard@1.4.0\n`);
 
 console.log(`${ANSI_BOLD}QUALITY SCORE (Q = ${w.H}H + ${w.I}I + ${w.G}G + ${w.R}R + ${w.V}V)${ANSI_RESET}`);
 console.log(`  Hierarchy (H)       ${H.toFixed(1)} / 100`);

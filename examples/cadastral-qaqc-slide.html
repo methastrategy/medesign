@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastral Survey & QA/QC Tolerance Verification</title>
+  <!-- Google Fonts: JetBrains Mono & Plus Jakarta Sans (Strictly avoiding Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --color-bg: #0a0d14;
+      --color-surface: #111722;
+      --color-surface-hover: #162030;
+      --color-surface-inset: #0d121c;
+      --color-border: #1e293b;
+      --color-border-active: #334155;
+      --color-cyan: oklch(0.85 0.18 200);
+      --color-cyan-dim: oklch(0.85 0.18 200 / 0.15);
+      --color-emerald: oklch(0.72 0.18 145);
+      --color-emerald-dim: oklch(0.72 0.18 145 / 0.15);
+      --color-amber: oklch(0.78 0.16 75);
+      --color-text-primary: #f1f5f9;
+      --color-text-secondary: #94a3b8;
+      --color-text-muted: #94a3b8;
+      --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --corner-r: 12px;
+      --inner-r: max(0px, var(--corner-r) - 1px - 4px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 16px;
+    }
+
+    /* 16:9 Presentation Stage */
+    .slide-deck {
+      width: 100%;
+      max-width: 1280px;
+      aspect-ratio: 16 / 9;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--corner-r);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Header Strip */
+    .slide-header {
+      padding: 24px 32px 18px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .meta-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-cyan);
+      background: var(--color-cyan-dim);
+      border: 1px solid oklch(0.85 0.18 200 / 0.3);
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .slide-title {
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--color-text-primary);
+      line-height: 1.25;
+    }
+
+    .slide-desc {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+      font-family: var(--font-body);
+    }
+
+    .header-aside {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-emerald);
+      background: var(--color-emerald-dim);
+      border: 1px solid oklch(0.72 0.18 145 / 0.35);
+      padding: 6px 14px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-badge::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-emerald);
+    }
+
+    /* Main Slide Body */
+    .slide-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      padding: 24px 32px;
+      gap: 28px;
+      min-height: 0;
+    }
+
+    /* Left Analytics Card */
+    .chart-container {
+      background: var(--color-surface-inset);
+      border: 1px solid var(--color-border);
+      border-radius: var(--inner-r);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      min-height: 0;
+    }
+
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .chart-wrapper {
+      flex: 1;
+      position: relative;
+      min-height: 220px;
+    }
+
+    /* Right Telemetry & Data Grid */
+    .telemetry-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metric-card {
+      background: var(--color-surface-inset);
+      border: 1px solid var(--color-border);
+      border-radius: var(--inner-r);
+      padding: 14px 16px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .metric-sub {
+      font-size: 11px;
+      color: var(--color-emerald);
+      margin-top: 4px;
+      font-family: var(--font-mono);
+    }
+
+    /* Data Table */
+    .provenance-table-box {
+      flex: 1;
+      background: var(--color-surface-inset);
+      border: 1px solid var(--color-border);
+      border-radius: var(--inner-r);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .table-caption {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+
+    th {
+      text-align: left;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 11px;
+    }
+
+    td {
+      padding: 7px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--color-text-primary);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .td-pass {
+      color: var(--color-emerald);
+      font-weight: 600;
+    }
+
+    /* Interactive Action Controls (MD001, MD003, MD004, MD005 compliant) */
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .btn-action {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0 18px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+    }
+
+    .btn-primary {
+      background: var(--color-cyan);
+      color: #05070a;
+      border: 1px solid var(--color-cyan);
+    }
+
+    .btn-primary:hover {
+      background: oklch(0.88 0.16 200);
+      border-color: oklch(0.88 0.16 200);
+    }
+
+    .btn-primary:active {
+      background: oklch(0.80 0.19 200);
+      border-color: oklch(0.80 0.19 200);
+    }
+
+    .btn-secondary {
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-surface-hover);
+      border-color: var(--color-border-active);
+    }
+
+    .btn-secondary:active {
+      background: var(--color-surface-inset);
+    }
+
+    /* Focus Visibility & High Contrast (MD001 & MD005) */
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+
+    @media (forced-colors: active) {
+      .btn-action {
+        forced-color-adjust: none;
+        outline: 2px solid ButtonBorder;
+      }
+      .btn-action:focus-visible {
+        outline: 3px solid Highlight;
+      }
+    }
+
+    /* Reduced Motion (MD002) */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Responsive scaling */
+    @media (max-width: 960px) {
+      .slide-deck {
+        aspect-ratio: auto;
+      }
+      .slide-body {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide-deck">
+    <!-- Header -->
+    <header class="slide-header">
+      <div>
+        <span class="meta-tag">Archetype 38: Cadastral Survey QA/QC</span>
+        <h1 class="slide-title">Parcel Boundary Tolerance & Baseline Verification</h1>
+        <p class="slide-desc">GNSS RTK Cadastral Network Analysis - Parcel ID 4196-KU-BKK (UTM Zone 47N)</p>
+      </div>
+      <div class="header-aside">
+        <div class="status-badge">TOLERANCE COMPLIANT</div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="slide-body">
+      <!-- Left: Residual Distribution Chart -->
+      <section class="chart-container" aria-label="Tolerance Residual Analysis">
+        <div class="card-title-row">
+          <span class="card-title">Coordinate Residual Deviations vs 20mm Tolerance</span>
+          <span class="meta-tag" style="margin-bottom: 0;">14 Boundary Markers</span>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="residualChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Right: Telemetry & Quality Assurance Data -->
+      <section class="telemetry-col" aria-label="Survey Metrics">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Max Horiz Error</div>
+            <div class="metric-value">12.4 mm</div>
+            <div class="metric-sub">&lt; 20.0 mm Limit</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Loop Closure</div>
+            <div class="metric-value">1:64,800</div>
+            <div class="metric-sub">Spec &gt;= 1:25,000</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Baseline Length</div>
+            <div class="metric-value">1,428.6 m</div>
+            <div class="metric-sub">Fixed RTK Dual-Freq</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Confidence (2-Sigma)</div>
+            <div class="metric-value">95.4%</div>
+            <div class="metric-sub">Gaussian Normal Fit</div>
+          </div>
+        </div>
+
+        <div class="provenance-table-box">
+          <div class="table-caption">Sample Boundary Marker Observations</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Marker</th>
+                <th>Easting (m)</th>
+                <th>Northing (m)</th>
+                <th>Residual</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>BM-01</td>
+                <td>664,210.142</td>
+                <td>1,532,490.812</td>
+                <td>+6.2 mm</td>
+                <td class="td-pass">PASS</td>
+              </tr>
+              <tr>
+                <td>BM-02</td>
+                <td>664,284.950</td>
+                <td>1,532,548.330</td>
+                <td>+11.8 mm</td>
+                <td class="td-pass">PASS</td>
+              </tr>
+              <tr>
+                <td>BM-03</td>
+                <td>664,342.115</td>
+                <td>1,532,412.008</td>
+                <td>-8.4 mm</td>
+                <td class="td-pass">PASS</td>
+              </tr>
+              <tr>
+                <td>BM-04</td>
+                <td>664,228.604</td>
+                <td>1,532,380.445</td>
+                <td>+4.1 mm</td>
+                <td class="td-pass">PASS</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Interactive Action Bar -->
+        <div class="action-row">
+          <button type="button" id="toggleViewBtn" class="btn-action btn-primary">
+            Toggle Tolerance Mask
+          </button>
+          <button type="button" id="exportReportBtn" class="btn-action btn-secondary">
+            Inspect GeoJSON
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('residualChart').getContext('2d');
+    const markers = ['BM-01', 'BM-02', 'BM-03', 'BM-04', 'BM-05', 'BM-06', 'BM-07', 'BM-08', 'BM-09', 'BM-10', 'BM-11', 'BM-12', 'BM-13', 'BM-14'];
+    const residuals = [6.2, 11.8, -8.4, 4.1, 9.6, -12.4, 5.3, -3.8, 8.7, -7.1, 10.2, 3.4, -6.9, 8.1];
+
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: markers,
+        datasets: [
+          {
+            label: 'Observed Residual (mm)',
+            data: residuals,
+            backgroundColor: residuals.map(v => Math.abs(v) > 15 ? 'rgba(245, 158, 11, 0.7)' : 'rgba(0, 229, 255, 0.65)'),
+            borderColor: residuals.map(v => Math.abs(v) > 15 ? '#f59e0b' : '#00e5ff'),
+            borderWidth: 1,
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#111722',
+            titleColor: '#f1f5f9',
+            bodyColor: '#94a3b8',
+            borderColor: '#334155',
+            borderWidth: 1,
+            padding: 10,
+            displayColors: false,
+            callbacks: {
+              label: function(context) {
+                return 'Residual: ' + context.parsed.y + ' mm';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.04)'
+            },
+            ticks: {
+              color: '#64748b',
+              font: {
+                family: 'JetBrains Mono',
+                size: 10
+              }
+            }
+          },
+          y: {
+            min: -25,
+            max: 25,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            },
+            ticks: {
+              color: '#64748b',
+              font: {
+                family: 'JetBrains Mono',
+                size: 10
+              },
+              stepSize: 10,
+              callback: function(value) {
+                return value + ' mm';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    let maskActive = false;
+    document.getElementById('toggleViewBtn').addEventListener('click', function() {
+      maskActive = !maskActive;
+      this.textContent = maskActive ? 'Reset Tolerance Mask' : 'Toggle Tolerance Mask';
+      chart.data.datasets[0].backgroundColor = chart.data.datasets[0].data.map(v => {
+        if (!maskActive) return Math.abs(v) > 15 ? 'rgba(245, 158, 11, 0.7)' : 'rgba(0, 229, 255, 0.65)';
+        return Math.abs(v) <= 10 ? 'rgba(16, 185, 129, 0.75)' : 'rgba(0, 229, 255, 0.4)';
+      });
+      chart.update();
+    });
+
+    document.getElementById('exportReportBtn').addEventListener('click', function() {
+      alert('Cadastral Survey Provenance Record: 14/14 markers verified within standard error tolerance.');
+    });
+  </script>
+</body>
+</html>

@@ -23,7 +23,7 @@ flowchart LR
 - **Surface & Elevation:** ตรวจสอบความทึบของพื้นผิว (Solid, Frosted Glass `backdrop-blur`, Border Radius, Drop Shadows)
 
 ### ขั้นที่ 2: การสกัด Token และประสานกับ User DNA
-- แมปคู่สีที่พบในภาพเข้ากับ Palette ใน `user-profile.json` หรือ [design-core.md](file:///D:/WSL/.gemini/config/skills/medesign/references/design-core.md)
+- แมปคู่สีที่พบในภาพเข้ากับ Palette ใน `user-profile.json` หรือ [design-core.md](design-core.md)
 - แปลงค่าสีให้เป็นตัวแปร Tailwind หรือ CSS Variables (เช่น `bg-background`, `border-border`, `text-foreground`)
 - เลือกใช้คู่ฟอนต์ตามระบบ: Heading (Serif หรือ Display มีสไตล์) + Body (Clean Sans) + Monospace สำหรับตัวเลข
 

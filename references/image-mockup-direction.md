@@ -50,4 +50,4 @@ Presentation: Ultra-clean 9:16 mobile screen view, pixel-perfect native iOS guid
 - ห้ามใช้คำศัพท์ Interface ปลอมหรือข้อความ Lorem Ipsum ที่มั่วซั่ว
 - ห้ามใส่แสงนีออนฟุ้งกระจายจนอ่านข้อความไม่ออก
 - ห้ามสร้างการ์ดซ้อนการ์ดเกิน 3 ชั้น
-- รักษาคู่สีให้คุมโทน สอดคล้องกับ [user-profile.json](file:///D:/WSL/.gemini/config/skills/medesign/user-profile.json) ของผู้ใช้
+- รักษาคู่สีให้คุมโทน สอดคล้องกับ [user-profile.json](../user-profile.json) ของผู้ใช้

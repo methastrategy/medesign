@@ -75,6 +75,7 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | `/medesign polish [path]` | **ซ่อมโค้ดอัตโนมัติ (Self-Healing)** แก้ไข Hard Invariants (MD005, MD104, em-dash, dead buttons) |
 | `/medesign bolder [path]` | **เพิ่มความคมชัดและน้ำหนักภาพ** เพิ่ม font-weight, ความเข้ม border, และความสดของ Accent |
 | `/medesign quiet [path]` | **ลดทอนความจัดจ้านสู่ Minimalist** ลด font-weight, เปลี่ยนเส้นขอบเป็น Hairline, ลดความสดสี |
+| `/medesign snapshot [path]` | **จับภาพหน้าจอเรนเดอร์จริงระดับ High-DPI** (Mobile, Tablet, Desktop, หรือ `--og` 1200x630) ด้วย Headless CDP |
 | `/medesign [brand]` | ใช้ Token ของแบรนด์ระดับโลกตรงๆ เช่น Linear, Vercel, Apple, Stripe *(73+ แบรนด์)* |
 
 ---

@@ -21,8 +21,25 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const rootDir = path.join(__dirname, '..');
-const args = process.argv.slice(2);
-const command = args[0] || 'help';
+const rawArgs = process.argv.slice(2);
+const invokedBin = path.basename(process.argv[1] || '', path.extname(process.argv[1] || '')).toLowerCase();
+
+let args = rawArgs;
+let command = rawArgs[0] || 'help';
+
+const aliasMap = {
+  mepolish: 'polish',
+  mebolder: 'bolder',
+  mequiet: 'quiet',
+  melint: 'lint',
+  mesearch: 'search',
+  mesnapshot: 'snapshot'
+};
+
+if (aliasMap[invokedBin]) {
+  command = aliasMap[invokedBin];
+  args = [command, ...rawArgs];
+}
 
 const ANSI_RESET = '\x1b[0m';
 const ANSI_BOLD = '\x1b[1m';
@@ -58,6 +75,9 @@ ${ANSI_BOLD}COMMANDS:${ANSI_RESET}
   ${ANSI_CYAN}audit${ANSI_RESET} <file>           Run headless Chrome DevTools Protocol verification matrix
                         (Checks computed contrast, tab focus outline, 44px hit-targets across viewports)
                         Options: --json
+
+  ${ANSI_CYAN}snapshot${ANSI_RESET} <file>        Capture high-DPI rendered screenshots across responsive viewports
+                        Options: --out <dir>, --og (1200x630 banner), --viewports <list>
 
   ${ANSI_CYAN}tokens${ANSI_RESET} [export]        Export preset design tokens to Tailwind v4 @theme, W3C DTCG, or CSS
                         Options: --preset <apple|tesla|metha|all>
@@ -569,6 +589,15 @@ ${ANSI_GRAY}──────────────────────�
   case 'audit': {
     const auditScript = path.join(rootDir, 'tests', 'browser-audit.js');
     const child = spawnSync(process.execPath, [auditScript, ...args.slice(1)], {
+      stdio: 'inherit',
+      cwd: process.cwd()
+    });
+    process.exit(child.status ?? 0);
+  }
+
+  case 'snapshot': {
+    const snapshotScript = path.join(rootDir, 'tests', 'snapshot.js');
+    const child = spawnSync(process.execPath, [snapshotScript, ...args.slice(1)], {
       stdio: 'inherit',
       cwd: process.cwd()
     });

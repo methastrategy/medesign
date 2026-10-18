@@ -144,6 +144,12 @@ try {
   const doctorOut = execSync(`node "${cliPath}" doctor`, { encoding: 'utf8' });
   assert(doctorOut.includes('Node.js Runtime') && doctorOut.includes('Headless Browser'), 'Doctor command runs health checks');
 
+  // 10. Test 'snapshot' command via CLI
+  const snapOut = execSync(`node "${cliPath}" snapshot "examples/geospatial-banner-1200x630.html" --og --out "${tmpDir}/snap"`, { encoding: 'utf8' });
+  assert(snapOut.includes('ME-DESIGN Snapshot Engine'), 'Snapshot engine displays banner header');
+  assert(snapOut.includes('1 snapshots saved'), 'Snapshot command captured OG banner successfully');
+  assert(fs.existsSync(path.join(tmpDir, 'snap', 'geospatial-banner-1200x630-og-banner-1200x630.png')), 'Snapshot output file exists on disk');
+
 } catch (err) {
   assert(false, `Unexpected error in test-cli: ${err.message}`);
 } finally {

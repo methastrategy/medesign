@@ -1,10 +1,16 @@
 {
   "name": "medesign",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Autonomous Design Engineering Toolkit & Automated Linter for AI Coding Assistants",
   "main": "bin/medesign.js",
   "bin": {
-    "medesign": "bin/medesign.js"
+    "medesign": "bin/medesign.js",
+    "mepolish": "bin/medesign.js",
+    "mebolder": "bin/medesign.js",
+    "mequiet": "bin/medesign.js",
+    "melint": "bin/medesign.js",
+    "mesearch": "bin/medesign.js",
+    "mesnapshot": "bin/medesign.js"
   },
   "files": [
     "bin",
@@ -14,8 +20,10 @@
     "scripts/export-tokens.js",
     "tests/linter.js",
     "tests/browser-audit.js",
+    "tests/snapshot.js",
     "tests/schemas",
     "tests/visual-testbed.html",
+    "examples",
     "medesign.config.js"
   ],
   "scripts": {
@@ -25,12 +33,14 @@
     "test:tokens": "node tests/test-tokens.js",
     "test:cli": "node tests/test-cli.js",
     "test:browser": "node tests/runner.js --browser",
+    "test:snapshot": "node tests/snapshot.js examples/cadastral-qaqc-slide.html",
     "search": "node bin/medesign.js search",
     "polish": "node bin/medesign.js polish",
     "bolder": "node bin/medesign.js bolder",
     "quiet": "node bin/medesign.js quiet",
     "lint": "node bin/medesign.js lint",
     "audit": "node bin/medesign.js audit",
+    "snapshot": "node bin/medesign.js snapshot",
     "tokens": "node bin/medesign.js tokens",
     "doctor": "node bin/medesign.js doctor",
     "prepublishOnly": "npm test"

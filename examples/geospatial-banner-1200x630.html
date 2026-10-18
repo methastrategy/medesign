@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geospatial Situation Awareness - OG Banner 1200x630</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #090d16;
+      --color-slate-900: #0f172a;
+      --color-slate-800: #1e293b;
+      --color-slate-700: #334155;
+      --color-gold: oklch(0.75 0.18 75);
+      --color-gold-muted: oklch(0.75 0.18 75 / 0.15);
+      --color-cyan: oklch(0.74 0.16 210);
+      --color-cyan-muted: oklch(0.74 0.16 210 / 0.15);
+      --color-emerald: oklch(0.72 0.18 145);
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #94a3b8;
+      --color-text-muted: #94a3b8;
+      --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --banner-outer-r: 16px;
+      --banner-inner-r: max(0px, var(--banner-outer-r) - 1px - 8px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: var(--font-display);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* Fixed 1200x630 Banner Stage (Facebook / OpenGraph Container) */
+    .banner-canvas {
+      width: 1200px;
+      height: 630px;
+      max-width: 100%;
+      aspect-ratio: 1200 / 630;
+      background: var(--color-slate-900);
+      border: 1px solid var(--color-slate-700);
+      border-radius: var(--banner-outer-r);
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 520px 1fr;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
+    }
+
+    /* Subtle Perceptual Backdrop */
+    .banner-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(in oklch shorter hue, rgba(15, 23, 42, 0.95), rgba(9, 13, 22, 0.98));
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Left Content Column */
+    .banner-content {
+      position: relative;
+      z-index: 1;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .eyebrow-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .archetype-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-gold);
+      background: var(--color-gold-muted);
+      border: 1px solid oklch(0.75 0.18 75 / 0.35);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .datum-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .headline-block {
+      margin-top: 16px;
+    }
+
+    .banner-title {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--color-text-primary);
+    }
+
+    .banner-subtitle {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--color-text-secondary);
+      margin-top: 10px;
+    }
+
+    .telemetry-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .telemetry-item {
+      background: var(--color-slate-800);
+      border: 1px solid var(--color-slate-700);
+      border-radius: var(--banner-inner-r);
+      padding: 12px 14px;
+    }
+
+    .telemetry-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .telemetry-val {
+      font-family: var(--font-mono);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-top: 2px;
+    }
+
+    .banner-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn-cta {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0 20px;
+      border-radius: 6px;
+      background: var(--color-gold);
+      color: #0d0f14;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--color-gold);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+
+    .btn-cta:hover {
+      background: oklch(0.79 0.17 75);
+      border-color: oklch(0.79 0.17 75);
+    }
+
+    .btn-cta:active {
+      background: oklch(0.70 0.19 75);
+      border-color: oklch(0.70 0.19 75);
+    }
+
+    .footer-stamp {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    /* Right Cadastral Vector Map Viewport */
+    .banner-map-viewport {
+      position: relative;
+      z-index: 1;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at 60% 40%, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.95) 75%);
+    }
+
+    .vector-cadastre-svg {
+      width: 100%;
+      height: 100%;
+      max-height: 520px;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+    }
+
+    /* Interactive Focus Rings (MD001 & MD005) */
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+
+    @media (forced-colors: active) {
+      .btn-cta {
+        forced-color-adjust: none;
+        outline: 2px solid ButtonBorder;
+      }
+      .btn-cta:focus-visible {
+        outline: 3px solid Highlight;
+      }
+    }
+
+    /* Reduced Motion Compliance (MD002) */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="banner-canvas">
+    <!-- Left: Content & Typographic Hierarchy -->
+    <div class="banner-content">
+      <div>
+        <div class="eyebrow-strip">
+          <span class="archetype-badge">Archetype 32</span>
+          <span class="datum-pill">WGS84 UTM Zone 47N</span>
+        </div>
+        <div class="headline-block">
+          <h1 class="banner-title">Geospatial Situation Awareness Platform</h1>
+          <p class="banner-subtitle">High-precision cadastral parcel boundaries, satellite telemetry integration, and legal boundary provenance tracking.</p>
+        </div>
+      </div>
+
+      <div class="telemetry-row">
+        <div class="telemetry-item">
+          <div class="telemetry-label">Active Parcel Block</div>
+          <div class="telemetry-val">Block 42-B</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-label">Surveyed Area</div>
+          <div class="telemetry-val">14,285 m&sup2;</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-label">Center Coordinate</div>
+          <div class="telemetry-val">E 664,250</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-label">GNSS Baseline Fix</div>
+          <div class="telemetry-val">&plusmn; 0.012 m</div>
+        </div>
+      </div>
+
+      <div class="banner-footer">
+        <button type="button" class="btn-cta">Explore Map Canvas</button>
+        <span class="footer-stamp">Scale 1:2,500</span>
+      </div>
+    </div>
+
+    <!-- Right: High-Precision Vector SVG Cadastre Stage -->
+    <div class="banner-map-viewport">
+      <svg class="vector-cadastre-svg" viewBox="0 0 580 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Coordinate Grid Lines -->
+        <line x1="40" y1="40" x2="540" y2="40" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="40" y1="140" x2="540" y2="140" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="40" y1="240" x2="540" y2="240" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="40" y1="340" x2="540" y2="340" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="40" y1="440" x2="540" y2="440" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+
+        <line x1="140" y1="40" x2="140" y2="460" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="260" y1="40" x2="260" y2="460" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="380" y1="40" x2="380" y2="460" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="500" y1="40" x2="500" y2="460" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+
+        <!-- Surrounding Context Parcels -->
+        <polygon points="60,60 210,90 190,220 50,180" fill="rgba(30, 41, 59, 0.4)" stroke="#334155" stroke-width="1.5"/>
+        <text x="110" y="145" fill="#64748b" font-family="JetBrains Mono" font-size="11">Lot 108</text>
+
+        <polygon points="210,90 390,70 410,210 190,220" fill="rgba(30, 41, 59, 0.4)" stroke="#334155" stroke-width="1.5"/>
+        <text x="280" y="145" fill="#64748b" font-family="JetBrains Mono" font-size="11">Lot 109</text>
+
+        <polygon points="50,180 190,220 170,390 40,360" fill="rgba(30, 41, 59, 0.4)" stroke="#334155" stroke-width="1.5"/>
+        <text x="100" y="295" fill="#64748b" font-family="JetBrains Mono" font-size="11">Lot 110</text>
+
+        <!-- Primary Target Parcel: Cadastral Gold Fill & Cyan High-Precision Boundary -->
+        <polygon points="190,220 410,210 460,380 320,440 170,390" fill="rgba(245, 158, 11, 0.12)" stroke="#f59e0b" stroke-width="2.5"/>
+
+        <!-- Boundary Dimension Annotation Lines -->
+        <path d="M 190 220 L 410 210" stroke="#06b6d4" stroke-width="2"/>
+        <text x="290" y="202" fill="#06b6d4" font-family="JetBrains Mono" font-size="11" font-weight="600">84.22 m</text>
+
+        <path d="M 410 210 L 460 380" stroke="#06b6d4" stroke-width="2"/>
+        <text x="446" y="295" fill="#06b6d4" font-family="JetBrains Mono" font-size="11" font-weight="600">62.15 m</text>
+
+        <path d="M 460 380 L 320 440" stroke="#06b6d4" stroke-width="2"/>
+        <text x="380" y="425" fill="#06b6d4" font-family="JetBrains Mono" font-size="11" font-weight="600">54.80 m</text>
+
+        <path d="M 320 440 L 170 390" stroke="#06b6d4" stroke-width="2"/>
+        <text x="230" y="430" fill="#06b6d4" font-family="JetBrains Mono" font-size="11" font-weight="600">60.10 m</text>
+
+        <path d="M 170 390 L 190 220" stroke="#06b6d4" stroke-width="2"/>
+        <text x="160" y="310" fill="#06b6d4" font-family="JetBrains Mono" font-size="11" font-weight="600">68.35 m</text>
+
+        <!-- Boundary Monolith Markers (Vertices) -->
+        <g fill="#0f172a" stroke="#06b6d4" stroke-width="2">
+          <circle cx="190" cy="220" r="5"/>
+          <circle cx="410" cy="210" r="5"/>
+          <circle cx="460" cy="380" r="5"/>
+          <circle cx="320" cy="440" r="5"/>
+          <circle cx="170" cy="390" r="5"/>
+        </g>
+        <g fill="#f8fafc" font-family="JetBrains Mono" font-size="9" font-weight="600">
+          <text x="198" y="215">P-1</text>
+          <text x="418" y="205">P-2</text>
+          <text x="468" y="385">P-3</text>
+          <text x="328" y="455">P-4</text>
+          <text x="150" y="405">P-5</text>
+        </g>
+
+        <!-- Center Parcel Tag -->
+        <rect x="250" y="295" width="130" height="52" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="264" y="316" fill="#f59e0b" font-family="JetBrains Mono" font-size="12" font-weight="700">PARCEL 4196</text>
+        <text x="264" y="334" fill="#94a3b8" font-family="JetBrains Mono" font-size="10">14,285.4 m&sup2;</text>
+
+        <!-- Map Navigation Compass Rose -->
+        <g transform="translate(510, 80)">
+          <circle cx="0" cy="0" r="18" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+          <polygon points="0,-14 4,-2 0,0 -4,-2" fill="#f59e0b"/>
+          <polygon points="0,14 4,2 0,0 -4,2" fill="#64748b"/>
+          <text x="-4" y="-18" fill="#f8fafc" font-family="Plus Jakarta Sans" font-size="10" font-weight="700">N</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+</body>
+</html>

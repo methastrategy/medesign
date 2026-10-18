@@ -1,11 +1,23 @@
 {
-  "name": "@metha-design/medesign",
+  "name": "medesign",
   "version": "1.2.0",
   "description": "Autonomous Design Engineering Toolkit & Automated Linter for AI Coding Assistants",
   "main": "bin/medesign.js",
   "bin": {
     "medesign": "./bin/medesign.js"
   },
+  "files": [
+    "bin",
+    "presets",
+    "references",
+    "integrations",
+    "scripts/export-tokens.js",
+    "tests/linter.js",
+    "tests/browser-audit.js",
+    "tests/schemas",
+    "tests/visual-testbed.html",
+    "medesign.config.js"
+  ],
   "scripts": {
     "test": "node tests/runner.js && node tests/validate-sarif.js && node tests/test-tokens.js",
     "test:unit": "node tests/runner.js",
@@ -13,8 +25,21 @@
     "test:tokens": "node tests/test-tokens.js",
     "test:browser": "node tests/runner.js --browser",
     "lint": "node bin/medesign.js lint",
+    "audit": "node bin/medesign.js audit",
     "tokens": "node bin/medesign.js tokens",
-    "doctor": "node bin/medesign.js doctor"
+    "doctor": "node bin/medesign.js doctor",
+    "prepublishOnly": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/methastrategy/medesign.git"
+  },
+  "homepage": "https://github.com/methastrategy/medesign#readme",
+  "bugs": {
+    "url": "https://github.com/methastrategy/medesign/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "design-tokens",

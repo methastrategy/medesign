@@ -5,7 +5,9 @@
 **The Autonomous Design Engineering System & Quality Linter for AI Coding Assistants**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org/)
+[![CI Matrix](https://github.com/methastrategy/medesign/actions/workflows/ci.yml/badge.svg)](https://github.com/methastrategy/medesign/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/medesign.svg?color=emerald)](https://www.npmjs.com/package/medesign)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Status](https://img.shields.io/badge/status-production--ready-emerald.svg)]()
 [![Archetypes](https://img.shields.io/badge/archetypes-38%20models-indigo.svg)]()
 
@@ -58,16 +60,26 @@ ME-DESIGN decouples UI synthesis across 5 independent axes:
 
 ---
 
-## 🚀 Quickstart: Running the Linter
+## 🚀 Quickstart: Running via `npx` (Zero Installation)
 
-You can run the ME-DESIGN Linter directly using Node.js or `npx`:
+Execute ME-DESIGN immediately without manual installation:
 
 ```bash
-# Run audit on a file or directory
-node tests/linter.js path/to/index.html
+# Lint an HTML, JSX, or CSS file with static AST & invariant rules
+npx medesign lint path/to/index.html
 
-# Run audit with JSON output
-node tests/linter.js path/to/index.html --json
+# Lint and export OASIS SARIF v2.1.0 for GitHub Code Scanning
+npx medesign lint path/to/index.html --format sarif
+
+# Run headless Chrome DevTools Protocol verification matrix
+# (Computes real contrast ratios, tab focus indicators, and 44px hit-targets)
+npx medesign audit path/to/index.html
+
+# Export design tokens to Tailwind CSS v4 @theme, W3C DTCG, or CSS variables
+npx medesign tokens --preset apple --format tailwind --out ./tokens
+
+# Verify system health, Node.js version, and headless browser availability
+npx medesign doctor
 ```
 
 ### The Terminal Summary Card

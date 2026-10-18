@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linear Issue Tracking Cockpit: ME-DESIGN Archetype 07</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg-base: #08090a;
+      --color-surface-sidebar: #0d0e11;
+      --color-surface-card: #121316;
+      --color-surface-card-hover: #18191d;
+      --color-surface-highlight: #1e2025;
+      --color-surface-glass: rgba(18, 19, 22, 0.85);
+      
+      --color-accent: #5e6ad2;
+      --color-accent-hover: #717fe0;
+      --color-accent-subtle: rgba(94, 106, 210, 0.15);
+      --color-accent-glow: rgba(94, 106, 210, 0.25);
+      
+      --color-urgent: #ef4444;
+      --color-urgent-subtle: rgba(239, 68, 68, 0.15);
+      --color-high: #f97316;
+      --color-high-subtle: rgba(249, 115, 22, 0.15);
+      --color-medium: #eab308;
+      --color-medium-subtle: rgba(234, 179, 8, 0.15);
+      --color-low: #64748b;
+      --color-done: #8b5cf6;
+      --color-done-subtle: rgba(139, 92, 246, 0.15);
+      
+      --color-text-primary: #ffffff;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #94a3b8;
+      
+      --color-border-subtle: rgba(255, 255, 255, 0.07);
+      --color-border-hover: rgba(255, 255, 255, 0.15);
+      --color-border-focus: #5e6ad2;
+      
+      --radius-outer: 12px;
+      --radius-card: 8px;
+      --radius-inner: 6px;
+      --radius-full: 9999px;
+      --corner-r: max(0px, var(--radius-outer) - 4px);
+      
+      --shadow-card: 0 4px 16px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      --shadow-modal: 0 24px 64px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-fluid: cubic-bezier(0.2, 0.8, 0.2, 1);
+      --duration-micro: 120ms;
+      --duration-normal: 220ms;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-bg-base);
+      color: var(--color-text-primary);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Accessibility Hard Invariants */
+    :focus-visible {
+      outline: 2px solid var(--color-border-focus) !important;
+      outline-offset: 2px !important;
+    }
+
+    @media (forced-colors: active) {
+      :focus-visible, button:focus-visible, a:focus-visible, input:focus-visible {
+        outline: 3px solid Highlight !important;
+        outline-offset: 2px !important;
+      }
+      .linear-card, .sidebar, .modal-glass, .filter-chip {
+        border: 1px solid CanvasText !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* App Layout */
+    .app-shell {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      flex: 1;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      background-color: var(--color-surface-sidebar);
+      border-right: 1px solid var(--color-border-subtle);
+      display: flex;
+      flex-direction: column;
+      padding: 16px 12px;
+      gap: 16px;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+    }
+
+    .workspace-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border-radius: var(--radius-inner);
+      cursor: pointer;
+      min-height: 44px;
+      transition: background-color var(--duration-micro) var(--ease-fluid);
+    }
+
+    .workspace-header:hover {
+      background-color: var(--color-surface-card);
+    }
+
+    .workspace-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .workspace-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: linear-gradient(in oklch 135deg, #5e6ad2 0%, #312e81 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      box-shadow: 0 0 10px var(--color-accent-glow);
+    }
+
+    .workspace-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .workspace-plan {
+      font-size: 0.72rem;
+      color: var(--color-text-muted);
+      background-color: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Quick Action Search Pill */
+    .search-trigger-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--color-surface-card);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-inner);
+      padding: 8px 12px;
+      color: var(--color-text-muted);
+      font-size: 0.84rem;
+      cursor: pointer;
+      min-height: 44px;
+      transition: border-color var(--duration-micro) var(--ease-fluid), color var(--duration-micro) var(--ease-fluid);
+    }
+
+    .search-trigger-pill:hover {
+      border-color: var(--color-border-hover);
+      color: var(--color-text-secondary);
+    }
+
+    .kbd-shortcut {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      background-color: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: var(--color-text-secondary);
+    }
+
+    /* Nav Sections */
+    .nav-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      padding: 6px 10px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: var(--radius-inner);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+      min-height: 44px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      transition: background-color var(--duration-micro) var(--ease-fluid), color var(--duration-micro) var(--ease-fluid);
+    }
+
+    .nav-btn:hover {
+      background-color: var(--color-surface-card);
+      color: var(--color-text-primary);
+    }
+
+    .nav-btn.active {
+      background-color: var(--color-surface-card-hover);
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    .nav-btn-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .badge-count {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--color-text-muted);
+      background-color: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+
+    /* Main Viewport Content */
+    .main-viewport {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background: radial-gradient(circle at 80% 0%, rgba(94, 106, 210, 0.08) 0%, transparent 40%),
+                  linear-gradient(in oklab 180deg, #0c0d10 0%, #08090a 280px);
+    }
+
+    /* Top Breadcrumbs & Control Bar */
+    .top-bar {
+      height: 56px;
+      border-bottom: 1px solid var(--color-border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+    }
+
+    .breadcrumb-team {
+      font-weight: 700;
+      color: var(--color-text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .team-badge-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background-color: var(--color-accent);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 800;
+    }
+
+    .breadcrumb-sep {
+      color: var(--color-text-muted);
+    }
+
+    .breadcrumb-current {
+      color: var(--color-text-secondary);
+      font-weight: 500;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-new-issue {
+      background-color: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: var(--radius-inner);
+      padding: 8px 16px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      min-height: 44px;
+      transition: background-color var(--duration-micro) var(--ease-fluid), transform var(--duration-micro) var(--ease-spring);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-new-issue:hover {
+      background-color: #f1f5f9;
+      transform: translateY(-1px);
+    }
+
+    .btn-new-issue:active {
+      transform: translateY(0);
+    }
+
+    /* Sub-header Filter Toolbar */
+    .filter-toolbar {
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--color-border-subtle);
+      flex-shrink: 0;
+    }
+
+    .filter-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .filter-chip {
+      background-color: var(--color-surface-card);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-inner);
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      min-height: 44px;
+      min-width: 44px;
+      transition: border-color var(--duration-micro) var(--ease-fluid), color var(--duration-micro) var(--ease-fluid);
+      white-space: nowrap;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--color-border-hover);
+      color: var(--color-text-primary);
+    }
+
+    .filter-chip.active {
+      background-color: var(--color-accent-subtle);
+      border-color: var(--color-accent);
+      color: #ffffff;
+    }
+
+    .view-toggle-group {
+      display: flex;
+      align-items: center;
+      background-color: var(--color-surface-card);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-inner);
+      padding: 2px;
+      min-height: 44px;
+    }
+
+    .view-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      min-height: 44px;
+      min-width: 44px;
+      transition: color var(--duration-micro) var(--ease-fluid), background-color var(--duration-micro) var(--ease-fluid);
+    }
+
+    .view-toggle-btn.active {
+      background-color: var(--color-surface-highlight);
+      color: var(--color-text-primary);
+    }
+
+    /* Kanban Board Layout */
+    .board-container {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(290px, 1fr));
+      gap: 18px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      flex: 1;
+      align-items: flex-start;
+    }
+
+    .kanban-column {
+      background-color: rgba(18, 19, 22, 0.45);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-outer);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 160px);
+      max-height: calc(100dvh - 160px);
+    }
+
+    .column-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    .column-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .status-dot-icon {
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .column-cards-list {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Linear Issue Card (Precision Glow) */
+    .issue-card {
+      background-color: var(--color-surface-card);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-card);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: background-color var(--duration-micro) var(--ease-fluid),
+                  border-color var(--duration-micro) var(--ease-fluid),
+                  transform var(--duration-micro) var(--ease-spring);
+      position: relative;
+    }
+
+    .issue-card:hover {
+      background-color: var(--color-surface-card-hover);
+      border-color: var(--color-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .issue-id {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .priority-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .priority-urgent {
+      background-color: var(--color-urgent-subtle);
+      color: var(--color-urgent);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .priority-high {
+      background-color: var(--color-high-subtle);
+      color: var(--color-high);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+
+    .priority-medium {
+      background-color: var(--color-medium-subtle);
+      color: var(--color-medium);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+    }
+
+    .priority-low {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--color-text-muted);
+      border: 1px solid var(--color-border-subtle);
+    }
+
+    .issue-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--color-text-primary);
+    }
+
+    .card-bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    .labels-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .issue-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border-subtle);
+    }
+
+    .assignee-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(in oklch 135deg, #3b82f6 0%, #1e3a8a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #ffffff;
+      border: 1px solid var(--color-border-subtle);
+    }
+
+    /* Linear Command Palette Modal (Ctrl+K) */
+    .command-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 14vh;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duration-micro) var(--ease-fluid);
+    }
+
+    .command-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .command-modal {
+      width: 620px;
+      max-width: 90vw;
+      background-color: var(--color-surface-glass);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--color-border-hover);
+      border-radius: var(--radius-outer);
+      box-shadow: var(--shadow-modal);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.97) translateY(-8px);
+      transition: transform var(--duration-normal) var(--ease-spring);
+    }
+
+    .command-modal-overlay.active .command-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .command-input-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    .command-input-row svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--color-text-muted);
+    }
+
+    .command-input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 1.05rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .command-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .command-list {
+      max-height: 340px;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .command-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-inner);
+      cursor: pointer;
+      color: var(--color-text-secondary);
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: background-color var(--duration-micro) var(--ease-fluid), color var(--duration-micro) var(--ease-fluid);
+    }
+
+    .command-item:hover, .command-item.selected {
+      background-color: var(--color-accent-subtle);
+      color: #ffffff;
+    }
+
+    .command-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .command-item svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* Responsive Breakdown */
+    @media (max-width: 1024px) {
+      .app-shell {
+        grid-template-columns: 72px 1fr;
+      }
+      .sidebar {
+        padding: 12px 8px;
+        align-items: center;
+        scrollbar-width: none;
+        scrollbar-gutter: auto;
+        overflow-x: hidden;
+      }
+      .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+      .workspace-header {
+        padding: 6px;
+        justify-content: center;
+        min-width: 44px;
+      }
+      .workspace-name, .workspace-plan, .search-text-label, .search-shortcut-kbd, .nav-btn span, .badge-count, .nav-section-title {
+        display: none !important;
+      }
+      .search-trigger-pill {
+        justify-content: center;
+        padding: 0;
+        width: 48px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+      }
+      .nav-btn {
+        justify-content: center;
+        padding: 8px 0;
+        width: 48px;
+        min-width: 44px;
+      }
+      .nav-btn-left {
+        justify-content: center;
+      }
+      .board-container {
+        grid-template-columns: repeat(4, 280px);
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-bar {
+        padding: 10px 14px;
+        flex-wrap: nowrap;
+      }
+      .breadcrumb-team-name {
+        display: none !important;
+      }
+      .breadcrumb-current {
+        max-width: 130px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .btn-new-issue .kbd-shortcut {
+        display: none !important;
+      }
+      .btn-new-issue {
+        padding: 8px 12px;
+      }
+      .filter-toolbar {
+        padding: 8px 14px;
+      }
+      .view-toggle-btn span {
+        display: none;
+      }
+      .view-toggle-btn {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+    <!-- Left Sidebar -->
+    <aside class="sidebar" aria-label="Linear Navigation">
+      <div class="workspace-header" tabindex="0" role="button" aria-label="Workspace settings">
+        <div class="workspace-info">
+          <div class="workspace-avatar">M</div>
+          <span class="workspace-name">Metha Studio</span>
+        </div>
+        <span class="workspace-plan">Pro</span>
+      </div>
+
+      <!-- Quick Search Trigger -->
+      <button class="search-trigger-pill" id="btnOpenCommand" aria-label="Open command palette (Ctrl+K)">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <span class="search-text-label">Search or jump to...</span>
+        </span>
+        <span class="kbd-shortcut search-shortcut-kbd">&amp;K</span>
+      </button>
+
+      <!-- Main Navigation Links -->
+      <nav class="nav-section" aria-label="Personal Views">
+        <button class="nav-btn" aria-label="Inbox notifications">
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H4.99c-1.11 0-1.98.89-1.98 2L3 19c0 1.1.88 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 12h-4c0 1.66-1.35 3-3 3s-3-1.34-3-3H4.99V5H19v10z"/></svg>
+            <span>Inbox</span>
+          </div>
+          <span class="badge-count">3</span>
+        </button>
+        <button class="nav-btn" aria-label="My assigned issues">
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <span>My Issues</span>
+          </div>
+          <span class="badge-count">12</span>
+        </button>
+        <button class="nav-btn active" aria-label="Active sprint cycle">
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <span>Active Sprint</span>
+          </div>
+          <span class="badge-count">11</span>
+        </button>
+      </nav>
+
+      <!-- Workspace Teams Section -->
+      <nav class="nav-section" aria-label="Workspace Teams">
+        <span class="nav-section-title">Your Teams</span>
+        <button class="nav-btn active" aria-label="Engineering Team">
+          <div class="nav-btn-left">
+            <div class="team-badge-icon" aria-hidden="true" style="background-color: #3730a3;">ENG</div>
+            <span>Engineering</span>
+          </div>
+          <span class="badge-count">11</span>
+        </button>
+        <button class="nav-btn" aria-label="Design System Team">
+          <div class="nav-btn-left">
+            <div class="team-badge-icon" aria-hidden="true" style="background-color: #831843;">DES</div>
+            <span>Design Studio</span>
+          </div>
+          <span class="badge-count">7</span>
+        </button>
+        <button class="nav-btn" aria-label="Geospatial Survey Team">
+          <div class="nav-btn-left">
+            <div class="team-badge-icon" aria-hidden="true" style="background-color: #064e3b;">GEO</div>
+            <span>Geospatial GIS</span>
+          </div>
+          <span class="badge-count">9</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Viewport -->
+    <main class="main-viewport" id="mainContent">
+      <!-- Top Control Bar -->
+      <header class="top-bar">
+        <div class="breadcrumbs">
+          <div class="breadcrumb-team">
+            <div class="team-badge-icon" aria-hidden="true" style="background-color: #3730a3;">ENG</div>
+            <span class="breadcrumb-team-name">Engineering</span>
+          </div>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">Cycle 42 (Active Sprint)</span>
+        </div>
+
+        <div class="top-actions">
+          <button class="btn-new-issue" id="btnCreateIssue" aria-label="Create new issue (C)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>New Issue</span>
+            <span class="kbd-shortcut" style="background: rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); color: #000;">C</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Filter & View Toolbar -->
+      <div class="filter-toolbar">
+        <div class="filter-chips-row">
+          <button class="filter-chip active" id="chipAll" aria-label="Show all issues">
+            <span>All Issues</span>
+            <span class="badge-count" id="totalIssuesCount">11</span>
+          </button>
+          <button class="filter-chip" id="chipUrgent" aria-label="Filter by urgent priority">
+            <span style="color: var(--color-urgent);">&bull;</span>
+            <span>Urgent</span>
+          </button>
+          <button class="filter-chip" id="chipCraft" aria-label="Filter by craft labels">
+            <span style="color: var(--color-accent);">&bull;</span>
+            <span>Craft &amp; UI</span>
+          </button>
+          <button class="filter-chip" id="chipLinter" aria-label="Filter by linter core">
+            <span>Linter Core</span>
+          </button>
+        </div>
+
+        <div class="view-toggle-group" role="group" aria-label="Board layout toggle">
+          <button class="view-toggle-btn active" aria-label="Kanban board view">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h4v16H4V4zm6 0h4v16h-4V4zm6 0h4v16h-4V4z"/></svg>
+            <span>Board</span>
+          </button>
+          <button class="view-toggle-btn" aria-label="List table view">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 14h16v-2H4v2zm0 4h16v-2H4v2zM4 6v2h16V6H4zm0 4h16V8H4v2z"/></svg>
+            <span>List</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Kanban Columns Grid -->
+      <div class="board-container" id="kanbanBoard">
+        
+        <!-- Column 1: Backlog -->
+        <section class="kanban-column" aria-label="Backlog column">
+          <div class="column-header">
+            <div class="column-title-box">
+              <span class="status-dot-icon" style="color: var(--color-text-muted);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="3 3"><circle cx="12" cy="12" r="9"/></svg>
+              </span>
+              <span>Backlog</span>
+            </div>
+            <span class="badge-count">3</span>
+          </div>
+          <div class="column-cards-list">
+            
+            <article class="issue-card" tabindex="0" data-priority="low" data-tags="performance,3d">
+              <div class="card-top-row">
+                <span class="issue-id">MED-102</span>
+                <span class="priority-badge priority-low">Low</span>
+              </div>
+              <h2 class="issue-title">Refactor WebGL demand loop to zero watt idle</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">performance</span>
+                  <span class="issue-tag">3d</span>
+                </div>
+                <div class="assignee-avatar">M</div>
+              </div>
+            </article>
+
+            <article class="issue-card" tabindex="0" data-priority="medium" data-tags="ux">
+              <div class="card-top-row">
+                <span class="issue-id">MED-108</span>
+                <span class="priority-badge priority-medium">Medium</span>
+              </div>
+              <h2 class="issue-title">Add keyboard shortcut cheat sheet modal trigger</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">ux</span>
+                </div>
+                <div class="assignee-avatar" style="background: linear-gradient(135deg, #10b981, #064e3b);">T</div>
+              </div>
+            </article>
+
+            <article class="issue-card" tabindex="0" data-priority="low" data-tags="infra">
+              <div class="card-top-row">
+                <span class="issue-id">MED-114</span>
+                <span class="priority-badge priority-low">Low</span>
+              </div>
+              <h2 class="issue-title">Upgrade Playwright headless browser matrix runner</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">infra</span>
+                </div>
+                <div class="assignee-avatar" style="background: linear-gradient(135deg, #8b5cf6, #4c1d95);">A</div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- Column 2: Todo -->
+        <section class="kanban-column" aria-label="Todo column">
+          <div class="column-header">
+            <div class="column-title-box">
+              <span class="status-dot-icon" style="color: var(--color-text-secondary);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg>
+              </span>
+              <span>Todo</span>
+            </div>
+            <span class="badge-count">3</span>
+          </div>
+          <div class="column-cards-list">
+
+            <article class="issue-card" tabindex="0" data-priority="high" data-tags="core-linter,craft">
+              <div class="card-top-row">
+                <span class="issue-id">MED-89</span>
+                <span class="priority-badge priority-high">High</span>
+              </div>
+              <h2 class="issue-title">Implement Boundary Clearance rule MD106 in AST linter</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">core-linter</span>
+                  <span class="issue-tag">craft</span>
+                </div>
+                <div class="assignee-avatar">M</div>
+              </div>
+            </article>
+
+            <article class="issue-card" tabindex="0" data-priority="medium" data-tags="typography,craft">
+              <div class="card-top-row">
+                <span class="issue-id">MED-94</span>
+                <span class="priority-badge priority-medium">Medium</span>
+              </div>
+              <h2 class="issue-title">Calibrate Thai diacritic typography headroom in UI Chrome</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">typography</span>
+                  <span class="issue-tag">craft</span>
+                </div>
+                <div class="assignee-avatar" style="background: linear-gradient(135deg, #f59e0b, #78350f);">K</div>
+              </div>
+            </article>
+
+            <article class="issue-card" tabindex="0" data-priority="high" data-tags="tokens">
+              <div class="card-top-row">
+                <span class="issue-id">MED-98</span>
+                <span class="priority-badge priority-high">High</span>
+              </div>
+              <h2 class="issue-title">Token exporter for W3C DTCG standard and Tailwind v4</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">tokens</span>
+                </div>
+                <div class="assignee-avatar">M</div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- Column 3: In Progress -->
+        <section class="kanban-column" aria-label="In Progress column">
+          <div class="column-header">
+            <div class="column-title-box">
+              <span class="status-dot-icon" style="color: var(--color-medium);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8v16z"/></svg>
+              </span>
+              <span>In Progress</span>
+            </div>
+            <span class="badge-count">2</span>
+          </div>
+          <div class="column-cards-list">
+
+            <article class="issue-card" tabindex="0" data-priority="urgent" data-tags="bug,craft">
+              <div class="card-top-row">
+                <span class="issue-id">MED-77</span>
+                <span class="priority-badge priority-urgent">Urgent</span>
+              </div>
+              <h2 class="issue-title">Decouple 44px hit-target from volume slider container</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag" style="color: var(--color-urgent); border-color: rgba(239, 68, 68, 0.4);">bug</span>
+                  <span class="issue-tag">craft</span>
+                </div>
+                <div class="assignee-avatar">M</div>
+              </div>
+            </article>
+
+            <article class="issue-card" tabindex="0" data-priority="high" data-tags="color,craft">
+              <div class="card-top-row">
+                <span class="issue-id">MED-82</span>
+                <span class="priority-badge priority-high">High</span>
+              </div>
+              <h2 class="issue-title">Support in oklch shorter hue in color interpolation engine</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">color</span>
+                </div>
+                <div class="assignee-avatar" style="background: linear-gradient(135deg, #10b981, #064e3b);">T</div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- Column 4: Done -->
+        <section class="kanban-column" aria-label="Done column">
+          <div class="column-header">
+            <div class="column-title-box">
+              <span class="status-dot-icon" style="color: var(--color-done);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              </span>
+              <span>Done</span>
+            </div>
+            <span class="badge-count">3</span>
+          </div>
+          <div class="column-cards-list">
+
+            <article class="issue-card" tabindex="0" data-priority="high" data-tags="release">
+              <div class="card-top-row">
+                <span class="issue-id">MED-61</span>
+                <span class="priority-badge priority-high">High</span>
+              </div>
+              <h2 class="issue-title">Publish medesign v1.5.0 CLI package to npm registry</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">release</span>
+                </div>
+                <div class="assignee-avatar">M</div>
+              </div>
+            </article>
+
+            <article class="issue-card" tabindex="0" data-priority="medium" data-tags="core-linter,ci-cd">
+              <div class="card-top-row">
+                <span class="issue-id">MED-65</span>
+                <span class="priority-badge priority-medium">Medium</span>
+              </div>
+              <h2 class="issue-title">SARIF v2.1.0 JSON Schema validator and test suite</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">core-linter</span>
+                </div>
+                <div class="assignee-avatar" style="background: linear-gradient(135deg, #8b5cf6, #4c1d95);">A</div>
+              </div>
+            </article>
+
+            <article class="issue-card" tabindex="0" data-priority="medium" data-tags="craft">
+              <div class="card-top-row">
+                <span class="issue-id">MED-71</span>
+                <span class="priority-badge priority-medium">Medium</span>
+              </div>
+              <h2 class="issue-title">Spotify Web Player dark glassmorphic prototype with 36-bar EQ</h2>
+              <div class="card-bottom-row">
+                <div class="labels-group">
+                  <span class="issue-tag">craft</span>
+                </div>
+                <div class="assignee-avatar">M</div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Linear Command Palette Modal Overlay -->
+  <div class="command-modal-overlay" id="commandOverlay" role="dialog" aria-modal="true" aria-label="Command Palette">
+    <div class="command-modal">
+      <div class="command-input-row">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" class="command-input" id="commandInput" placeholder="Type a command or search issues..." autocomplete="off">
+        <span class="kbd-shortcut">ESC</span>
+      </div>
+      <div class="command-list" id="commandList">
+        <div class="command-item selected" tabindex="0">
+          <div class="command-item-left">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>Create new issue</span>
+          </div>
+          <span class="kbd-shortcut">C</span>
+        </div>
+        <div class="command-item" tabindex="0">
+          <div class="command-item-left">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14h16v-2H4v2zm0 4h16v-2H4v2zM4 6v2h16V6H4zm0 4h16V8H4v2z"/></svg>
+            <span>Switch view to List</span>
+          </div>
+          <span class="kbd-shortcut">V</span>
+        </div>
+        <div class="command-item" tabindex="0">
+          <div class="command-item-left">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+            <span>Toggle Dark/Light Mode</span>
+          </div>
+          <span class="kbd-shortcut">T</span>
+        </div>
+        <div class="command-item" tabindex="0">
+          <div class="command-item-left">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <span>Filter: Only my issues</span>
+          </div>
+          <span class="kbd-shortcut">M</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Interactive Command Palette & Filter Engine
+    (function() {
+      const btnOpenCommand = document.getElementById('btnOpenCommand');
+      const commandOverlay = document.getElementById('commandOverlay');
+      const commandInput = document.getElementById('commandInput');
+      const commandList = document.getElementById('commandList');
+      const btnCreateIssue = document.getElementById('btnCreateIssue');
+      const cards = document.querySelectorAll('.issue-card');
+      const chipAll = document.getElementById('chipAll');
+      const chipUrgent = document.getElementById('chipUrgent');
+      const chipCraft = document.getElementById('chipCraft');
+      const chipLinter = document.getElementById('chipLinter');
+
+      function openCommand() {
+        commandOverlay.classList.add('active');
+        commandInput.value = '';
+        commandInput.focus();
+      }
+
+      function closeCommand() {
+        commandOverlay.classList.remove('active');
+      }
+
+      btnOpenCommand.addEventListener('click', openCommand);
+      commandOverlay.addEventListener('click', function(e) {
+        if (e.target === commandOverlay) closeCommand();
+      });
+
+      // Global Keyboard Shortcuts (Ctrl+K, Esc, C)
+      window.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (commandOverlay.classList.contains('active')) closeCommand();
+          else openCommand();
+        } else if (e.key === 'Escape') {
+          closeCommand();
+        } else if (e.key.toLowerCase() === 'c' && !commandOverlay.classList.contains('active') && document.activeElement.tagName !== 'INPUT') {
+          e.preventDefault();
+          openCommand();
+        }
+      });
+
+      // Filter Chips Interaction
+      const chips = [chipAll, chipUrgent, chipCraft, chipLinter];
+      function setFilter(activeChip, filterFn) {
+        chips.forEach(c => c.classList.remove('active'));
+        activeChip.classList.add('active');
+        let visibleCount = 0;
+        cards.forEach(card => {
+          if (filterFn(card)) {
+            card.style.display = 'flex';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        document.getElementById('totalIssuesCount').textContent = visibleCount;
+      }
+
+      chipAll.addEventListener('click', () => setFilter(chipAll, () => true));
+      chipUrgent.addEventListener('click', () => setFilter(chipUrgent, card => card.dataset.priority === 'urgent'));
+      chipCraft.addEventListener('click', () => setFilter(chipCraft, card => (card.dataset.tags || '').includes('craft')));
+      chipLinter.addEventListener('click', () => setFilter(chipLinter, card => (card.dataset.tags || '').includes('core-linter')));
+
+      btnCreateIssue.addEventListener('click', openCommand);
+
+      // Card Click Feedback
+      cards.forEach(card => {
+        card.addEventListener('click', function() {
+          const id = this.querySelector('.issue-id').textContent;
+          const title = this.querySelector('.issue-title').textContent;
+          console.log(`[Linear Cockpit] Opened Issue: ${id} - ${title}`);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

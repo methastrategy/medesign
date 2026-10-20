@@ -92,27 +92,27 @@
     }
   
     @media (forced-colors: active) {
-      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible, a:focus-visible {
+      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible, a:focus-visible, [role="button"]:focus-visible {
         outline: 2px solid CanvasText !important;
         outline-offset: 2px !important;
       }
     }
   
-    button, [class*="btn"], .btn {
+    button, [class*="btn"], .btn, [role="button"] {
       min-height: 44px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms cubic-bezier(0.16, 1, 0.3, 1);
     }
-    button:hover, [class*="btn"]:hover, .btn:hover {
+    button:hover, [class*="btn"]:hover, .btn:hover, [role="button"]:hover {
       filter: brightness(1.1);
       transform: translateY(-1px);
     }
-    button:active, [class*="btn"]:active, .btn:active {
+    button:active, [class*="btn"]:active, .btn:active, [role="button"]:active {
       transform: scale(0.98);
     }
-    button:focus-visible, [class*="btn"]:focus-visible, .btn:focus-visible {
+    button:focus-visible, [class*="btn"]:focus-visible, .btn:focus-visible, [role="button"]:focus-visible {
       outline: 2px solid Highlight;
       outline-offset: 2px;
     }
@@ -123,6 +123,11 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
+    }
+  
+    /* Dynamic Bento Asymmetric Grid Proportions */
+    @media (min-width: 768px) {
+      .bento-grid > :first-child, .grid > .bento-featured, [class*="grid"] > .bento-featured { grid-column: span 2; }
     }
   
     /* MD106 Decoupled Touch Halo */

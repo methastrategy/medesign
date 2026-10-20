@@ -309,6 +309,17 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
 
     const getClean = (src) => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
 
+    const isHtml = /<html|<body|<!DOCTYPE|<\/head>/i.test(content);
+    if (isHtml && !/<style\b/i.test(content)) {
+      if (content.includes('</head>')) {
+        content = content.replace('</head>', '  <style>\n  </style>\n</head>');
+      } else if (content.includes('<body>')) {
+        content = content.replace('<body>', '<head>\n  <style>\n  </style>\n</head>\n<body>');
+      } else {
+        content = '<style>\n</style>\n' + content;
+      }
+    }
+
     // 1. RULE MD104: Dynamic Viewport Units (Convert raw 100vh to 100dvh fallback)
     let count104 = 0;
     content = content.replace(/min-height\s*:\s*100vh\s*;?(?!\s*min-height\s*:\s*100[ds]vh)/gi, () => {
@@ -344,11 +355,11 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
 
     // Ensure forced-colors high contrast outline media query is injected
     if (!/@media\s*\(forced-colors:\s*active\)/i.test(getClean(content))) {
-      const forcedColorsRule = `\n    @media (forced-colors: active) {\n      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible, a:focus-visible {\n        outline: 2px solid CanvasText !important;\n        outline-offset: 2px !important;\n      }\n    }\n`;
+      const forcedColorsRule = `\n    @media (forced-colors: active) {\n      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible, a:focus-visible, [role="button"]:focus-visible {\n        outline: 2px solid CanvasText !important;\n        outline-offset: 2px !important;\n      }\n    }\n`;
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${forcedColorsRule}  </style>`);
         md005Applied = true;
-      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+      } else if (resolvedPath.endsWith('.css') || !isHtml) {
         content = content.trimEnd() + '\n' + forcedColorsRule;
         md005Applied = true;
       }
@@ -373,23 +384,23 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
 
     // 4. RULE MD004: Interactive State Contract & Micro-Interaction Springs
     const cleanForButtons = getClean(content);
-    const hasButtons = /<button/i.test(cleanForButtons) || /class="[^"]*btn[^"]*"/i.test(cleanForButtons) || /\.btn\b/i.test(cleanForButtons);
+    const hasButtons = /<button/i.test(cleanForButtons) || /class="[^"]*btn[^"]*"/i.test(cleanForButtons) || /\.btn\b/i.test(cleanForButtons) || /role="button"/i.test(cleanForButtons);
     const hasInteractive = /:hover/i.test(cleanForButtons) || /:active/i.test(cleanForButtons);
     if (hasButtons && !hasInteractive) {
-      const buttonStates = `\n    button, [class*="btn"], .btn {\n      min-height: 44px;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms cubic-bezier(0.16, 1, 0.3, 1);\n    }\n    button:hover, [class*="btn"]:hover, .btn:hover {\n      filter: brightness(1.1);\n      transform: translateY(-1px);\n    }\n    button:active, [class*="btn"]:active, .btn:active {\n      transform: scale(0.98);\n    }\n    button:focus-visible, [class*="btn"]:focus-visible, .btn:focus-visible {\n      outline: 2px solid Highlight;\n      outline-offset: 2px;\n    }\n`;
+      const buttonStates = `\n    button, [class*="btn"], .btn, [role="button"] {\n      min-height: 44px;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms cubic-bezier(0.16, 1, 0.3, 1);\n    }\n    button:hover, [class*="btn"]:hover, .btn:hover, [role="button"]:hover {\n      filter: brightness(1.1);\n      transform: translateY(-1px);\n    }\n    button:active, [class*="btn"]:active, .btn:active, [role="button"]:active {\n      transform: scale(0.98);\n    }\n    button:focus-visible, [class*="btn"]:focus-visible, .btn:focus-visible, [role="button"]:focus-visible {\n      outline: 2px solid Highlight;\n      outline-offset: 2px;\n    }\n`;
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${buttonStates}  </style>`);
         fixes.push('Injected hover and active interactive states for buttons (MD004)');
-      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+      } else if (resolvedPath.endsWith('.css') || !isHtml) {
         content = content.trimEnd() + '\n' + buttonStates;
         fixes.push('Injected hover and active interactive states for buttons (MD004)');
       }
     } else if (hasButtons && !content.includes('min-height: 44px')) {
-      const hitTargetFix = `\n    /* 44px Touch Target Standard (Apple HIG / WCAG) */\n    button, [class*="btn"], .btn { min-height: 44px; }\n`;
+      const hitTargetFix = `\n    /* 44px Touch Target Standard (Apple HIG / WCAG) */\n    button, [class*="btn"], .btn, [role="button"] { min-height: 44px; }\n`;
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${hitTargetFix}  </style>`);
         fixes.push('Enforced 44px minimum touch hit-target standard on buttons');
-      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+      } else if (resolvedPath.endsWith('.css') || !isHtml) {
         content = content.trimEnd() + '\n' + hitTargetFix;
         fixes.push('Enforced 44px minimum touch hit-target standard on buttons');
       }
@@ -397,11 +408,11 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
 
     // Micro-Interaction Springs (GPU-accelerated 160ms cubic-bezier transitions)
     if (!content.includes('cubic-bezier(0.16, 1, 0.3, 1)')) {
-      const springBlock = `\n    /* Micro-Interaction Springs (160ms cubic-bezier) */\n    button, [class*="btn"], .btn, .card, [class*="card"], .interactive-surface {\n      transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms cubic-bezier(0.16, 1, 0.3, 1);\n    }\n    .card:hover, [class*="card"]:hover {\n      transform: translateY(-2px);\n      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.3);\n    }\n`;
+      const springBlock = `\n    /* Micro-Interaction Springs (160ms cubic-bezier) */\n    button, [class*="btn"], .btn, [role="button"], .card, [class*="card"], .interactive-surface {\n      transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms cubic-bezier(0.16, 1, 0.3, 1);\n    }\n    .card:hover, [class*="card"]:hover {\n      transform: translateY(-2px);\n      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.3);\n    }\n`;
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${springBlock}  </style>`);
         fixes.push('Injected GPU-accelerated spring micro-interactions (160ms cubic-bezier(0.16, 1, 0.3, 1))');
-      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+      } else if (resolvedPath.endsWith('.css') || !isHtml) {
         content = content.trimEnd() + '\n' + springBlock;
         fixes.push('Injected GPU-accelerated spring micro-interactions (160ms cubic-bezier(0.16, 1, 0.3, 1))');
       }
@@ -416,7 +427,7 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${reducedMotionBlock}  </style>`);
         fixes.push('Added prefers-reduced-motion accessibility gate (MD002)');
-      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+      } else if (resolvedPath.endsWith('.css') || !isHtml) {
         content = content.trimEnd() + '\n' + reducedMotionBlock;
         fixes.push('Added prefers-reduced-motion accessibility gate (MD002)');
       }
@@ -433,64 +444,68 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
 
     // 7. Typography Elevation (Generic Fonts -> Curated Archetype Pairings: Geist / Plus Jakarta Sans / JetBrains Mono)
     let countTypo = 0;
-    const genericSansRegex = /font-family\s*:\s*(?:['"]?Inter['"]?|['"]?Arial['"]?|['"]?Helvetica Neue['"]?|system-ui)(?:\s*,\s*(?:sans-serif|system-ui|-apple-system|BlinkMacSystemFont|['"]?Segoe UI['"]?|Roboto|Oxygen|Ubuntu|Cantarell|['"]?Open Sans['"]?|['"]?Helvetica Neue['"]?|['"][^'"]+['"]|sans-serif))*\s*;?/gi;
+    const genericSansRegex = /font-family\s*:\s*(?:['"]?(?:Inter|Arial|Helvetica Neue|Helvetica|Roboto|Open Sans)['"]?|system-ui|-apple-system|BlinkMacSystemFont|['"]?Segoe UI['"]?)(?:\s*,\s*(?:sans-serif|system-ui|-apple-system|BlinkMacSystemFont|['"]?(?:Segoe UI|Roboto|Oxygen|Ubuntu|Cantarell|Open Sans|Helvetica Neue|Helvetica|Arial)['"]?|['"][^'"]+['"]|sans-serif))*\s*;?/gi;
     if (genericSansRegex.test(content)) {
       content = content.replace(genericSansRegex, () => {
         countTypo++;
         return "font-family: 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;";
       });
     }
-    const varSansRegex = /(--font-sans\s*:\s*)(?:['"]?Inter['"]?|['"]?Arial['"]?|system-ui)[^;]*;/gi;
+    const varSansRegex = /(--font-sans\s*:\s*)(?:['"]?(?:Inter|Arial|Helvetica Neue|Helvetica|Roboto|Open Sans)['"]?|system-ui|-apple-system|BlinkMacSystemFont|['"]?Segoe UI['"]?)[^;]*;/gi;
     if (varSansRegex.test(content)) {
       content = content.replace(varSansRegex, () => {
         countTypo++;
         return "--font-sans: 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;";
       });
     }
-    const genericMonoRegex = /font-family\s*:\s*(?:['"]?Courier New['"]?|monospace)\s*;?/gi;
+    const genericMonoRegex = /font-family\s*:\s*(?:['"]?(?:Courier New|Courier|Consolas|Menlo|Monaco)['"]?|monospace|ui-monospace|SFMono-Regular)(?:\s*,\s*[^;}]*)*\s*;?/gi;
     if (genericMonoRegex.test(content)) {
       content = content.replace(genericMonoRegex, () => {
         countTypo++;
         return "font-family: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;";
       });
     }
-    const varMonoRegex = /(--font-mono\s*:\s*)(?:['"]?Courier New['"]?|monospace)[^;]*;/gi;
+    const varMonoRegex = /(--font-mono\s*:\s*)(?:['"]?(?:Courier New|Courier|Consolas|Menlo|Monaco)['"]?|monospace|ui-monospace|SFMono-Regular)[^;]*;/gi;
     if (varMonoRegex.test(content)) {
       content = content.replace(varMonoRegex, () => {
         countTypo++;
         return "--font-mono: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;";
       });
     }
-    if (content.includes('</head>') && !content.includes('fonts.googleapis.com/css2?family=Geist')) {
-      const fontPreconnect = `    <link rel="preconnect" href="https://fonts.googleapis.com">\n    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">\n  `;
-      content = content.replace('</head>', `${fontPreconnect}</head>`);
-      countTypo++;
-    }
     if (countTypo > 0) {
+      if (content.includes('</head>') && !content.includes('fonts.googleapis.com/css2?family=Geist')) {
+        const fontPreconnect = `    <link rel="preconnect" href="https://fonts.googleapis.com">\n    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">\n  `;
+        content = content.replace('</head>', `${fontPreconnect}</head>`);
+      } else if ((resolvedPath.endsWith('.css') || !isHtml) && !content.includes('fonts.googleapis.com')) {
+        const fontImport = `@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');\n`;
+        content = fontImport + content;
+      }
       fixes.push('Elevated generic typography to curated Archetype pairings (Geist / Plus Jakarta Sans / JetBrains Mono)');
     }
 
     // 8. Dynamic Bento Proportions (Asymmetric Visual Hierarchy)
     let countBento = 0;
-    const gridContainerRegex = /(<div\s+class="[^"]*\bgrid\b[^"]*\bgrid-cols-[34]\b[^"]*">)([\s\S]*?)(<\/div>)/gi;
-    content = content.replace(gridContainerRegex, (match, openTag, inner, closeTag) => {
-      if (!/\bcol-span-/i.test(inner)) {
-        let elevated = false;
-        const updatedInner = inner.replace(/(<div\s+class=")([^"]*\bcard\b[^"]*)(")/i, (m, cOpen, classNames, cClose) => {
-          elevated = true;
-          return `${cOpen}${classNames} col-span-2 md:col-span-2 bento-featured${cClose}`;
-        });
-        if (elevated) {
+    const gridContainerRegex = /(<(?:div|section|main|ul)\s+[^>]*\b(?:grid\b|bento-grid\b)[^>]*>[\s\S]*?)(<(?:div|article|section|li)\s+class=")([^"]*\bcard\b[^"]*)(")/i;
+    if (gridContainerRegex.test(content) && !/\bcol-span-/i.test(content)) {
+      content = content.replace(gridContainerRegex, (match, beforeCard, cardOpen, classNames, cardClose) => {
+        if (!classNames.includes('bento-featured') && !classNames.includes('col-span-')) {
           countBento++;
-          return openTag + updatedInner + closeTag;
+          return `${beforeCard}${cardOpen}${classNames} col-span-2 md:col-span-2 bento-featured${cardClose}`;
         }
+        return match;
+      });
+    }
+
+    const hasBentoCss = /\.bento-featured\b|\.bento-grid\b/.test(getClean(content)) && content.includes('grid-column: span 2');
+    if (!hasBentoCss) {
+      const bentoCss = `\n    /* Dynamic Bento Asymmetric Grid Proportions */\n    @media (min-width: 768px) {\n      .bento-grid > :first-child, .grid > .bento-featured, [class*="grid"] > .bento-featured { grid-column: span 2; }\n    }\n`;
+      if (content.includes('</style>')) {
+        content = content.replace('</style>', `${bentoCss}  </style>`);
+        countBento++;
+      } else if (resolvedPath.endsWith('.css') || !isHtml) {
+        content = content.trimEnd() + '\n' + bentoCss;
+        countBento++;
       }
-      return match;
-    });
-    if (content.includes('</style>') && !content.includes('bento-featured')) {
-      const bentoCss = `\n    /* Dynamic Bento Asymmetric Grid Proportions */\n    @media (min-width: 768px) {\n      .bento-grid > :first-child, .grid > .bento-featured { grid-column: span 2; }\n    }\n`;
-      content = content.replace('</style>', `${bentoCss}  </style>`);
-      countBento++;
     }
     if (countBento > 0) {
       fixes.push('Injected dynamic Bento grid proportions (asymmetric visual hierarchy & featured spans)');
@@ -518,7 +533,7 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${haloCss}  </style>`);
         count106++;
-      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+      } else if (resolvedPath.endsWith('.css') || !isHtml) {
         content = content.trimEnd() + '\n' + haloCss;
         count106++;
       }
@@ -529,12 +544,21 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
 
     // 10. RULE MD102: Perceptual Color Gamut Normalizer (linear-gradient in oklch)
     let count102 = 0;
-    content = content.replace(/linear-gradient\(\s*(?!in\s+(?:oklch|oklab)\b)(?:(to\s+[^,]+|\d+deg),)?\s*/gi, (m, direction) => {
+    const gradientDirectionRegex = /linear-gradient\(\s*(?!in\s+(?:oklch|oklab)\b)(?:(-?\d+(?:\.\d+)?(?:deg|turn|rad|grad)|to\s+[a-zA-Z\s]+),)?\s*/gi;
+    content = content.replace(gradientDirectionRegex, (m, direction) => {
       count102++;
       if (direction) {
         return `linear-gradient(in oklch ${direction.trim()}, `;
       }
       return 'linear-gradient(in oklch, ';
+    });
+    content = content.replace(/radial-gradient\(\s*(?!in\s+(?:oklch|oklab)\b)/gi, () => {
+      count102++;
+      return 'radial-gradient(in oklch, ';
+    });
+    content = content.replace(/conic-gradient\(\s*(?!in\s+(?:oklch|oklab)\b)/gi, () => {
+      count102++;
+      return 'conic-gradient(in oklch, ';
     });
     if (count102 > 0) {
       fixes.push('Normalized color gamut to perceptual OKLCH interpolation space (MD102)');
@@ -545,9 +569,12 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
     const hasOuterRadius = /border-radius:\s*\d+px/i.test(content);
     const hasInnerConcentric = /max\(\s*0px/i.test(content) || /calc\(infinity/i.test(content) || /--corner-r/i.test(content);
     if (hasOuterRadius && !hasInnerConcentric) {
+      const concentricRule = `\n    /* MD103 Safe Concentric Radius Formula */\n    :root { --radius-inner: max(0px, var(--radius-outer, 16px) - 1px - 8px); }\n`;
       if (content.includes('</style>')) {
-        const concentricRule = `\n    /* MD103 Safe Concentric Radius Formula */\n    :root { --radius-inner: max(0px, var(--radius-outer, 16px) - 1px - 8px); }\n`;
         content = content.replace('</style>', `${concentricRule}  </style>`);
+        count103++;
+      } else if (resolvedPath.endsWith('.css') || !isHtml) {
+        content = content.trimEnd() + '\n' + concentricRule;
         count103++;
       }
     }

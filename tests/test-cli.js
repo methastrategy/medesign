@@ -124,6 +124,27 @@ try {
   assert(polishedAes.includes('active:scale-98'), 'Polish replaces scale-90 with safe proportional scale(0.98)');
   assert(polishedAes.includes('padding: 0 12px;'), 'Polish injects optical padding into slider (MD106)');
   assert(polishedAes.includes('fonts.googleapis.com'), 'Polish injects Google Fonts preconnect CDN for curated Archetypes');
+  assert(polishedAes.includes('grid-column: span 2'), 'Polish injects bento CSS rule with grid-column span 2');
+
+  // 4c. Test 'polish' on HTML without existing <style> tag
+  const testNoStylePath = path.join(tmpDir, 'test-no-style.html');
+  const rawNoStyle = `<!DOCTYPE html><html><head><title>No Style</title></head><body><button class="btn">Click</button><div class="grid grid-cols-3"><div class="card">A</div><div class="card">B</div></div></body></html>`;
+  fs.writeFileSync(testNoStylePath, rawNoStyle, 'utf8');
+  const polishNoStyleRes = spawnSync(process.execPath, [cliPath, 'polish', testNoStylePath], { encoding: 'utf8' });
+  assert(polishNoStyleRes.status === 0, 'Polish on HTML without style exits with code 0');
+  const polishedNoStyle = fs.readFileSync(testNoStylePath, 'utf8');
+  assert(polishedNoStyle.includes('<style>') && polishedNoStyle.includes('min-height: 44px;'), 'Polish creates <style> and injects 44px button contract');
+  assert(polishedNoStyle.includes('@media (forced-colors: active)'), 'Polish injects forced-colors into auto-created style block');
+
+  // 4d. Test 'polish' negative angle gradient and system font elevation
+  const testAnglePath = path.join(tmpDir, 'test-angle.html');
+  const rawAngle = `<!DOCTYPE html><html><head><style>body { --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .hero { background: linear-gradient(-45deg, #111, #222); }</style></head><body></body></html>`;
+  fs.writeFileSync(testAnglePath, rawAngle, 'utf8');
+  const polishAngleRes = spawnSync(process.execPath, [cliPath, 'polish', testAnglePath], { encoding: 'utf8' });
+  assert(polishAngleRes.status === 0, 'Polish angle test exits with code 0');
+  const polishedAngle = fs.readFileSync(testAnglePath, 'utf8');
+  assert(polishedAngle.includes('linear-gradient(in oklch -45deg,'), 'Polish handles negative angle gradient in oklch');
+  assert(polishedAngle.includes("'Geist', 'Plus Jakarta Sans'"), 'Polish elevates -apple-system font-sans variable');
 
   // 5. Test 'polish' on standalone CSS file (verifies forced-colors injection without </style>)
   const testCssPath = path.join(tmpDir, 'test-standalone.css');

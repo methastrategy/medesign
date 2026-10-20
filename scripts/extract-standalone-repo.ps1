@@ -1,5 +1,5 @@
 param (
-    [string]$TargetDir = "D:\METHA\medesign"
+    [string]$TargetDir = "D:\METHA\Projects\medesign"
 )
 
 $ErrorActionPreference = "Stop"

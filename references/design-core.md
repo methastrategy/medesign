@@ -3,14 +3,21 @@
 1. **Zero AI-Slop Negative Prompts (ข้อห้ามเด็ดขาด):**
    - **No Gaudy Gradients:** ห้ามใช้ multi-stop rainbow/neon gradient ทับปุ่มหรือการ์ดมั่วซั่ว (อนุญาตเฉพาะ subtle atmospheric radial glow ≤ 10% opacity)
    - **No Emoji Spam in Headings:** ห้ามใส่ Emoji เรียงหน้าหัวข้อหลัก (`🚀 Features`, `✨ Overview`) ยกเว้นผู้ใช้ระบุหรือเป็น Icon Badge เฉพาะจุด
-   - **No Heavy Drop Shadows:** ห้ามใช้ `shadow-md/lg/xl` ดำทึบเดี่ยวๆ → ต้องเป็น Frosted Glass (`backdrop-blur`) หรือ Stacked Inset Hairline Ring (`1px solid`) เสมอ
+   - **In-flow vs Floating Surface Rule (No Heavy Drop Shadows):** บัตร/พาเนลบนหน้าเว็บ (In-flow Surfaces) ใช้ขอบ Hairline 1px และ **"ห้ามใส่ Drop Shadow เด็ดขาด"** (เงาสงวนไว้ให้ Floating Popover/Dialog/Modal เท่านั้น) ใน Dark Mode ให้ยกระดับพื้นผิวด้วยความสว่าง Lighter Surface (+2-4% L) แทนเงาดำ
    - **No Colored Border Clutter:** ห้ามตีกรอบสีสด (`border-blue-500`, `border-purple-500`) รอบการ์ดทุกใบ ใช้ hairline border โปร่งแสง (`rgba(..., 0.08–0.15)`) เท่านั้น
    - **No Unnecessary Hover Bounces:** ห้ามทำการ์ดเด้งลอยสูง (`-translate-y-2`, `scale-105`) หรือ Parallax กวนสายตา → จำกัด motion ไม่เกิน `150ms–200ms` (`active:scale-[0.97]` เฉพาะปุ่มกด)
    - **Zero Cliche AI Palette:** ห้ามใช้โทนม่วง-ฟ้า AI มาตรฐาน (`bg-indigo-600` + `bg-purple-600`) หรือขาว-ส้มการตลาดทื่อๆ ที่ไม่ได้มาจาก Brand Token หรือ User DNA
-2. **Typography Discipline:**
-   - หัวข้อทุกตัวต้องบีบ `letter-spacing: -0.025em` ถึง `-0.035em`
+2. **Discrete Spacing & Control Geometry (สเกลปิดและเรขาคณิตควบคุม):**
+   - **Closed Spacing System:** ห้ามใช้ gap/margin นอกเหนือจาก `2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128` (สเกลปิดเด็ดขาด $S \in \{2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128\}\text{px}$) ห้ามใช้ arbitrary values เช่น 7px, 11px, 22px
+   - **Proximity Ratio ≥ 2:1:** ช่องว่างระหว่างกลุ่มต้องกว้างเป็นอย่างน้อย 2 เท่าของช่องว่างภายในกลุ่มเสมอ ($\text{Gap}_{\text{external}} \ge 2 \times \text{Gap}_{\text{internal}}$)
+   - **Control Heights Ladder:** ปุ่ม/อินพุตล็อกที่ `28 / 32 / 36 / 40px` (Desktop) และ `44 / 48px` (Mobile)
+   - **Nested Radius Invariant:** บังคับสูตร $r_{\text{outer}} = r_{\text{inner}} + \text{padding}$ ป้องกันมุมโค้งลอย
+3. **Typography Discipline:**
+   - **Latin-First Rule:** Font Stack ต้องวาง Latin นำหน้า Font ไทยเสมอ (เช่น `Inter, IBM Plex Sans Thai...`)
+   - **Thai Calibration:** บังคับ `letter-spacing: 0` สำหรับภาษาไทย (ห้ามใส่ Negative Tracking เพราะวรรณยุกต์จะชนกัน), Line-height สำหรับภาษาไทยต้องอยู่ที่ `1.7–1.8` (Body) และ `≥ 1.3` (Headings)
+   - หัวข้อภาษาอังกฤษบีบ `letter-spacing: -0.025em` ถึง `-0.035em`
    - ตัวเลข พิกัด สถิติ เวลา และรหัสสถานะ ต้องใช้ `font-mono tabular-nums` (`Geist Mono` / `JetBrains Mono`) เสมอ
-3. **Min-UI Principle (สำหรับ Tool / Engineering / SaaS Workspace เช่น MESURV, Mesnooker):**
+4. **Min-UI Principle (สำหรับ Tool / Engineering / SaaS Workspace เช่น MESURV, Mesnooker):**
    - **Controls Near Content:** วางปุ่มควบคุมและตัวกรองไว้ติดกับข้อมูลที่ถูกกระทำ ไม่แยกห่างเกินจำเป็น
    - **Verbs Over Nouns:** ปุ่ม Action ใช้คำกริยาที่ชัดเจน (`Calculate Traverse`, `Export GeoJSON`, `Start Frame`) แทนคำนามลอยๆ
    - **Zero Marketing Fluff:** ในหน้าทำงานจริง (Workspace/Calculator/Map) ตัดคำโฆษณาเวิ่นเว้อออก เน้นความคมชัดของข้อมูล (High Signal-to-Noise)

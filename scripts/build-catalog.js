@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const catalog = {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "name": "medesign-catalog",
   "archetypes": [
     {
@@ -651,9 +651,23 @@ const catalog = {
       "presetId": "metha",
       "vibe": "ระบบตรวจรับงานสำรวจ ตรวจสอบความถูกต้องของเส้นชั้นความสูง และรายงานค่าพิกัดตามมาตรฐานกรมที่ดิน"
     }
+  ],
+  "documentModes": [
+    {
+      "id": "executive-reports",
+      "name": "Executive PDF Reports & Management Presentations",
+      "path": "references/executive-reports.md",
+      "description": "12-Column Grid on 4pt Baseline, 8+4 Consulting Split, L1/L2/L3 5-Second Scan, Table Discipline"
+    }
   ]
 };
 
 const targetPath = path.join(__dirname, '..', 'references', 'catalog.json');
-fs.writeFileSync(targetPath, JSON.stringify(catalog, null, 2), 'utf8');
+fs.writeFileSync(targetPath, JSON.stringify(catalog, null, 2) + '\n', 'utf8');
+
+// Also keep Antigravity skill directory synchronized if present
+const skillCatalogPath = 'C:/Users/hotme/.gemini/config/skills/medesign/references/catalog.json';
+if (fs.existsSync(path.dirname(skillCatalogPath))) {
+  fs.writeFileSync(skillCatalogPath, JSON.stringify(catalog, null, 2) + '\n', 'utf8');
+}
 console.log(`Generated catalog.json with ${catalog.archetypes.length} archetypes.`);

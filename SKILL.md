@@ -22,6 +22,8 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | ทำ component / modal เฉพาะจุด | `references/components.md` |
 | งานใน MESURV หรือโปรเจกต์ MeBoard | เพิ่ม `references/mesurv-dna.md` |
 | สไลด์นำเสนอ & Pitch Decks | `references/slides.md` (หรือ `/medesign --slides`) |
+| สถาปัตยกรรมเอกสารและรายงานบริหาร (Executive PDF Reports) | `references/executive-reports.md` (หรือ `/medesign --report`) |
+| ตัวพิมพ์ไทย-ละติน & Font Pairings สากล | `references/typography-thai-latin.md` |
 | แบนเนอร์ โฆษณา ปกเพจ/โซเชียล | `references/banner-sizes-and-styles.md` (หรือ `/medesign --banner`) |
 | ภาพถ่ายและกราฟิกโซเชียลมีเดีย | `references/social-photos-design.md` (หรือ `/medesign --social`) |
 | ออกแบบโลโก้ AI & Style Guide | `references/logo-design.md` (หรือ `/medesign --logo`) |
@@ -47,16 +49,38 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 
 ---
 
-## ⚡ Skill Workflow & Dedicated Commands
+## ⚡ Zero-Flag Intuitive Dispatch & Workflow
+
+> [!IMPORTANT]
+> **ผู้ใช้ไม่ต้องจำหรือพิมพ์ `--flag`**: ระบบรองรับการทำงาน 2 ระดับ:
+> 1. **Auto-Detect Intent (เมื่อสั่งพร้อมข้อความ):** มีคำว่า "สไลด์" $\to$ ทำสไลด์ทันที, มีคำว่า "รายงาน" / "pdf" $\to$ ทำรายงานบริหาร 8+4 ทันที, มีคำว่า "แบนเนอร์" $\to$ ทำแบนเนอร์ทันที, มีคำว่า "โลโก้" $\to$ ออกแบบโลโก้ทันที, มีคำว่า "รีดีไซน์/ตรวจเว็บ" $\to$ เข้าโหมด audit ทันที
+> 2. **Interactive Cockpit Modal (เมื่อสั่ง `/medesign` เปล่า):** เปิดกล่อง `ask_question` ให้คลิกเลือกหมวดหมู่ที่ต้องการทันที
+
+### A. Auto-Detection Matrix
+
+| สิ่งที่ตรวจพบในข้อความ / บริบท | โหมดที่ระบบเลือกใช้อัตโนมัติ | กลไกเบื้องหลัง |
+| :--- | :--- | :--- |
+| **มีคำว่า "สไลด์", "slide", "pitch deck", "นำเสนอ"** | **Interactive HTML Slides** | สร้างสไลด์ด้วย Chart.js, Duarte Sparkline, และ Semantic Tokens |
+| **มีคำว่า "รายงาน", "report", "executive report", "pdf"** | **Executive PDF Reports** | ออกแบบรายงานบริหาร 12-Col Grid, 8+4 Consulting Split, Action Titles |
+| **มีคำว่า "ฟอนต์", "ตัวพิมพ์", "typography", "จับคู่ฟอนต์"** | **Bi-lingual Typography Engine** | ปรับจูน Latin-First, Thai Leading 1.7–1.8, Letter-spacing 0 |
+| **มีคำว่า "แบนเนอร์", "banner", "ปกเพจ", "ภาพโฆษณา"** | **Banner & Display Design** | ออกแบบขนาดมาตรฐานสำหรับ Facebook, Ads, Web พร้อม Grid Layout |
+| **มีคำว่า "โซเชียล", "social", "โพสต์", "ig", "facebook"** | **Social Graphics** | ออกแบบ Visual Composition สำหรับแพลตฟอร์มโซเชียลมีเดีย |
+| **มีคำว่า "โลโก้", "logo", "ตราสินค้า"** | **AI Logo & Color Psychology** | กำหนดสไตล์ 55+ สไตล์, จิตวิทยาสี และสร้างคำสั่งเจนภาพ |
+| **มีคำว่า "โทเค็น", "tokens", "css vars", "สี"** | **3-Layer Design Tokens** | สกัด Global $\to$ Semantic $\to$ Component Tokens |
+| **มีคำว่า "ตรวจดีไซน์", "รีดีไซน์", "แก้หน้าตา", "audit"** | **Redesign Audit** | ตรวจจับ AI Tells, ปรับฟอนต์ สี และ Spacing |
+| **มีคำว่า "หน้าเว็บ", "แอพ", "ui", "landing page"** | **UI/UX Modern Craft (Default)** | ออกแบบตาม 38 Archetypes และ Locked DNA Profile |
+
+### B. Dedicated Commands & Headless Shortcuts
 
 | คำสั่ง | พฤติกรรม |
 |:---|:---|
-| `/medesign` | **เปิด `ask_question` Modal** ให้เลือก Archetype ก่อน แล้ว Render ตาม DNA ผู้ใช้ |
+| `/medesign` | **เปิด `ask_question` Cockpit Modal** ให้คลิกเลือกหมวดหมู่งานที่ต้องการใน 1 คลิก |
 | `/medesign auto` | ใช้ **Locked DNA Profile** ทันที — MESURV Fusion & MeBoard FINAL-01/02 |
 | `/medesign audit` | **ตรวจและวางแผนรีดีไซน์เว็บเดิม** กำจัด AI Tells, ปรับฟอนต์ สี และ Spacing |
 | `/medesign --brand` | **ออกแบบอัตลักษณ์แบรนด์** โทนเสียง (Voice & Tone) และสไตล์ไกด์การสื่อสาร |
 | `/medesign --tokens` | **ออกแบบ 3-Layer Design Tokens** (Global $\to$ Semantic $\to$ Component) และ CSS Variables |
 | `/medesign --slides [topic]` | **สร้างสไลด์ Interactive HTML** พร้อม Chart.js, Duarte Sparkline และ Layout Patterns |
+| `/medesign --report [topic]` | **จัดทำ Executive PDF Report** สถาปัตยกรรมเอกสาร 8+4 Split, 4pt Baseline, Action Titles |
 | `/medesign --banner [platform]` | **ออกแบบแบนเนอร์/ภาพปก** สำหรับ Facebook, Ads, เว็บ พร้อม Preset ขนาดมาตรฐาน |
 | `/medesign --social [channel]` | **ออกแบบกราฟิกโซเชียลมีเดีย** (IG, FB, LinkedIn, Twitter) พร้อม Visual Composition |
 | `/medesign --logo [brand]` | **สร้างโลโก้ AI และ Color Psychology** 55+ สไตล์ และ Color Palettes |
@@ -84,11 +108,11 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 
 > ค่า Tokens เต็ม: `user-profile.json` (หรืออ้างอิงจาก `references/brand-design-tokens.md`)
 
-- **01 Optical Geometry Engine:** Safe Concentric (`max(0px, r_outer - border_w - pad)`), Boundary Clearance (`MD106`: Transparent Touch Halo สำหรับ Slider และ $\ge 12$px Optical Padding), Full Pill (`calc(var(--h) / 2)` หรือ `@property` สำหรับ Morphing), Area-Proportional Scaling (`clamp(0.96, 1 - 2.5/max(W,H), 0.995)` โดยแยก Hit Target 44px ออกจาก Visual Surface)
-- **02 Perceptual Color Engine:** Perceptual Intent rules (`in oklch shorter hue` สำหรับรักษาความสด, `in oklab` สำหรับเกลี่ยความสว่าง/Neutral, Midpoint testing 25/50/75%), `color-mix()` token derivation, Functional Dark Mode Tokens (`surface-canvas`, `surface-raised`, `surface-inset`, `border-subtle`, `border-focus`), OLED Pure Black `#000000`
+- **01 Optical Geometry & Spacing Engine:** Safe Concentric (`r_outer = r_inner + padding`), Closed Spacing System ($S \in \{2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128\}\text{px}$), Proximity Ratio $\ge 2:1$ ($\text{Gap}_{\text{external}} \ge 2\times\text{Gap}_{\text{internal}}$), Control Heights Ladder (Desktop `28/32/36/40px`, Mobile `44/48px`), Boundary Clearance (`MD106`: Transparent Touch Halo สำหรับ Slider และ $\ge 12$px Optical Padding), Full Pill (`calc(var(--h) / 2)` หรือ `@property` สำหรับ Morphing), Area-Proportional Scaling (`clamp(0.96, 1 - 2.5/max(W,H), 0.995)` โดยแยก Hit Target 44px ออกจาก Visual Surface)
+- **02 Perceptual Color Engine:** In-flow vs Floating Surface Architecture (บัตร/พาเนล In-flow ใช้ Hairline 1px, ห้ามใส่ Drop Shadow, Dark Mode ยกพื้นผิวด้วย +2–4% L แทนเงาดำ, Drop Shadow สงวนไว้เฉพาะ Floating Popover/Dialog), Perceptual Intent rules (`in oklch shorter hue` สำหรับรักษาความสด, `in oklab` สำหรับเกลี่ยความสว่าง/Neutral, Midpoint testing 25/50/75%), `color-mix()` token derivation, Functional Dark Mode Tokens (`surface-canvas`, `surface-raised`, `surface-inset`, `border-subtle`, `border-focus`), OLED Pure Black `#000000`
 - **03 Motion & Interaction Engine:** 4 Motion Profiles (`precision` 0-100ms, `soft-settle` 240-280ms, `spring-settle`, `instant` 0ms), Asymmetric Entry/Exit ($0.65\times$ e.g. 280ms/180ms), `@media (prefers-reduced-motion: reduce)` compliance, CSS Anchor Positioning + Popover API + `@starting-style`
-- **04 Typography & Script Engine:** Dual-Context Line-Height (UI Chrome `1.25/1.38` + `@supports (text-box: trim-both...)` + Thai Diacritic Headroom 2-4px, Prose `1.60/1.72`), `@font-face` `size-adjust` calibration, Heading Tracking `-0.025em`
-- **05 Design Quality & Anti-Slop Auditor:** 4-Tier Quality Governance (Hard Invariants -> Soft Heuristics -> Progressive Enhancements -> Domain Rules), Complete Semantic State Contract (6 สถานะ), Zero AI Slop (ป้องกัน Decisionless Uniformity, ตรวจสอบ Information Architecture ก่อนสร้าง Layout)
+- **04 Typography & Script Engine:** Latin-First Rule (Font Stack วาง Latin นำหน้า Font ไทยเสมอ), Thai Calibration (`letter-spacing: 0` สำหรับภาษาไทย, Body Line-Height `1.7–1.8`, Headings Line-Height `≥ 1.3`, Thai Diacritic Headroom 2–4px), 4 Official Font Pairings (`references/typography-thai-latin.md`: Dashboard `Geist+Noto Sans Thai`, Brand `DM Sans+Prompt`, Docs `Source Serif 4+Noto Serif Thai/Sarabun`, Display `Kanit/Prompt`), `@font-face` `size-adjust` calibration
+- **05 Design Quality & Anti-Slop Auditor:** Universal Pre-Ship Audit Trio (Squint Test, Grayscale Test, Delete-the-Border Test), Complete 10-State Machine Matrix (Default, Hover, Pressed, Focus-visible, Loading-skeleton delay 200ms, Empty 3 รูปแบบ, Error inline+recovery, Disabled, Partial SWR, Overflow min-width:0), 4-Tier Quality Governance (Hard Invariants -> Soft Heuristics -> Progressive Enhancements -> Domain Rules)
 - **Spatial 3D & Telemetry:** Dynamic Island capsule + Floating telemetry dock + 100dvh viewport map canvas + WebGL `frameloop="demand"` (0W idle, VRAM $\le 32\text{MB}$)
 
 ---

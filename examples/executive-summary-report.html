@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Briefing: Metha Cadastre & Geodetic Network QA/QC Audit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* -------------------------------------------------------------
+       1. Baseline Grid & Design Tokens (4pt Baseline / 12-Col Grid)
+       ------------------------------------------------------------- */
+    :root {
+      --font-sans: "Geist", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "Geist Mono", monospace;
+
+      --baseline-4: 4px;
+      --baseline-8: 8px;
+      --baseline-12: 12px;
+      --baseline-16: 16px;
+      --baseline-24: 24px;
+      --baseline-32: 32px;
+
+      --color-canvas: #f8fafc;
+      --color-surface: #ffffff;
+      --color-text-primary: #0f172a;
+      --color-text-secondary: #475569;
+      --color-text-tertiary: #94a3b8;
+      --color-border-hairline: rgba(15, 23, 42, 0.08);
+      --color-border-strong: rgba(15, 23, 42, 0.18);
+
+      --color-accent-teal: #0f766e;
+      --color-accent-blue: #2563eb;
+      --color-accent-emerald: #059669;
+      --color-accent-amber: #d97706;
+
+      --r-outer: 12px;
+      --card-pad: 24px;
+      --r-inner: max(0px, calc(var(--r-outer) - var(--card-pad))); /* Safe Concentric Radius formula max(0px, r_outer - pad) */
+    }
+
+    /* Reset & Base Typography */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-canvas);
+      color: var(--color-text-primary);
+      line-height: 1.75;
+      letter-spacing: 0; /* Thai typography letter-spacing invariant */
+      padding: 32px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Screen Container: Mimic A4 Landscape */
+    .page-sheet {
+      width: 100%;
+      max-width: 1122px; /* ~297mm @ 96dpi */
+      min-height: 793px;  /* ~210mm @ 96dpi */
+      margin: 0 auto;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-hairline); /* In-flow Hairline: 1px solid, ZERO drop shadow */
+      border-radius: var(--r-outer);
+      padding: 32px 36px;
+      position: relative;
+    }
+
+    /* -------------------------------------------------------------
+       2. 12-Column Grid Snapping on 4pt Baseline
+       ------------------------------------------------------------- */
+    .report-grid-12 {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 20px;
+      row-gap: 16px;
+    }
+
+    /* -------------------------------------------------------------
+       3. 8 + 4 Consulting Split Layout
+       ------------------------------------------------------------- */
+    .consulting-stage {
+      grid-column: span 8;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .consulting-rail {
+      grid-column: span 4;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-left: 0.5px solid var(--color-border-hairline);
+      padding-left: 20px;
+    }
+
+    /* -------------------------------------------------------------
+       4. L1 / L2 / L3 5-Second Scan Architecture
+       ------------------------------------------------------------- */
+    /* Header Meta Eyebrow */
+    .eyebrow-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 0.5px solid var(--color-border-hairline);
+      margin-bottom: 12px;
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tag-confidential {
+      background: #fef2f2;
+      color: #b91c1c;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    /* L1: Action Title (Full Conclusive Sentence) */
+    .action-title {
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.30;
+      color: var(--color-text-primary);
+      letter-spacing: 0;
+      margin-bottom: 6px;
+    }
+
+    .action-subtitle {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      line-height: 1.60;
+      margin-bottom: 10px;
+    }
+
+    /* L2: Directly Labeled Visuals (Chart Area - Zero Legend Box) */
+    .visual-chart-box {
+      border: 1px solid var(--color-border-hairline);
+      border-radius: 8px;
+      padding: 12px 16px;
+      background: #fafaf9;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .chart-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .chart-metric-callout {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-accent-teal);
+    }
+
+    /* SVG Direct-Labeling Plot */
+    .chart-svg-container {
+      width: 100%;
+      height: 120px;
+      display: block;
+    }
+
+    /* L3: Executive Table Discipline */
+    .table-container {
+      margin-top: 8px;
+      overflow-x: auto;
+    }
+
+    .executive-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* Horizontal Hairline 0.25pt / 0.5px */
+    .executive-table thead tr {
+      border-top: 1px solid var(--color-border-strong);
+      border-bottom: 0.5px solid var(--color-border-strong);
+    }
+
+    .executive-table tbody tr {
+      border-bottom: 0.5px solid var(--color-border-hairline); /* 0.25pt hairline */
+    }
+
+    .executive-table tfoot tr {
+      border-top: 1px solid var(--color-border-strong);
+      border-bottom: 1px solid var(--color-border-strong);
+      font-weight: 600;
+    }
+
+    /* ZERO vertical gridlines */
+    .executive-table th,
+    .executive-table td {
+      border-left: none !important;
+      border-right: none !important;
+      padding: 6px 10px;
+    }
+
+    .executive-table th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Right-aligned numerical discipline with tabular-nums */
+    .executive-table .col-num {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+
+    .executive-table .col-badge {
+      text-align: center;
+    }
+
+    .badge-status-pass {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #ecfdf5;
+      color: #047857;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    /* -------------------------------------------------------------
+       5. Margin Rail: Executive Takeaway & Provenance (L3)
+       ------------------------------------------------------------- */
+    .rail-card {
+      background: #f8fafc;
+      border: 1px solid var(--color-border-hairline);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rail-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .rail-stat {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-accent-teal);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rail-text {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      line-height: 1.65;
+    }
+
+    .provenance-list {
+      list-style: none;
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .provenance-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 0.5px dashed var(--color-border-hairline);
+      padding-bottom: 4px;
+    }
+
+    .provenance-label {
+      color: var(--color-text-tertiary);
+    }
+
+    .provenance-val {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+
+    /* Print / Export Button for Browser Interactive View */
+    .action-bar-top {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-print {
+      min-height: 44px; /* 44px touch target invariant */
+      padding: 0 16px;
+      border-radius: 6px;
+      background: var(--color-text-primary);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 160ms ease;
+    }
+
+    .btn-print:hover {
+      background: #1e293b;
+    }
+
+    .btn-print:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+
+    /* -------------------------------------------------------------
+       6. Print & Paged Media CSS Engine (@page / @media print)
+       ------------------------------------------------------------- */
+    @page {
+      size: A4 landscape;
+      margin: 15mm 15mm 15mm 15mm;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .page-sheet {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+        box-shadow: none !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      /* Page-break avoidance on consulting cards & tables */
+      .consulting-stage,
+      .consulting-rail,
+      .visual-chart-box,
+      .executive-table,
+      .rail-card {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+
+      /* Strip zebra striping on print */
+      .executive-table tr {
+        background-color: transparent !important;
+      }
+    }
+
+    /* Windows High Contrast Mode (MD005) */
+    @media (forced-colors: active) {
+      .btn-print {
+        outline: 2px solid Highlight !important;
+      }
+      .badge-status-pass {
+        border: 1px solid Highlight;
+      }
+    }
+
+    /* Reduced Motion Compliance (MD002) */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen-Only Actions -->
+  <div class="action-bar-top no-print">
+    <button class="btn-print" onclick="window.print()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <rect x="6" y="14" width="12" height="8"></rect>
+      </svg>
+      <span>พิมพ์รายงานบริหาร (Print A4 PDF)</span>
+    </button>
+  </div>
+
+  <!-- A4 Landscape Executive Sheet -->
+  <div class="page-sheet">
+
+    <!-- Header Provenance Strip -->
+    <div class="eyebrow-strip">
+      <div>
+        <span>PROJECT: METHA CADASTRE & GEODETIC QA/QC</span>
+        <span style="margin: 0 8px;">|</span>
+        <span>BENCHMARK AUDIT REPORT #KU-2026-Q3</span>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span class="tag-confidential">STRICTLY CONFIDENTIAL</span>
+        <span>DATE: 2026-10-20</span>
+      </div>
+    </div>
+
+    <!-- 12-Column Grid with 8+4 Consulting Split -->
+    <div class="report-grid-12">
+
+      <!-- 8 COLUMNS: MAIN ANALYTICAL STAGE -->
+      <section class="consulting-stage">
+        <div>
+          <!-- L1 Action Title -->
+          <h1 class="action-title">
+            โครงข่ายหมุดหลักฐานรังวัดผ่านเกณฑ์มาตรฐานชั้น 1 โดยมีความคลาดเคลื่อนแนวราบเฉลี่ย 1.8 ซม.
+          </h1>
+          <!-- Narrative Subtitle -->
+          <p class="action-subtitle">
+            การตรวจสอบความถูกต้องร่วมระหว่างภาพถ่ายโดรน RTK และหมุดหมุดควบคุมภาคพื้นดิน 4,190 จุด บ่งชี้ว่าตำแหน่งทางราบทั้งหมดผ่านเกณฑ์ความคลาดเคลื่อนยอมรับได้ของกรมที่ดิน (&le; 5.0 ซม.) อย่างสมบูรณ์
+          </p>
+        </div>
+
+        <!-- L2 Directly Labeled Quantitative Chart (Zero Legend Box) -->
+        <div class="visual-chart-box">
+          <div class="chart-header">
+            <span class="chart-title">การกระจายตัวของค่าคลาดเคลื่อนทางราบเทียบกับเกณฑ์ความคลาดเคลื่อน (Tolerance Threshold)</span>
+            <span class="chart-metric-callout">MEAN &Delta;xy = 1.84 cm &plusmn; 0.42 cm</span>
+          </div>
+
+          <!-- Direct Labeled SVG Plot -->
+          <svg class="chart-svg-container" viewBox="0 0 680 160" preserveAspectRatio="none">
+            <!-- Gridlines Hairlines -->
+            <line x1="40" y1="20" x2="660" y2="20" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2 2" />
+            <line x1="40" y1="60" x2="660" y2="60" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2 2" />
+            <line x1="40" y1="100" x2="660" y2="100" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2 2" />
+            <line x1="40" y1="140" x2="660" y2="140" stroke="#94a3b8" stroke-width="1" />
+
+            <!-- Y-Axis Ticks -->
+            <text x="32" y="24" font-size="9" fill="#94a3b8" text-anchor="end" font-family="monospace">5cm</text>
+            <text x="32" y="64" font-size="9" fill="#94a3b8" text-anchor="end" font-family="monospace">3cm</text>
+            <text x="32" y="104" font-size="9" fill="#94a3b8" text-anchor="end" font-family="monospace">1cm</text>
+            <text x="32" y="144" font-size="9" fill="#94a3b8" text-anchor="end" font-family="monospace">0</text>
+
+            <!-- Tolerance Limit Line (Red 5.0cm) -->
+            <line x1="40" y1="20" x2="520" y2="20" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3" />
+            <!-- Direct Labeling for Tolerance Line -->
+            <text x="528" y="23" font-size="10" font-weight="600" fill="#ef4444" font-family="monospace">Tolerance Limit (5.0 cm)</text>
+
+            <!-- Measured Distribution Curve (Teal Area + Line) -->
+            <path d="M 40,140 Q 180,135 280,75 T 460,40 T 640,138" fill="none" stroke="#0d9488" stroke-width="2.5" />
+            
+            <!-- Direct Labeling Endpoint -->
+            <circle cx="460" cy="40" r="4" fill="#0d9488" />
+            <text x="470" y="36" font-size="11" font-weight="700" fill="#0d9488" font-family="sans-serif">
+              Measured Sample Peak (1.8 cm)
+            </text>
+
+            <!-- Secondary Comparison Line (GPS Baseline - Blue) -->
+            <path d="M 40,140 Q 160,130 310,95 T 510,70 T 640,139" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="2 2" />
+            <circle cx="510" cy="70" r="3" fill="#2563eb" />
+            <text x="520" y="73" font-size="10" font-weight="600" fill="#2563eb" font-family="sans-serif">
+              Ground GNSS Baseline (2.1 cm)
+            </text>
+          </svg>
+        </div>
+
+        <!-- L3 Table Discipline: 0.25pt horizontal hairlines, zero vertical lines, tabular-nums -->
+        <div class="table-container">
+          <table class="executive-table">
+            <thead>
+              <tr>
+                <th style="width: 32%;">หมุดหลักฐาน / จุดทดสอบ</th>
+                <th class="col-num" style="width: 18%;">จำนวนตัวอย่าง (n)</th>
+                <th class="col-num" style="width: 18%;">&Delta;x (ซม.)</th>
+                <th class="col-num" style="width: 18%;">&Delta;y (ซม.)</th>
+                <th class="col-badge" style="width: 14%;">สถานะรับรอง</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>BM-KU-01 (สถานีแม่ข่ายหลัก)</td>
+                <td class="col-num">1,240</td>
+                <td class="col-num">+1.12</td>
+                <td class="col-num">+0.85</td>
+                <td class="col-badge"><span class="badge-status-pass">PASS</span></td>
+              </tr>
+              <tr>
+                <td>BM-KU-02 (แนวเขตพื้นที่สำรวจเหนือ)</td>
+                <td class="col-num">850</td>
+                <td class="col-num">+1.45</td>
+                <td class="col-num">-1.04</td>
+                <td class="col-badge"><span class="badge-status-pass">PASS</span></td>
+              </tr>
+              <tr>
+                <td>BM-KU-03 (หมุดควบคุมทางราบแปลงที่ดิน)</td>
+                <td class="col-num">2,100</td>
+                <td class="col-num">+1.82</td>
+                <td class="col-num">+1.65</td>
+                <td class="col-badge"><span class="badge-status-pass">PASS</span></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>รวมความคลาดเคลื่อนเฉลี่ยทั้งระบบ</td>
+                <td class="col-num">4,190</td>
+                <td class="col-num">+1.46</td>
+                <td class="col-num">+1.18</td>
+                <td class="col-badge"><span class="badge-status-pass">CERTIFIED</span></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <!-- 4 COLUMNS: MARGIN RAIL (EXECUTIVE TAKEAWAY & SOURCES) -->
+      <aside class="consulting-rail">
+
+        <!-- Executive Key Takeaways Callout -->
+        <div class="rail-card">
+          <span class="rail-card-title">ข้อสรุปยุทธศาสตร์ (Key Takeaways)</span>
+          <div class="rail-stat">99.8%</div>
+          <p class="rail-text">
+            จุดรังวัดผ่านเกณฑ์มาตรฐานชั้น 1 ของกรมที่ดิน พร้อมอนุมัติส่งมอบข้อมูลเข้าสู่ระบบสารสนเทศภูมิศาสตร์กลาง (GIS Cadastre) ได้ทันที
+          </p>
+        </div>
+
+        <!-- Margin Provenance Box -->
+        <div class="rail-card">
+          <span class="rail-card-title">แหล่งที่มาของข้อมูล (Provenance)</span>
+          <ul class="provenance-list">
+            <li class="provenance-item">
+              <span class="provenance-label">ระบบพิกัด:</span>
+              <span class="provenance-val">UTM Zone 47N (WGS84)</span>
+            </li>
+            <li class="provenance-item">
+              <span class="provenance-label">เครื่องมือ:</span>
+              <span class="provenance-val">DJI Matrice 350 RTK</span>
+            </li>
+            <li class="provenance-item">
+              <span class="provenance-label">สถานีฐาน:</span>
+              <span class="provenance-val">CORS Department of Lands</span>
+            </li>
+            <li class="provenance-item">
+              <span class="provenance-label">ผู้ตรวจรับ:</span>
+              <span class="provenance-val">เมธา ตรีประพันธ์กิจ</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Next Strategic Action -->
+        <div class="rail-card" style="border-left: 3px solid var(--color-accent-teal);">
+          <span class="rail-card-title">ขั้นตอนถัดไป (Next Action)</span>
+          <p class="rail-text">
+            1. ส่งออก Shapefile และ GeoJSON เข้าสู่ระบบฐานข้อมูลกลาง<br>
+            2. ลงนามเอกสารตรวจรับงานงวดที่ 3 ตามระเบียบราชการ
+          </p>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

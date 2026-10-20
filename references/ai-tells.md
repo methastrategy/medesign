@@ -122,7 +122,7 @@ Scope: text rendered in the UI being built; does not apply to chat replies or sk
 
 2. **Interaction Slop (Dead Feedback):**
    - **NO Cosmetic Hover on Static Elements:** ห้ามใส่ `hover:-translate-y-1` หรือ Hover Glow บนการ์ดที่คลิกไม่ได้และไม่มี Navigation Link
-   - **NO Broken State Contract:** ทุกปุ่มต้องมีสถานะครบ 6 ชั้น (`default → hover → pressed → focus-visible → disabled/loading → success/error`) ห้ามมีปุ่มที่กดแล้วนิ่งสนิท
+   - **NO Broken State Contract:** ทุก Interactive Component และปุ่มต้องรองรับสถานะตาม **10-State Machine Matrix** (`default → hover → pressed → focus-visible → loading-skeleton (200ms delay) → empty (3 forms) → error (inline + recovery) → disabled → partial-swr → overflow (min-width: 0)`) ห้ามมีปุ่มที่กดแล้วนิ่งสนิท
    - **NO Accent Color Inflation:** สีเน้น (Accent Color) ต้องใช้ไม่เกิน 10-15% ของพื้นที่หน้าจอทั้งหมด ห้ามระบายสีเน้นลงบนไอคอน หัวข้อ และการ์ดทุกใบจนปุ่ม CTA สูญเสียแรงดึงดูดสายตา (Visual Gravity)
 
 3. **Optical Geometry & Component Craft Slop (Hit-Target Conflation):**

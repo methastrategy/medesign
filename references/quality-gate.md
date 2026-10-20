@@ -37,31 +37,55 @@
 
 | ระดับการตรวจสอบ | เกณฑ์ประเมิน | ตัวอย่างข้อกำหนด | กลไกการตรวจรับ (Gate) |
 |---|---|---|---|
-| **Tier 1: Hard Invariants** | ไม่มีการประนีประนอม (Pass/Fail) | WCAG Dual-Theme Contrast, Keyboard Focus Visible, 44px Touch Targets, Reduced-Motion Compliance, Semantic State Contract | Automated Unit & Contrast Test |
+| **Tier 1: Hard Invariants** | ไม่มีการประนีประนอม (Pass/Fail) | WCAG Dual-Theme Contrast, Keyboard Focus Visible, 44px Touch Targets, Reduced-Motion Compliance, 10-State Machine Matrix, Universal Pre-Ship Audit Trio | Automated Unit & Contrast Test |
 | **Tier 2: Soft Heuristics** | ปรับตามบริบทและขนาดหน้าจอ | Safe Concentric Radius, Boundary Clearance & Optical Inset (MD106), Motion Timing, Accent Budget ($\le 15\%$), Whitespace Budget ($\ge 25\%$) | Design Review & Optical Comparison |
 | **Tier 3: Progressive Enhancements** | เสริมความลื่นไหลเมื่อเบราว์เซอร์รองรับ | CSS Anchor Positioning, Scroll-Driven Animations, View Transitions L2, `@starting-style` | Feature Detection (`@supports` / JS Fallback) |
 | **Tier 4: Domain Rules** | สอดคล้องกับงานเฉพาะทางของผู้ใช้ | High-Density Telemetry, Map Canvas 100dvh, 0W Idle WebGL `frameloop="demand"` | Domain User Workflow Audit |
 
-#### 1. Complete Semantic State Contract (Hard Invariant):
-ทุก Interactive Component ต้องผ่านการออกแบบและมี CSS ครบทั้ง 6 สถานะ:
-$$\text{default} \longrightarrow \text{hover} \longrightarrow \text{pressed} \longrightarrow \text{focus-visible} \longrightarrow \text{disabled / loading} \longrightarrow \text{success / error}$$
-- **Focus Rings:** ทุกปุ่ม/ลิงก์/อินพุตต้องมี `:focus-visible` ชัดเจน (`outline: 2px solid var(--border-focus); outline-offset: 2px;`)
-- **Press Displacement:** ปุ่มยุบตัวทางสายตาด้วย Area-Proportional Scaling โดยไม่ลดขนาดกล่อง Hit Target
-- **Reduced Motion:** หากผู้ใช้เปิด `prefers-reduced-motion: reduce` ต้องตัด Transition เหลือ `0ms` ทันที
+#### 1. Complete 10-State Machine Matrix (Hard Invariant):
+ทุก Interactive Component และ Data Region ต้องผ่านการออกแบบและมี CSS/State Handling ครบทั้ง **10 มิติของ State Machine**:
 
-#### 2. Dual-Theme Contrast & Polarity Discipline (Hard Invariant):
+$$\text{default} \to \text{hover} \to \text{pressed} \to \text{focus-visible} \to \text{loading-skeleton} \to \text{empty (3 forms)} \to \text{error} \to \text{disabled} \to \text{partial-swr} \to \text{overflow}$$
+
+1. **Default (Rest):** สถานะปกติ ชัดเจน เป็นระเบียบ Hierarchy ทางสายตาถูกต้องตามสเปก
+2. **Hover:** การตอบสนองด้วยเคอร์เซอร์ (`160–200ms cubic-bezier(0.16, 1, 0.3, 1)` tone shift หรือ subtle catch-light)
+3. **Pressed (Active):** การยุบตัวทางสายตาด้วย Area-Proportional Scaling (`scale(0.97–0.994)`) โดยแยก Hit-Target Container 44px ให้คงที่
+4. **Focus-visible:** เส้นขอบโฟกัสทางกายภาพคมชัด (`outline: 2px solid Highlight / var(--border-focus); outline-offset: 2px;`) พร้อมทำงานในโหมด Windows High Contrast (`forced-colors: active`)
+5. **Loading-Skeleton (พร้อม Delay 200ms Guardrail):** Skeleton มีขนาดและ Aspect Ratio ตรงกับคอนเทนต์จริงเพื่อป้องกัน Layout Shift (CLS = 0) พร้อม **200ms Delay Gate** (หาก Network โหลดเสร็จภายใน 200ms จะไม่แสดง Skeleton แวบกวนสายตา)
+6. **Empty State (3 รูปแบบสมบูรณ์):**
+   - *Onboarding / First-run Empty:* ต้อนรับผู้ใช้ใหม่ แนะนำประโยชน์ และมีปุ่ม Primary Action ชัดเจน
+   - *No Search / Filter Results:* แจ้งว่าไม่พบผลลัพธ์ พร้อมแนะนำคำค้นทางเลือกและปุ่ม "ล้างตัวกรอง" (Clear Filters)
+   - *Cleared / Completed:* แสดงความยินดีเมื่องานเสร็จสิ้นทั้งหมด (เช่น Inbox Zero, All tasks completed)
+7. **Error State (Inline + Recovery Action):** แสดงข้อความข้อผิดพลาดที่เจาะจง ณ ตำแหน่งที่เกิด (Inline) พร้อมระบุวิธีแก้ไขและปุ่มลองใหม่อัตโนมัติ (Retry / Self-recovery)
+8. **Disabled / Read-Only:** ปรับ Opacity ลดลงเหลือ `0.45–0.50`, ใส่ `cursor: not-allowed;`, ยกเลิก Interactive Events แต่ต้องคง Contrast ให้อ่านได้ว่าคืออะไร
+9. **Partial SWR (Stale-While-Revalidate):** ขณะ Background Revalidation ดึงข้อมูลใหม่ ให้แสดงข้อมูลเดิมต่อไปพร้อม Visual Indicator เล็กๆ (เช่น Subtle Pulsing Dot หรือ 10% Dimming) ห้ามล้างหน้าจอเป็นหน้าขาวหรือสลับไปหน้าโหลดเต็มจอ
+10. **Overflow / Truncation (`min-width: 0` Invariant):** กล่องข้อความยาวใน Flex/Grid ต้องล็อก `min-width: 0;` เสมอ เพื่อให้ `text-overflow: ellipsis; white-space: nowrap; overflow: hidden;` ตัดคำได้จริงโดยไม่ดัน Layout พัง พร้อม Tooltip แสดงข้อความเต็มเมื่อ Hover/Focus
+
+#### 2. Universal Pre-Ship Audit Trio (เกณฑ์ตรวจสอบ 3 ด่านสากลก่อนส่งมอบ):
+ก่อนส่งมอบโค้ด UI ใดๆ ให้ผ่านการทดสอบ Visual Sanity ทั้ง 3 ด่าน:
+1. **The Squint Test (ทดสอบการหรี่ตา):**
+   - *วิธีทำ:* หรี่ตามองหน้าจอจนภาพเบลอ เหลือเพียงกลุ่มก้อนความสว่าง (Luminance Mass) และรูปทรงเรขาคณิต
+   - *เกณฑ์ผ่าน:* สายตาต้องถูกดึงดูดไปยัง **Primary Focal Point / Hero Action** ภายใน 1 วินาที ลำดับขั้นสายตา 3 ระดับ (Primary $\to$ Secondary $\to$ Ambient) ต้องชัดเจน หากเห็นการ์ดทุกใบเทากลืนเท่ากันหมด (Flat Gray Soup) แปลว่า **ไม่ผ่าน**
+2. **The Grayscale Test (ทดสอบขาว-ดำ):**
+   - *วิธีทำ:* ใส่ `filter: grayscale(100%);` บนหน้ารวมชั่วคราว
+   - *เกณฑ์ผ่าน:* ลำดับความสำคัญและข้อมูลยังคงอ่านออกและแยกแยะได้ครบถ้วนโดยไม่พึ่งพาสี (No Color-Only Information Transfer) อัตราส่วนความสว่าง (Luminance Contrast) ต้องผ่านเกณฑ์ WCAG AA/AAA เสมอ
+3. **The Delete-the-Border Test (ทดสอบลบเส้นขอบ):**
+   - *วิธีทำ:* ปิดเส้นขอบทั้งหมดชั่วคราว (`* { border: none !important; outline: none !important; box-shadow: none !important; }`)
+   - *เกณฑ์ผ่าน:* โครงสร้าง Layout และการจัดกลุ่มข้อมูลยังคงแยกแยะได้ด้วย Spacing (Proximity Ratio $\ge 2:1$), Alignment, และการยกพื้นผิว Background Tone (+2–4% L) หากลบเส้นขอบแล้วหน้าจอเละ กลืนกันหมด แสดงว่าพึ่งพาเส้นตีกรอบมากเกินไป (Border Crutch)
+
+#### 3. Dual-Theme Contrast & Polarity Discipline (Hard Invariant):
 - ข้อความหลัก (`--text-1`) $> 12:1$ (AAA)
 - ข้อความรอง (`--text-2`) $> 7:1$ (AAA)
 - ข้อความกำกับ/หน่วย (`--text-3`) $> 4.5:1$ (AA)
 - ปุ่มหลัก (`--accent-on-primary` บน `--accent-primary`) $> 4.5:1$ ทั้ง Light (`editorial-paper`) และ Dark (`velvet-obsidian`)
 - เส้นกราฟ/ไอคอน (Non-text) $> 3:1$ เทียบกับพื้นผิว
 
-#### 3. Information Architecture & Anti-Slop Heuristics (Soft Heuristic):
+#### 4. Information Architecture & Anti-Slop Heuristics (Soft Heuristic):
 - **Layout Follows Information Relationships:** บังคับให้ AI ระบุ Primary Task, Primary Data, Supporting Context, และ Secondary Actions ก่อนสร้าง Layout
 - **ห้าม Generic Card Uniformity:** ห้ามเปลี่ยนตารางข้อมูลหรือฟังก์ชันที่มีความสำคัญต่างกันให้กลายเป็นการ์ดเรียง 3 ใบที่มีขนาดและ Effect เท่ากันหมด
 - **Surface Effect Budget:** ทุก Drop-shadow, Blur, และ Glow ต้องมีหน้าที่ชัดเจน (แยกชั้นความลึก หรือบอกสถานะ) ไม่ใส่ฟุ้งกระจายจนขาดลำดับขั้น
 
-#### 4. Interactive Self-Audit Score:
+#### 5. Interactive Self-Audit Score:
 ในหน้า Prototype สามารถแสดงแถบ **`🛡️ 4-Tier Audit Score`** เพื่อแสดงผลตรวจ Contrast, Focus Visibility, และ State Contract สดบนหน้าเว็บได้ทันที
 
 ### 9.5 🎨 Perceptual Color, Motion Profiles & Micro-Craft Standards

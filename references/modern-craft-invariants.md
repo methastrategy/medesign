@@ -1,6 +1,6 @@
 # Modern Craft Invariants & Apple Design Award Standards (v2.0 Manifesto)
 
-คู่มือวิศวกรรมดีไซน์ขั้นสูง สังเคราะห์จากบททดสอบ Red-Team Audit และการถอดรหัสของ Gemini 4.0 Argon สำหรับใช้งานใน `/medesign` ครอบคลุมกฎเหล็ก 10 ประการ, สถาปัตยกรรม CSS Engine ปี 2026, คณิตศาสตร์ทางสายตา (Visual Optics), และการบริหารทรัพยากร GPU/Display
+คู่มือวิศวกรรมดีไซน์ขั้นสูง สังเคราะห์จากบททดสอบ Red-Team Audit และการถอดรหัสของ Gemini 4.0 Argon สำหรับใช้งานใน `/medesign` ครอบคลุมกฎเหล็ก 11 ประการ, สถาปัตยกรรม CSS Engine ปี 2026, คณิตศาสตร์ทางสายตา (Visual Optics), และการบริหารทรัพยากร GPU/Display
 
 ---
 
@@ -266,10 +266,14 @@
 - **ระยะชดเชยที่ถูกต้อง:** ต้องเลื่อนไอคอนไปทางขวาตามแนวแกน X:
   $$\Delta x = \frac{W}{2} - \frac{W}{3} = \frac{W}{6} \approx 0.167 \times W \quad (\text{หรือ } \frac{W}{8} \text{ สำหรับไอคอนขอบมน})$$
 
-### 3.2 Concentric Border Radius & Smooth Morphing Invariant
-- **สูตรคำนวณ Safe Concentric Radius:**
-  $$R_{\text{inner}} = \max\left(0\text{px}, \; R_{\text{outer}} - B_{\text{width}} - \text{Padding}\right)$$
-- ป้องกันค่าติดลบจน Browser ทิ้งคำสั่ง และชดเชยความหนาของขอบ Border จริง
+### 3.2 Nested Radius Invariant & Smooth Morphing (Concentric Geometry)
+- **Nested Radius Invariant (ป้องกันมุมโค้งลอย):**
+  เมื่อมีคอนเทนเนอร์ซ้อนกัน (เช่น การ์ดที่มีรูปภาพ/ปุ่มอยู่ข้างใน) รัศมีมุมด้านนอกและด้านในต้องมีจุดศูนย์กลางความโค้งร่วมกัน (Concentric Corners)
+  $$r_{\text{outer}} = r_{\text{inner}} + \text{padding}$$
+  หรือคำนวณหารัศมีด้านในที่ถูกต้อง:
+  $$r_{\text{inner}} = \max\left(0\text{px}, \; r_{\text{outer}} - \text{padding} - B_{\text{width}}\right)$$
+  - **ปัญหาหากไม่ใช้สูตร:** หากกำหนด $r_{\text{inner}} = r_{\text{outer}}$ ขอบด้านในจะดูลอย ไม่ขนานกับมุมด้านนอก เกิด Visual Distortion
+  - หาก `padding >= r_outer` รัศมีมุมด้านใน $r_{\text{inner}}$ จะกลายเป็น `0px` (มุมฉาก) อย่างเป็นธรรมชาติ
 - **Morphing Invariant (Finite Geometry vs Infinity):**
   - สำหรับรูปทรงสถิต (Static Pills): อนุญาตให้ใช้ `calc(infinity * 1px)` หรือ `999px`
   - สำหรับรูปทรงที่มีการ Animate / Morphing ระหว่างสี่เหลี่ยมผืนผ้าไปเป็นวงรี/แคปซูล: **ห้ามใช้ infinity** เพราะจะทำให้การ Interpolate ขอบกระตุก ให้ผูกกับมิติทางเรขาคณิตจริง เช่น `calc(var(--el-height) / 2)` หรือลงทะเบียนผ่าน `@property <length>` เสมอเพื่อความราบรื่นระดับ 120fps:
@@ -302,12 +306,21 @@
 }
 ```
 
-### 3.4 Multi-Layered Exponential Ambient Shadows
-จำลองการกระจายตัวของแสงในธรรมชาติด้วยสมการ Exponential Progression ($y_n = 2^{n-1}, \sigma_n = 2y_n$):
+### 3.4 In-flow vs Floating Surface Architecture & Ambient Shadows
+- **In-flow Surface (บัตร, พาเนล, คอนเทนเนอร์ในหน้าเว็บปกติ):**
+  - ใช้ขอบ Hairline 1px (`border: 1px solid var(--border-subtle)` หรือ `box-shadow: 0 0 0 1px var(--border-subtle)`)
+  - **"ห้ามใส่ Drop Shadow เด็ดขาด"** (Zero Drop Shadow บน In-flow Elements) เพื่อรักษาความคลีน ไม่ให้หน้าเว็บดูลอยและรกตา
+  - **Dark Mode Elevation Invariant:** ใน Dark Mode ห้ามใช้เงาดำสร้างความลึก ให้ยกระดับพื้นผิวด้วยความสว่าง **Lighter Surface (+2% ถึง +4% Lightness)** แทน เช่น:
+    - Base Canvas: `oklch(0.12 0.006 260)`
+    - Card In-flow Surface: `oklch(0.14..0.16 0.008 260)` (+2–4% L)
+    - Border Hairline: `oklch(1 0 0 / 0.08)` (1px solid)
+- **Floating Surface (Popover, Dialog, Modal, Dropdown Menu, Floating Action Button):**
+  - สงวนการใช้ Drop Shadow ไว้เฉพาะชิ้นส่วนที่ลอยอยู่บน Top Layer / Z-Stack เหนือพื้นผิวปกติเท่านั้น
+  - จำลองการกระจายตัวของแสงในธรรมชาติด้วยสมการ Multi-Layered Exponential Ambient Shadows ($y_n = 2^{n-1}, \sigma_n = 2y_n$):
 ```css
 :root {
   --shadow-hue: 260;
-  --elevation-high:
+  --elevation-floating:
     0px 1px 1px -0.5px oklch(0.05 0.01 var(--shadow-hue) / 0.36),
     0px 3px 6px -1.5px oklch(0.05 0.01 var(--shadow-hue) / 0.28),
     0px 8px 16px -4px oklch(0.05 0.01 var(--shadow-hue) / 0.22),
@@ -328,6 +341,33 @@
   --text-2xl:  clamp(2.25rem, 1.6338rem + 2.6291vw, 4.00rem);
 }
 ```
+
+### 3.6 Closed Spacing System (สเกลปิดเด็ดขาด)
+ห้ามใช้ค่า `gap`, `margin`, หรือ `padding` นอกเหนือจาก **11 ค่าในสเกลปิดเด็ดขาด** (Strict Closed Spacing Scale):
+$$S \in \{2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128\}\text{px}$$
+- **Tailwind Mapping:** `gap-0.5 (2px)`, `gap-1 (4px)`, `gap-2 (8px)`, `gap-3 (12px)`, `gap-4 (16px)`, `gap-6 (24px)`, `gap-8 (32px)`, `gap-12 (48px)`, `gap-16 (64px)`, `gap-24 (96px)`, `gap-32 (128px)`
+- **ข้อห้ามเด็ดขาด:** ห้ามใช้ค่า Arbitrary Spacing เช่น `gap-[7px]`, `m-[11px]`, `p-[18px]`, `gap-[22px]` หรือค่าสุ่มใดๆ นอกสเกล
+
+### 3.7 Proximity Ratio $\ge$ 2:1 Invariant
+ช่องว่างระหว่างกลุ่ม (External Gap / Inter-group Spacing) ต้องกว้างเป็นอย่างน้อย 2 เท่าของช่องว่างภายในกลุ่ม (Internal Gap / Intra-group Spacing) เสมอ:
+$$\text{Gap}_{\text{external}} \ge 2 \times \text{Gap}_{\text{internal}}$$
+- **ตัวอย่างการใช้งาน:**
+  - ถ้าช่องว่างระหว่าง Label กับ Input คือ `4px` $\to$ ช่องว่างระหว่าง Form Field ถัดไปต้อง $\ge 8\text{px}$ (Proximity 2:1)
+  - ถ้าช่องว่างระหว่างองค์ประกอบในการ์ดคือ `12px` $\to$ ช่องว่างระหว่างการ์ดใน Grid ต้อง $\ge 24\text{px}$ (Proximity 2:1)
+  - ถ้าช่องว่างระหว่างหัวข้อย่อยกับเนื้อหาคือ `8px` $\to$ ช่องว่างก่อนเริ่มหัวข้อถัดไปต้อง $\ge 16\text{px}$ (หรือ `24px` สำหรับ 3:1)
+- **เหตุผลทางสายตา:** ป้องกันความสับสนตามกฎ Gestalt Law of Proximity หากช่องว่างระหว่างกลุ่มเท่ากับหรือแคบกว่าช่องว่างภายในกลุ่ม สมองมนุษย์จะไม่สามารถจัดหมวดหมู่ข้อมูลได้
+
+### 3.8 Control Heights Ladder (Desktop vs Mobile)
+ล็อกมิติความสูงของปุ่ม (`<button>`) และช่องกรอกข้อมูล (`<input>`, `<select>`) ให้อยู่บนบันไดความสูงมาตรฐาน:
+- **Desktop Ladder (4 ระดับตายตัว):**
+  - `28px`: Micro / Dense Data Table Controls, Inline Action Badges
+  - `32px`: Compact / Secondary Toolbar Actions, Table Filters
+  - `36px`: Standard Form Controls, Default Buttons, Search Inputs
+  - `40px`: Prominent CTA, Primary Modal Actions, Hero Buttons
+- **Mobile Ladder (2 ระดับตายตัว):**
+  - `44px`: Standard Mobile Touch Target (สอดคล้องกับ Apple HIG และ WCAG 2.2 Target Size)
+  - `48px`: Primary Mobile CTA, Bottom Floating Action Bar, Full-Width Inputs
+- **Touch-Target Decoupling Guardrail:** หากปุ่มบน Desktop มีขนาด `28px` หรือ `32px` เมื่อเรนเดอร์บนหน้าจอมือถือ/สัมผัส (`@media (pointer: coarse)`) ต้องมี Invisible Hit Halo ขยายเป็น $\ge 44\text{px}$ เสมอ
 
 ---
 

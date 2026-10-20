@@ -1,5 +1,5 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "name": "medesign-catalog",
   "archetypes": [
     {
@@ -1018,6 +1018,14 @@
       "presetLink": "metha (Metha Engineering Cockpit)",
       "presetId": "metha",
       "vibe": "ระบบตรวจรับงานสำรวจ ตรวจสอบความถูกต้องของเส้นชั้นความสูง และรายงานค่าพิกัดตามมาตรฐานกรมที่ดิน"
+    }
+  ],
+  "documentModes": [
+    {
+      "id": "executive-reports",
+      "name": "Executive PDF Reports & Management Presentations",
+      "path": "references/executive-reports.md",
+      "description": "12-Column Grid on 4pt Baseline, 8+4 Consulting Split, L1/L2/L3 5-Second Scan, Table Discipline"
     }
   ]
 }

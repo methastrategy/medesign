@@ -75,7 +75,7 @@ export interface Diagnostic {
 $$Q = 0.30H + 0.25I + 0.20G + 0.15R + 0.10V$$
 
 - **$H$ (Hierarchy & Task Saliency - 30%):** จุดโฟกัสสอดคล้องกับ Attention Model (Task-First, Spatial, Alert-First, Reading, F, Z)
-- **$I$ (Information Architecture - 25%):** ความครบถ้วนของ State Contract (6 สถานะ), แหล่งข้อมูล และการจัดกลุ่มข้อมูล
+- **$I$ (Information Architecture - 25%):** ความครบถ้วนของ State Handling (10-State Machine Matrix), แหล่งข้อมูล และการจัดกลุ่มข้อมูล
 - **$G$ (Geometry & Coherence - 20%):** Concentric Border Radius, Hit Target $\ge 44\text{px}$, และ Aspect Ratio ของโมดูล
 - **$R$ (Responsive Stability & CLS - 15%):** Reserved Geometry, Stable Data Regions, Breakpoint Flow (CLS $\approx 0$)
 - **$V$ (Visual Craft & Anti-Slop - 10%):** การใช้ OKLCH/OKLab, Tinted Neutrals, Zero Em-Dash, Zero Decisionless Uniformity

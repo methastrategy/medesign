@@ -89,6 +89,41 @@ try {
   assert(polishedContent.includes('@media (forced-colors: active)'), 'Polish injects forced-colors high contrast query');
   assert(polishedContent.includes('button:hover, [class*="btn"]:hover'), 'Polish injects hover state for dead buttons');
   assert(!polishedContent.includes('&mdash;') && !polishedContent.includes('&ndash;'), 'Polish cleans HTML entity em-dashes to hyphens');
+  assert(polishedContent.includes('cubic-bezier(0.16, 1, 0.3, 1)'), 'Polish injects GPU spring micro-interactions');
+  assert(polishedContent.includes('.touch-halo'), 'Polish injects decoupled touch halo');
+  assert(polishedContent.includes('min-height: 44px;'), 'Polish enforces 44px touch target on buttons');
+
+  // 4b. Test 'polish' Aesthetic Auto-Compiler (typography elevation, bento proportions, OKLCH gradient, scale crush)
+  const testAestheticPath = path.join(tmpDir, 'test-aesthetic.html');
+  const rawAesthetic = `<!DOCTYPE html>
+<html>
+<head>
+  <title>Aesthetic Test</title>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .hero { background: linear-gradient(135deg, #111, #222); border-radius: 16px; }
+    .slider { min-height: 44px; border-radius: 9999px; background: #333; }
+    .scale-box { active:scale-90; }
+  </style>
+</head>
+<body>
+  <div class="grid grid-cols-3">
+    <div class="card">Card 1</div>
+    <div class="card">Card 2</div>
+    <div class="card">Card 3</div>
+  </div>
+</body>
+</html>`;
+  fs.writeFileSync(testAestheticPath, rawAesthetic, 'utf8');
+  const polishAesRes = spawnSync(process.execPath, [cliPath, 'polish', testAestheticPath], { encoding: 'utf8' });
+  assert(polishAesRes.status === 0, 'Polish aesthetic test exits with code 0');
+  const polishedAes = fs.readFileSync(testAestheticPath, 'utf8');
+  assert(polishedAes.includes("'Geist', 'Plus Jakarta Sans'"), 'Polish elevates generic Inter to Geist / Plus Jakarta Sans');
+  assert(polishedAes.includes('linear-gradient(in oklch'), 'Polish converts gradient to perceptual OKLCH space');
+  assert(polishedAes.includes('bento-featured') || polishedAes.includes('col-span-2'), 'Polish injects dynamic bento hierarchy into uniform grid');
+  assert(polishedAes.includes('active:scale-98'), 'Polish replaces scale-90 with safe proportional scale(0.98)');
+  assert(polishedAes.includes('padding: 0 12px;'), 'Polish injects optical padding into slider (MD106)');
+  assert(polishedAes.includes('fonts.googleapis.com'), 'Polish injects Google Fonts preconnect CDN for curated Archetypes');
 
   // 5. Test 'polish' on standalone CSS file (verifies forced-colors injection without </style>)
   const testCssPath = path.join(tmpDir, 'test-standalone.css');

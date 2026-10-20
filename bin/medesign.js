@@ -268,19 +268,25 @@ ${ANSI_GRAY}──────────────────────�
     const targetFile = args[1];
     if (!targetFile || targetFile === '--help' || targetFile === '-h') {
       console.log(`
-${ANSI_BOLD}ME-DESIGN Self-Healing Polish${ANSI_RESET}
-${ANSI_GRAY}Autonomous repair engine for Hard Invariants & design quality${ANSI_RESET}
+${ANSI_BOLD}ME-DESIGN Self-Healing Polish & Aesthetic Auto-Compiler${ANSI_RESET}
+${ANSI_GRAY}Autonomous aesthetic compilation and self-healing repair engine${ANSI_RESET}
 
 ${ANSI_BOLD}Usage:${ANSI_RESET}
   medesign polish <file>
   mepolish <file>
 
-${ANSI_BOLD}Repairs:${ANSI_RESET}
-  - Injects physical :focus-visible outline (MD005)
-  - Replaces raw 100vh with dynamic 100dvh (MD104)
-  - Injects forced-colors high contrast media query
+${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
+  - Elevates generic typography to curated Archetypes (Geist / Plus Jakarta Sans / JetBrains Mono)
+  - Injects GPU-accelerated spring micro-interactions (160ms cubic-bezier(0.16, 1, 0.3, 1))
+  - Injects dynamic Bento proportions & asymmetric visual hierarchy
+  - Decouples 44px hit-targets with transparent touch halos & boundary clearance (MD106)
+  - Normalizes color gamut to perceptual OKLCH interpolation (MD102)
+  - Replaces hit-target crushing scale with controlled proportional scale (MD003)
+  - Injects physical :focus-visible outline & forced-colors high contrast (MD005)
+  - Replaces raw 100vh with dynamic 100dvh fallback (MD104)
   - Fixes dead buttons with interactive hover/active states (MD004)
-  - Cleans HTML entity and unicode em-dashes to hyphens
+  - Injects prefers-reduced-motion accessibility gate (MD002)
+  - Cleans HTML entity and unicode em-dashes to hyphens (MD201)
 `);
       process.exit(targetFile === '--help' || targetFile === '-h' ? 0 : 1);
     }
@@ -300,6 +306,8 @@ ${ANSI_BOLD}Repairs:${ANSI_RESET}
 
     let content = fs.readFileSync(resolvedPath, 'utf8');
     const fixes = [];
+
+    const getClean = (src) => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
 
     // 1. RULE MD104: Dynamic Viewport Units (Convert raw 100vh to 100dvh fallback)
     let count104 = 0;
@@ -335,7 +343,7 @@ ${ANSI_BOLD}Repairs:${ANSI_RESET}
     });
 
     // Ensure forced-colors high contrast outline media query is injected
-    if (!/@media\s*\(forced-colors:\s*active\)/i.test(content)) {
+    if (!/@media\s*\(forced-colors:\s*active\)/i.test(getClean(content))) {
       const forcedColorsRule = `\n    @media (forced-colors: active) {\n      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible, a:focus-visible {\n        outline: 2px solid CanvasText !important;\n        outline-offset: 2px !important;\n      }\n    }\n`;
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${forcedColorsRule}  </style>`);
@@ -349,11 +357,26 @@ ${ANSI_BOLD}Repairs:${ANSI_RESET}
       fixes.push('Added physical focus outline & forced-colors high contrast (MD005)');
     }
 
-    // 3. RULE MD004: Broken State Contract (Dead Buttons)
-    const hasButtons = /<button/i.test(content) || /class="[^"]*btn[^"]*"/i.test(content) || /\.btn\b/i.test(content);
-    const hasInteractive = /:hover/i.test(content) || /:active/i.test(content);
+    // 3. RULE MD003: Uncontrolled Button Scale / Hit Target Crush
+    let count003 = 0;
+    if (/active:scale-9[0-5]/.test(content)) {
+      content = content.replace(/active:scale-9[0-5]/g, 'active:scale-98');
+      count003++;
+    }
+    if (/:active\s*\{[^}]*transform:\s*scale\(0\.9[0-5]\)/.test(content)) {
+      content = content.replace(/(transform\s*:\s*scale\()0\.9[0-5](\))/gi, '$10.98$2');
+      count003++;
+    }
+    if (count003 > 0) {
+      fixes.push('Replaced hit-target crushing active scale with safe proportional scale(0.98) (MD003)');
+    }
+
+    // 4. RULE MD004: Interactive State Contract & Micro-Interaction Springs
+    const cleanForButtons = getClean(content);
+    const hasButtons = /<button/i.test(cleanForButtons) || /class="[^"]*btn[^"]*"/i.test(cleanForButtons) || /\.btn\b/i.test(cleanForButtons);
+    const hasInteractive = /:hover/i.test(cleanForButtons) || /:active/i.test(cleanForButtons);
     if (hasButtons && !hasInteractive) {
-      const buttonStates = `\n    button:hover, [class*="btn"]:hover, .btn:hover { filter: brightness(1.1); }\n    button:active, [class*="btn"]:active, .btn:active { transform: scale(0.98); }\n    button:focus-visible, [class*="btn"]:focus-visible, .btn:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }\n`;
+      const buttonStates = `\n    button, [class*="btn"], .btn {\n      min-height: 44px;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms cubic-bezier(0.16, 1, 0.3, 1);\n    }\n    button:hover, [class*="btn"]:hover, .btn:hover {\n      filter: brightness(1.1);\n      transform: translateY(-1px);\n    }\n    button:active, [class*="btn"]:active, .btn:active {\n      transform: scale(0.98);\n    }\n    button:focus-visible, [class*="btn"]:focus-visible, .btn:focus-visible {\n      outline: 2px solid Highlight;\n      outline-offset: 2px;\n    }\n`;
       if (content.includes('</style>')) {
         content = content.replace('</style>', `${buttonStates}  </style>`);
         fixes.push('Injected hover and active interactive states for buttons (MD004)');
@@ -361,11 +384,33 @@ ${ANSI_BOLD}Repairs:${ANSI_RESET}
         content = content.trimEnd() + '\n' + buttonStates;
         fixes.push('Injected hover and active interactive states for buttons (MD004)');
       }
+    } else if (hasButtons && !content.includes('min-height: 44px')) {
+      const hitTargetFix = `\n    /* 44px Touch Target Standard (Apple HIG / WCAG) */\n    button, [class*="btn"], .btn { min-height: 44px; }\n`;
+      if (content.includes('</style>')) {
+        content = content.replace('</style>', `${hitTargetFix}  </style>`);
+        fixes.push('Enforced 44px minimum touch hit-target standard on buttons');
+      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+        content = content.trimEnd() + '\n' + hitTargetFix;
+        fixes.push('Enforced 44px minimum touch hit-target standard on buttons');
+      }
     }
 
-    // 4. RULE MD002: Reduced Motion Compliance
-    const hasAnimations = /animation:|transition:/i.test(content) && !/transition:\s*none/i.test(content);
-    const hasReducedMotion = /prefers-reduced-motion/i.test(content);
+    // Micro-Interaction Springs (GPU-accelerated 160ms cubic-bezier transitions)
+    if (!content.includes('cubic-bezier(0.16, 1, 0.3, 1)')) {
+      const springBlock = `\n    /* Micro-Interaction Springs (160ms cubic-bezier) */\n    button, [class*="btn"], .btn, .card, [class*="card"], .interactive-surface {\n      transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms cubic-bezier(0.16, 1, 0.3, 1);\n    }\n    .card:hover, [class*="card"]:hover {\n      transform: translateY(-2px);\n      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.3);\n    }\n`;
+      if (content.includes('</style>')) {
+        content = content.replace('</style>', `${springBlock}  </style>`);
+        fixes.push('Injected GPU-accelerated spring micro-interactions (160ms cubic-bezier(0.16, 1, 0.3, 1))');
+      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+        content = content.trimEnd() + '\n' + springBlock;
+        fixes.push('Injected GPU-accelerated spring micro-interactions (160ms cubic-bezier(0.16, 1, 0.3, 1))');
+      }
+    }
+
+    // 5. RULE MD002: Reduced Motion Compliance
+    const cleanForMotion = getClean(content);
+    const hasAnimations = /animation:|transition:/i.test(cleanForMotion) && !/transition:\s*none/i.test(cleanForMotion);
+    const hasReducedMotion = /prefers-reduced-motion/i.test(cleanForMotion);
     if (hasAnimations && !hasReducedMotion) {
       const reducedMotionBlock = `\n    @media (prefers-reduced-motion: reduce) {\n      *, *::before, *::after {\n        animation-duration: 0.01ms !important;\n        animation-iteration-count: 1 !important;\n        transition-duration: 0.01ms !important;\n      }\n    }\n`;
       if (content.includes('</style>')) {
@@ -377,7 +422,7 @@ ${ANSI_BOLD}Repairs:${ANSI_RESET}
       }
     }
 
-    // 5. Anti-AI Tells: Em-Dash / En-Dash & HTML Entities Cleanup
+    // 6. Anti-AI Tells: Em-Dash / En-Dash & HTML Entities Cleanup (MD201)
     const emDashRegex = /\s*(?:[—–]|&mdash;|&ndash;|&#8212;|&#8211;|&#x2014;|&#x2013;)\s*/g;
     const emDashMatches = content.match(emDashRegex);
     if (emDashMatches && emDashMatches.length > 0) {
@@ -386,7 +431,72 @@ ${ANSI_BOLD}Repairs:${ANSI_RESET}
       fixes.push(`Cleaned ${count} AI-tell em-dash punctuation & entities`);
     }
 
-    // 6. RULE MD106: Container Optical Padding & Slider Boundary Clearance
+    // 7. Typography Elevation (Generic Fonts -> Curated Archetype Pairings: Geist / Plus Jakarta Sans / JetBrains Mono)
+    let countTypo = 0;
+    const genericSansRegex = /font-family\s*:\s*(?:['"]?Inter['"]?|['"]?Arial['"]?|['"]?Helvetica Neue['"]?|system-ui)(?:\s*,\s*(?:sans-serif|system-ui|-apple-system|BlinkMacSystemFont|['"]?Segoe UI['"]?|Roboto|Oxygen|Ubuntu|Cantarell|['"]?Open Sans['"]?|['"]?Helvetica Neue['"]?|['"][^'"]+['"]|sans-serif))*\s*;?/gi;
+    if (genericSansRegex.test(content)) {
+      content = content.replace(genericSansRegex, () => {
+        countTypo++;
+        return "font-family: 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;";
+      });
+    }
+    const varSansRegex = /(--font-sans\s*:\s*)(?:['"]?Inter['"]?|['"]?Arial['"]?|system-ui)[^;]*;/gi;
+    if (varSansRegex.test(content)) {
+      content = content.replace(varSansRegex, () => {
+        countTypo++;
+        return "--font-sans: 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;";
+      });
+    }
+    const genericMonoRegex = /font-family\s*:\s*(?:['"]?Courier New['"]?|monospace)\s*;?/gi;
+    if (genericMonoRegex.test(content)) {
+      content = content.replace(genericMonoRegex, () => {
+        countTypo++;
+        return "font-family: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;";
+      });
+    }
+    const varMonoRegex = /(--font-mono\s*:\s*)(?:['"]?Courier New['"]?|monospace)[^;]*;/gi;
+    if (varMonoRegex.test(content)) {
+      content = content.replace(varMonoRegex, () => {
+        countTypo++;
+        return "--font-mono: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;";
+      });
+    }
+    if (content.includes('</head>') && !content.includes('fonts.googleapis.com/css2?family=Geist')) {
+      const fontPreconnect = `    <link rel="preconnect" href="https://fonts.googleapis.com">\n    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">\n  `;
+      content = content.replace('</head>', `${fontPreconnect}</head>`);
+      countTypo++;
+    }
+    if (countTypo > 0) {
+      fixes.push('Elevated generic typography to curated Archetype pairings (Geist / Plus Jakarta Sans / JetBrains Mono)');
+    }
+
+    // 8. Dynamic Bento Proportions (Asymmetric Visual Hierarchy)
+    let countBento = 0;
+    const gridContainerRegex = /(<div\s+class="[^"]*\bgrid\b[^"]*\bgrid-cols-[34]\b[^"]*">)([\s\S]*?)(<\/div>)/gi;
+    content = content.replace(gridContainerRegex, (match, openTag, inner, closeTag) => {
+      if (!/\bcol-span-/i.test(inner)) {
+        let elevated = false;
+        const updatedInner = inner.replace(/(<div\s+class=")([^"]*\bcard\b[^"]*)(")/i, (m, cOpen, classNames, cClose) => {
+          elevated = true;
+          return `${cOpen}${classNames} col-span-2 md:col-span-2 bento-featured${cClose}`;
+        });
+        if (elevated) {
+          countBento++;
+          return openTag + updatedInner + closeTag;
+        }
+      }
+      return match;
+    });
+    if (content.includes('</style>') && !content.includes('bento-featured')) {
+      const bentoCss = `\n    /* Dynamic Bento Asymmetric Grid Proportions */\n    @media (min-width: 768px) {\n      .bento-grid > :first-child, .grid > .bento-featured { grid-column: span 2; }\n    }\n`;
+      content = content.replace('</style>', `${bentoCss}  </style>`);
+      countBento++;
+    }
+    if (countBento > 0) {
+      fixes.push('Injected dynamic Bento grid proportions (asymmetric visual hierarchy & featured spans)');
+    }
+
+    // 9. RULE MD106: Container Optical Padding & Slider Boundary Clearance
     let count106 = 0;
     const sliderBlockRegex = /((?:[a-zA-Z0-9_\-\.\#\:\*\,\[\]\="'>\s]+)?(?:slider|progress|scrubber|pill-track)\s*\{)([^}]+)(\})/gi;
     content = content.replace(sliderBlockRegex, (match, prefix, body, suffix) => {
@@ -401,8 +511,48 @@ ${ANSI_BOLD}Repairs:${ANSI_RESET}
       }
       return match;
     });
+
+    // Decouple 44px hit-target with transparent touch halo helper
+    if (!content.includes('.touch-halo') && !content.includes('.hit-target-decoupled')) {
+      const haloCss = `\n    /* MD106 Decoupled Touch Halo */\n    .touch-halo {\n      min-height: 44px;\n      min-width: 44px;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      background: transparent !important;\n      padding: 0 12px;\n    }\n`;
+      if (content.includes('</style>')) {
+        content = content.replace('</style>', `${haloCss}  </style>`);
+        count106++;
+      } else if (resolvedPath.endsWith('.css') || !/<html|<body/i.test(content)) {
+        content = content.trimEnd() + '\n' + haloCss;
+        count106++;
+      }
+    }
     if (count106 > 0) {
-      fixes.push(`Injected optical padding (0 12px) to prevent container boundary collision (MD106)`);
+      fixes.push('Decoupled 44px touch hit-target with transparent halo and >=12px boundary clearance (MD106)');
+    }
+
+    // 10. RULE MD102: Perceptual Color Gamut Normalizer (linear-gradient in oklch)
+    let count102 = 0;
+    content = content.replace(/linear-gradient\(\s*(?!in\s+(?:oklch|oklab)\b)(?:(to\s+[^,]+|\d+deg),)?\s*/gi, (m, direction) => {
+      count102++;
+      if (direction) {
+        return `linear-gradient(in oklch ${direction.trim()}, `;
+      }
+      return 'linear-gradient(in oklch, ';
+    });
+    if (count102 > 0) {
+      fixes.push('Normalized color gamut to perceptual OKLCH interpolation space (MD102)');
+    }
+
+    // 11. RULE MD103: Concentric Radius Math Helper
+    let count103 = 0;
+    const hasOuterRadius = /border-radius:\s*\d+px/i.test(content);
+    const hasInnerConcentric = /max\(\s*0px/i.test(content) || /calc\(infinity/i.test(content) || /--corner-r/i.test(content);
+    if (hasOuterRadius && !hasInnerConcentric) {
+      if (content.includes('</style>')) {
+        const concentricRule = `\n    /* MD103 Safe Concentric Radius Formula */\n    :root { --radius-inner: max(0px, var(--radius-outer, 16px) - 1px - 8px); }\n`;
+        content = content.replace('</style>', `${concentricRule}  </style>`);
+        count103++;
+      }
+    }
+    if (count103 > 0) {
+      fixes.push('Injected safe concentric radius formula max(0px, r_outer - border_w - pad) (MD103)');
     }
 
     fs.writeFileSync(resolvedPath, content, 'utf8');

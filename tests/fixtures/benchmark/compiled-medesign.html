@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enterprise Cloud Telemetry - System Health Dashboard</title>
+  <style>
+    /* Prompt-only baseline: Generic typography stack */
+    :root {
+      --font-sans: 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --color-bg: #0b0f19;
+      --color-card: #111827;
+      --color-text: #f9fafb;
+      --color-muted: #6b7280;
+      --color-primary: #3b82f6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Fails MD104: Raw 100vh without 100dvh fallback */
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh; min-height: 100dvh;
+      padding: 32px;
+    }
+
+    /* Fails MD102: Raw linear-gradient without perceptual space in oklch */
+    .dashboard-header {
+      background: linear-gradient(in oklch 135deg, #111827, #1f2937);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    /* Uniform boring card grid: all 3 cards identical, zero bento hierarchy */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--color-card);
+      border: 1px solid #374151;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    /* Fails MD001 & MD005: Box-shadow only focus, suppresses outline */
+    input:focus, button:focus {
+      outline: 2px solid Highlight; outline-offset: 2px;
+      box-shadow: 0 0 0 2px var(--color-primary);
+    }
+
+    /* Fails MD003: Crushes hit-target with raw scale-90 */
+    .scale-crush {
+      active:scale-98;
+    }
+
+    /* Fails MD002: Transition without prefers-reduced-motion */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      background: var(--color-primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    /* Fails MD106: Slider container has pill radius, visible background, 44px min-height, but 0 padding */
+    .slider {
+      min-height: 44px;
+      border-radius: 9999px;
+      background: #1f2937;
+      display: flex;
+      align-items: center;
+      width: 100%; padding: 0 12px; }
+
+    .slider-track {
+      height: 8px;
+      width: 100%;
+      background: var(--color-primary);
+      border-radius: 4px;
+    }
+  
+    @media (forced-colors: active) {
+      :focus-visible, button:focus-visible, [class*="btn"]:focus-visible, a:focus-visible {
+        outline: 2px solid CanvasText !important;
+        outline-offset: 2px !important;
+      }
+    }
+  
+    button, [class*="btn"], .btn {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    button:hover, [class*="btn"]:hover, .btn:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    button:active, [class*="btn"]:active, .btn:active {
+      transform: scale(0.98);
+    }
+    button:focus-visible, [class*="btn"]:focus-visible, .btn:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+  
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  
+    /* MD106 Decoupled Touch Halo */
+    .touch-halo {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      padding: 0 12px;
+    }
+  
+    /* MD103 Safe Concentric Radius Formula */
+    :root { --radius-inner: max(0px, var(--radius-outer, 16px) - 1px - 8px); }
+  </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+<body>
+  <div class="dashboard-header">
+    <!-- Fails MD201: Em-dash & en-dash AI tells in copy -->
+    <h1>Cluster Telemetry - Global Status - Live</h1>
+    <p>Realtime node telemetry across regional data planes - updated every 5s</p>
+  </div>
+
+  <div class="grid grid-cols-3">
+    <div class="card col-span-2 md:col-span-2 bento-featured">
+      <h3>Active Pods</h3>
+      <p>1,248 Nodes Online</p>
+    </div>
+    <div class="card">
+      <h3>Ingress Rate</h3>
+      <p>42.8 GB/s Throughput</p>
+    </div>
+    <div class="card">
+      <h3>Latency SLA</h3>
+      <p>99.98% Under 12ms</p>
+    </div>
+  </div>
+
+  <div class="slider">
+    <div class="slider-track"></div>
+  </div>
+
+  <div style="margin-top: 24px;">
+    <!-- Fails MD004: Dead button without hover feedback -->
+    <button class="btn" type="button">Trigger Node Rebalance</button>
+  </div>
+</body>
+</html>

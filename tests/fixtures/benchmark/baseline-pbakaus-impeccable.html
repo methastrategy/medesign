@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enterprise Cloud Telemetry — System Health Dashboard</title>
+  <style>
+    /* Heuristic prompt baseline: Clean typography but generic sans */
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --color-bg: #09090b;
+      --color-card: #18181b;
+      --color-text: #fafafa;
+      --color-muted: #a1a1aa;
+      --color-primary: #38bdf8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Uses 100dvh fallback (Passes MD104) */
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 32px;
+    }
+
+    /* Fails MD102: Missing perceptual oklch interpolation space */
+    .dashboard-header {
+      background: linear-gradient(180deg, #18181b, #09090b);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Uniform grid: all cards identical, lacking bento proportions */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--color-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    /* Fails MD005: Focus indicator relies on box-shadow without physical outline for forced-colors */
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--color-primary);
+    }
+
+    /* Button has hover & controlled scale (Passes MD004 & MD003) but lacks spring micro-interaction */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      background: var(--color-primary);
+      color: #09090b;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Passes MD002: Reduced motion compliance */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Fails MD106: Slider container has pill radius, background, min-height 44px, zero optical padding */
+    .slider {
+      min-height: 44px;
+      border-radius: 9999px;
+      background: #27272a;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .slider-track {
+      height: 8px;
+      width: 100%;
+      background: var(--color-primary);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-header">
+    <h1>Cluster Telemetry - Global Status</h1>
+    <!-- Fails MD201: Subtle em-dash in copy -->
+    <p>Realtime node telemetry across regional data planes — updated every 5s</p>
+  </div>
+
+  <div class="grid grid-cols-3">
+    <div class="card">
+      <h3>Active Pods</h3>
+      <p>1,248 Nodes Online</p>
+    </div>
+    <div class="card">
+      <h3>Ingress Rate</h3>
+      <p>42.8 GB/s Throughput</p>
+    </div>
+    <div class="card">
+      <h3>Latency SLA</h3>
+      <p>99.98% Under 12ms</p>
+    </div>
+  </div>
+
+  <div class="slider">
+    <div class="slider-track"></div>
+  </div>
+
+  <div style="margin-top: 24px;">
+    <button class="btn" type="button">Trigger Node Rebalance</button>
+  </div>
+</body>
+</html>

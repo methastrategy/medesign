@@ -32,6 +32,7 @@
     "test:sarif": "node tests/validate-sarif.js",
     "test:tokens": "node tests/test-tokens.js",
     "test:cli": "node tests/test-cli.js",
+    "test:benchmark": "node tests/test-blind-benchmark.js",
     "test:browser": "node tests/runner.js --browser",
     "test:snapshot": "node tests/snapshot.js examples/cadastral-qaqc-slide.html",
     "search": "node bin/medesign.js search",

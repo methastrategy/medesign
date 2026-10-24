@@ -44,6 +44,9 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | Infinite Spatial Canvas & Viewport Virtualization | `references/spatial-canvas-engine.md` |
 | 38 Archetypes ระดับโลก (30 Visual + 8 Engineering) & 5-Axis Matrix | `references/argon-design-archetypes.md` -> `references/quality-gate.md` |
 | 11 กฎเหล็ก Apple Design Award & CSS 2026 Invariants | `references/modern-craft-invariants.md` -> `references/quality-gate.md` |
+| ความสมูท 120fps & Compositor Threading | `references/compositor-smoothness.md` |
+| ปรับปรุง/สแกนเว็บเก่า (Retrofit Protocol) | `references/web-retrofit-protocol.md` -> `references/quality-gate.md` |
+| สลับหน้าลื่นไหล Native View Transitions API | `references/view-transitions-engine.md` |
 | สไตล์ Preset พิเศษ (`metha` / `apple` / `tesla`) | อ่าน `presets/{metha|apple|tesla}/guidelines.md` + `presets/{name}/design-tokens.css` |
 | รัน Deterministic Test Suite & Browser Matrix Audit | `node tests/runner.js [--browser]` หรือ `node tests/browser-audit.js` |
 
@@ -68,6 +71,8 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | **มีคำว่า "โลโก้", "logo", "ตราสินค้า"** | **AI Logo & Color Psychology** | กำหนดสไตล์ 55+ สไตล์, จิตวิทยาสี และสร้างคำสั่งเจนภาพ |
 | **มีคำว่า "โทเค็น", "tokens", "css vars", "สี"** | **3-Layer Design Tokens** | สกัด Global $\to$ Semantic $\to$ Component Tokens |
 | **มีคำว่า "ตรวจดีไซน์", "รีดีไซน์", "แก้หน้าตา", "audit"** | **Redesign Audit** | ตรวจจับ AI Tells, ปรับฟอนต์ สี และ Spacing |
+| **มีคำว่า "เว็บเก่า", "retrofit", "ตรวจเว็บเดิม", "แก้เว็บอืด"** | **Legacy Web Retrofit** | สแกน 4 มิติด้วย Hybrid 3-Tier Model ปรับปรุงโค้ดแบบ Zero-Regression |
+| **มีคำว่า "ความสมูท", "120fps", "เลื่อนกระตุก", "jank"** | **Compositor Smoothness** | ปรับแต่ง Compositor-Only Threading, Lenis และ Off-Screen Culling |
 | **มีคำว่า "หน้าเว็บ", "แอพ", "ui", "landing page"** | **UI/UX Modern Craft (Default)** | ออกแบบตาม 38 Archetypes และ Locked DNA Profile |
 
 ### B. Dedicated Commands & Headless Shortcuts
@@ -77,6 +82,7 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | `/medesign` | **เปิด `ask_question` Cockpit Modal** ให้คลิกเลือกหมวดหมู่งานที่ต้องการใน 1 คลิก |
 | `/medesign auto` | ใช้ **Locked DNA Profile** ทันที — MESURV Fusion & MeBoard FINAL-01/02 |
 | `/medesign audit` | **ตรวจและวางแผนรีดีไซน์เว็บเดิม** กำจัด AI Tells, ปรับฟอนต์ สี และ Spacing |
+| `/medesign retrofit` | **สแกนและปรับปรุงเว็บเก่า** ด้วยโมเดล Hybrid 3-Tier ป้องกัน Regression 100% |
 | `/medesign --brand` | **ออกแบบอัตลักษณ์แบรนด์** โทนเสียง (Voice & Tone) และสไตล์ไกด์การสื่อสาร |
 | `/medesign --tokens` | **ออกแบบ 3-Layer Design Tokens** (Global $\to$ Semantic $\to$ Component) และ CSS Variables |
 | `/medesign --slides [topic]` | **สร้างสไลด์ Interactive HTML** พร้อม Chart.js, Duarte Sparkline และ Layout Patterns |

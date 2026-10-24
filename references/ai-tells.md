@@ -120,9 +120,11 @@ Scope: text rendered in the UI being built; does not apply to chat replies or sk
    - **NO Unjustified Table-to-Card Conversion:** ห้ามแปลงตารางข้อมูลเชิงวิเคราะห์/พิกัด/ราคา ให้เป็นการ์ดสี่เหลี่ยมเรียงต่อกัน หากการแปลงนั้นทำให้ผู้ใช้สูญเสียความสามารถในการสแกนเปรียบเทียบค่าทางสายตา (Visual Row Scanning)
    - **NO Workflow-Agnostic Responsive Stacking:** บนมือถือ ห้ามแค่สั่ง `grid-cols-1` ทื่อๆ โดยไม่จัดลำดับความสำคัญใหม่ หน้าทำงานระดับวิศวกรรมต้องตรึงเครื่องมือหลักและแผนที่/กราฟไว้ด้านบนเสมอ
 
-2. **Interaction Slop (Dead Feedback):**
+2. **Interaction Slop & Design Theater (The Unglamorous Gaps):**
+   - **NO Design Theater:** ห้ามสร้างหน้าจอสวยที่ขาดกลไกเบื้องหลังที่จำเป็น เช่น เมื่อผู้ใช้กดกระทำ (Action) ห้ามเงียบเฉย ต้องมี Micro-Feedback ตอบสนองภายใน $\le 100$ms เสมอ
+   - **NO Dead-End Error States (Service Recovery Paradox):** ห้ามแสดงข้อความแจ้งเตือนสีแดงลอยๆ โดยไม่มีทางออก ต้องบอกความจริงภาษามนุษย์ + ยืนยันความปลอดภัยข้อมูล + มีปุ่ม Action กู้คืนใน 1 คลิก (Retry / Undo / Contact)
    - **NO Cosmetic Hover on Static Elements:** ห้ามใส่ `hover:-translate-y-1` หรือ Hover Glow บนการ์ดที่คลิกไม่ได้และไม่มี Navigation Link
-   - **NO Broken State Contract:** ทุก Interactive Component และปุ่มต้องรองรับสถานะตาม **10-State Machine Matrix** (`default → hover → pressed → focus-visible → loading-skeleton (200ms delay) → empty (3 forms) → error (inline + recovery) → disabled → partial-swr → overflow (min-width: 0)`) ห้ามมีปุ่มที่กดแล้วนิ่งสนิท
+   - **NO Broken State Contract:** ทุก Interactive Component และปุ่มต้องรองรับสถานะตาม **10-State Machine Matrix** (`default → hover → pressed → focus-visible → loading-skeleton (200ms delay) → empty (3 forms) → error (actionable recovery) → disabled → partial-swr → overflow (min-width: 0)`) ห้ามมีปุ่มที่กดแล้วนิ่งสนิท
    - **NO Accent Color Inflation:** สีเน้น (Accent Color) ต้องใช้ไม่เกิน 10-15% ของพื้นที่หน้าจอทั้งหมด ห้ามระบายสีเน้นลงบนไอคอน หัวข้อ และการ์ดทุกใบจนปุ่ม CTA สูญเสียแรงดึงดูดสายตา (Visual Gravity)
 
 3. **Optical Geometry & Component Craft Slop (Hit-Target Conflation):**

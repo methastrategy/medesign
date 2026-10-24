@@ -24,7 +24,7 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | **สไลด์นำเสนอ Interactive** (`/medesign --slides`) | `references/slides.md` |
 | **รายงานบริหาร (Executive PDF)** (`/medesign --report`) | `references/executive-reports.md` (สถาปัตยกรรม 8+4 Consulting Split, 4pt Baseline) |
 | **ตัวพิมพ์ไทย-ละติน & Font Pairs** | `references/typography-thai-latin.md` (Latin-first, Thai leading 1.7–1.8, tracking 0) |
-| **คลัง 73 แบรนด์ระดับโลก** | `references/brand-design-tokens.md` (Linear, Apple, Stripe, Vercel, Supabase) |
+| **คลัง 74 แบรนด์ระดับโลก & Presets** | `references/brand-design-tokens.md` (Linear, Apple, Stripe, Tesla, Metha) |
 | **38 Argon Archetypes & 5-Axis Matrix** | `references/argon-design-archetypes.md` -> `references/quality-gate.md` |
 | **11 Modern Craft Invariants** | `references/modern-craft-invariants.md` (Closed Spacing, Control Ladder, Concentric Radii) |
 | **คำสั่งสร้างภาพต้นแบบ (Mockup)** | `references/image-mockup-direction.md` (`/medesign mockup [web/mobile]`) |
@@ -36,7 +36,7 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | **ชิ้นส่วน / Modal เฉพาะจุด** | `references/components.md` |
 | **ปรับปรุงเว็บเก่า (Retrofit 3-Tier)** | `references/web-retrofit-protocol.md` -> `references/quality-gate.md` |
 | **ความสมูท 120fps & Motion** | `references/compositor-smoothness.md` + `references/motion-tokens.md` |
-| **สไตล์ Preset พิเศษ** (`apple` / `tesla`) | `presets/{name}/guidelines.md` + `presets/{name}/design-tokens.css` |
+| **สไตล์ Preset ระดับโลก** (`apple` / `tesla` / `metha`) | `presets/{name}/guidelines.md` + `presets/{name}/design-tokens.css` |
 | **Metha Cockpit / MESURV DNA** (Opt-in) | `references/mesurv-dna.md` (รันเฉพาะสั่ง `/medesign metha` หรือใน `D:/METHA/`) |
 | **รัน Test Suite & Browser Audit** | `node tests/runner.js` หรือ `node tests/browser-audit.js` |
 
@@ -68,7 +68,7 @@ description: "ออกแบบ UI/UX เว็บ/แอป และสื่
 | `/medesign quiet [path]` | ลดทอนสู่ความมินิมอล (Decrease weight, hairline borders, muted tones) |
 | `/medesign snapshot [path]` | จับภาพเรนเดอร์จริงระดับ High-DPI (Mobile, Tablet, Desktop, OG 1200x630) ด้วย CDP |
 | `/medesign [brand]` | ดึง Token ของ 73 แบรนด์ดังตรงๆ (Linear, Apple, Stripe, Vercel, Supabase, ฯลฯ) |
-| `/medesign metha` | ลายเซ็นวิศวกรรมส่วนตัว Metha Cockpit (Survey/GIS Telemetry, Tabular Mono, Dark Charcoal) |
+| `/medesign metha` | **Metha Telemetry Cockpit (Archetype 38)** — สไตล์วิศวกรรมรังวัดและโทรมาตร (3-Pane Cockpit, Tabular Mono, Dark Slate, Electric Cyan) |
 
 ---
 

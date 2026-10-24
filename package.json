@@ -27,7 +27,7 @@
     "medesign.config.js"
   ],
   "scripts": {
-    "test": "node tests/runner.js && node tests/validate-sarif.js && node tests/test-tokens.js && node tests/test-cli.js",
+    "test": "node tests/runner.js && node tests/validate-sarif.js && node tests/test-tokens.js && node tests/test-cli.js && node tests/test-behavioral-matrix.js",
     "test:unit": "node tests/runner.js",
     "test:sarif": "node tests/validate-sarif.js",
     "test:tokens": "node tests/test-tokens.js",
@@ -44,7 +44,8 @@
     "snapshot": "node bin/medesign.js snapshot",
     "tokens": "node bin/medesign.js tokens",
     "doctor": "node bin/medesign.js doctor",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test",
+    "test:behavioral": "node tests/test-behavioral-matrix.js"
   },
   "repository": {
     "type": "git",

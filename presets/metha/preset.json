@@ -2,28 +2,28 @@
   "$schema": "../schema.json",
   "id": "metha",
   "name": "Metha Engineering & Geoinformatics Cockpit",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "archetype": "Archetype 38: Cadastral Survey & Mission-Critical QA/QC Workbench (Archetype 32: GIS Situation Awareness)",
   "description": "World-class mission-critical telemetry & geodetic engineering preset: high-density cadastral tables, 8pt optical grid, Geist + IBM Plex Mono tabular coordinates, deep slate/obsidian canvas, and electric cyan/precision green accents.",
   "typography": {
     "display": "'Geist', 'Inter', sans-serif",
     "sans": "'Geist', 'IBM Plex Sans Thai', sans-serif",
-    "mono": "'IBM Plex Mono', 'Fira Code', monospace",
+    "mono": "'IBM Plex Mono', 'JetBrains Mono', monospace",
     "headingTracking": "-0.020em",
     "uiLineHeight": "1.25",
     "proseLineHeight": "1.70",
     "thaiHeadroom": "4px"
   },
   "color": {
-    "canvas": "#0c0e14",
+    "canvas": "#0a0d14",
     "surfaceRaised": "#141721",
     "surfaceInset": "#090a0f",
     "borderSubtle": "rgba(255, 255, 255, 0.09)",
-    "borderFocus": "oklch(0.68 0.20 250)",
-    "accent": "oklch(0.65 0.20 250)",
-    "accentForeground": "#ffffff",
+    "borderFocus": "oklch(0.85 0.18 198)",
+    "accent": "oklch(0.85 0.18 198)",
+    "accentForeground": "#0a0d14",
     "status": {
-      "info": "oklch(0.68 0.20 250)",
+      "info": "oklch(0.85 0.18 198)",
       "success": "oklch(0.72 0.18 145)",
       "warning": "oklch(0.78 0.16 75)",
       "critical": "oklch(0.62 0.22 25)"
@@ -38,7 +38,7 @@
   },
   "motion": {
     "profile": "precision",
-    "durationEntry": "140ms",
+    "durationEntry": "120ms",
     "durationExit": "90ms",
     "easingEntry": "cubic-bezier(0.16, 1, 0.3, 1)",
     "easingExit": "cubic-bezier(0.4, 0, 1, 1)"

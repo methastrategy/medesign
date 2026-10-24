@@ -1,15 +1,10 @@
----
-name: brand-design-md
-description: "คลังต้นแบบดีไซน์หน้าเว็บและ UI จาก 74 แบรนด์ระดับโลก (Stripe, Linear, Apple, Tesla, Metha) — ใช้เมื่อต้องการดึงโทนสี ฟอนต์ และการจัดวางเว็บระดับพรีเมียม (Production brand design tokens, HEX/HSL palettes, typography, and layout specs from 74 top tech brands)"
----
-
 # Brand Design System Intelligence (Awesome DESIGN.md)
 
-This skill provides direct access to **74 production-grade `DESIGN.md`** design specifications from world-class brands and engineering presets, cloned from [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md).
+คลังมาตรฐานสถาปัตยกรรมและโทเค็นการออกแบบจาก **74 แบรนด์ระดับโลก & Presets มาตรฐาน** สำหรับใช้ร่วมกับโหมด `/medesign like <แบรนด์>` หรือ `/medesign <แบรนด์>`
 
 ## Available Brands (74 Brands)
 
-- **Mission-Critical Engineering & Telemetry:** `metha` (Cadastral & GIS Cockpit, ISA-101 Situational Awareness, Deep Slate `#0c0e14`, Hairline `rgba(255,255,255,0.09)`, Electric Cyan `oklch(0.65 0.20 250)`, Tabular Mono)
+- **Mission-Critical Engineering & Telemetry:** `metha` (Cadastral & GIS Cockpit, ISA-101 Situational Awareness, Deep Slate `#0a0d14`, Hairline `rgba(255,255,255,0.09)`, Electric Cyan `oklch(0.85 0.18 198)`, Tabular Mono)
 - **Developer Tools & SaaS:** `linear.app`, `stripe`, `vercel`, `supabase`, `raycast`, `posthog`, `resend`, `sentry`, `warp`, `hashicorp`, `mintlify`, `clickhouse`, `mongodb`, `cursor`, `expo`, `sanity`, `composio`, `airtable`, `cal`, `clay`, `opencode.ai`, `lovable`
 - **AI & LLM Platforms:** `claude`, `elevenlabs`, `mistral.ai`, `together.ai`, `x.ai`, `replicate`, `runwayml`, `cohere`, `minimax`, `ollama`, `voltagent`
 - **Productivity & Collaboration:** `notion`, `figma`, `framer`, `webflow`, `miro`, `slack`, `superhuman`, `zapier`, `intercom`
@@ -20,30 +15,26 @@ This skill provides direct access to **74 production-grade `DESIGN.md`** design 
 
 ## How to Apply a Brand Design System
 
-When the user asks to build or style an interface like a specific brand (e.g., *"Make it look like Linear"*, *"Use Stripe style"*, *"Design a telemetry cockpit like Metha"*, or *"Design a dark SaaS dashboard like Supabase"*):
+เมื่อผู้ใช้สั่งออกแบบตามแบรนด์ (เช่น `/medesign like linear`, `/medesign like stripe`, `/medesign metha`):
 
-1. **Locate the Brand Specification:**
-   Primary path: `references/brand-design-tokens.md`, `presets/<name>/` หรือ `awesome-design-md-src/design-md/<brand_name>/DESIGN.md`
-   *(Example: `presets/metha/guidelines.md` or `awesome-design-md-src/design-md/linear.app/DESIGN.md`)*
+1. **ลำดับการค้นหาไฟล์สเปก (Resolution Hierarchy & Fallback):**
+   - **Preset ภายในระบบ:** หากเป็น `metha`, `apple`, `tesla` ให้อ่านจาก `presets/<name>/guidelines.md` และ `presets/<name>/design-tokens.css`
+   - **Upstream Cache:** หากมีโฟลเดอร์ `awesome-design-md-src/design-md/<brand>/DESIGN.md` ให้อ่านสเปกจากไฟล์ดังกล่าว
+   - **Live Extraction Fallback:** หากไม่มีไฟล์ในเครื่อง ให้เรียกโหมด `/medesign extract <url>` เพื่อสกัดโทเค็นสดจากเว็บไซต์ของแบรนด์ หรือสังเคราะห์จาก Core Archetype ประจำแบรนด์
 
-2. **Read the Token Definitions:**
-   - **Colors:** Extract the exact semantic hex/oklch codes (`primary`, `canvas`, `surface-1` through `surface-4`, `hairline`, `ink`, `ink-muted`).
-   - **Typography:** Apply the specified font families, font sizes, line heights, and letter spacing (tracking).
-   - **Component Styles:** Replicate the cards, buttons, input fields, badges, and focus rings defined in the document.
-   - **Elevation & Lighting:** Use the subtle gradients, hairline borders (e.g. `1px solid rgba(255,255,255,0.08)`), and glow effects.
+2. **ดึงโทเค็นหลัก 4 เลเยอร์:**
+   - **Colors:** สี Canvas, Surface, Hairline, และ Accent หลัก (เช่น Linear Dark `#08090a`, Supabase Emerald, Metha Electric Cyan `#00f5fb`)
+   - **Typography:** คู่ฟอนต์ละติน-ไทย และ Line-height (เช่น Linear ใช้ `Geist` + `Noto Sans Thai`)
+   - **Component Geometry:** รัศมีขอบ Concentric Radii และขนาดปุ่มตาม Control Ladder
+   - **Lighting & Surface:** ใช้เส้น Hairline 1px และยกเลิกเงาดำฟุ้งบนการ์ด In-flow ทั้งหมด
 
-3. **Enforce Cohesion & Layout Pairing Matrix:**
-   Never mix random colors with a brand's palette. Always build the CSS Variables (`:root`) directly from the `DESIGN.md` specification. Furthermore, pairing a brand requires applying both its Tokens AND its iconic Layout Topology:
-   - **Metha / Geospatial / Telemetry:** 3-Pane Cockpit Architecture (Top coordinate command deck, Left layer rail, Center spatial canvas, Right telemetry inspector & traverse table).
-   - **BMW / Tesla / Automotive:** 3-Pane Cockpit Architecture (Top Command Deck, Left Telemetry/Filmstrip, Center Canvas, Right Docked Inspector with tactile dials). NEVER use generic full-screen blocking modals.
+3. **Brand-to-Layout Pairing Matrix (เฉพาะงาน App & Dashboard):**
+   > [!IMPORTANT]
+   > **ลำดับความสำคัญ:** สิ่งที่ผู้ใช้ระบุใน Brief Intake ชนะ Pairing Matrix นี้เสมอ และ Pairing Matrix มีผลบังคับเฉพาะงานประเภท Web Application, Dashboard, และ Cockpit เท่านั้น (หากเป็น Landing Page, Blog, หรือ Marketing ให้ใช้ Layout มาตรฐานของหน้านั้นๆ)
+
+   - **Metha / Engineering Telemetry:** 3-Pane Cockpit Architecture (Top coordinate command deck, Left layer rail, Center spatial canvas, Right precision telemetry inspector & traverse table).
+   - **BMW / Tesla / Automotive:** 3-Pane Cockpit Architecture (Top Command Deck, Left Telemetry/Filmstrip, Center Canvas, Right Docked Inspector).
    - **Linear / Raycast / DevTools:** Split Navigation Rail + Command Palette (Cmd+K) + High-density tabular grid with instant inline actions.
    - **Apple / Consumer Luxury:** Floating Frosted Glass Header + Generous Asymmetric Bento + Floating Action Capsules + Concentric Card Physics.
    - **Stripe / Fintech:** Seamless Multi-step Flow + Sticky Progress Summary on right + Clean Form Fields with micro-glow focus.
    - **Notion / Productivity:** Full-bleed distraction-free canvas + Side peek drawer + Minimalist Slash command menu.
-
-## Updating the Collection
-
-To pull latest brands from upstream:
-```powershell
-git -C "path/to/awesome-design-md-src" pull
-```

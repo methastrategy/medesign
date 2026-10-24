@@ -3,137 +3,85 @@ name: medesign
 description: "ออกแบบ UI/UX เว็บ/แอป และสื่อกราฟิกครบวงจร (สไลด์ แบนเนอร์ โลโก้) — ใช้เมื่อสร้างเว็บ สไลด์ หรือสื่อนำเสนอ (Curated UI/UX & Graphic design suite: slides, banners, mockups, brand tokens)"
 ---
 
-# ME-DESIGN: Personal Curated UI/UX & Graphic Design Engine (`/medesign`)
+# ME-DESIGN: Personal & Production UI/UX Design Engine (`/medesign`)
 
-สุดยอดสตูดิโอออกแบบ UI/UX และสื่อกราฟิกส่วนตัว สังเคราะห์กฎจาก 21+ แบรนด์ดัง พร้อมระบบตรวจสอบ Anti-AI Redesign, Image Mockup Art Direction, Image-to-Code, สไลด์พรีเซนต์, แบนเนอร์, โลโก้ AI และ DNA ส่วนตัว
+ระบบสถาปัตยกรรมการออกแบบ UI/UX และสื่อกราฟิกมาตรฐานสากล รองรับ 73+ แบรนด์ดัง และ 38 Argon Archetypes พร้อมระบบ Brief Intake, Anti-AI Invariants และ Deterministic Auto-Compiler
 
 ---
 
-> Router: read ONLY what the task needs. `quality-gate.md` is MANDATORY before delivering any UI.
+> **Router Rule:** อ่านเฉพาะไฟล์ที่งานนั้นต้องใช้ และต้องผ่าน `references/quality-gate.md` ก่อนส่งงานเสมอ
 
-## Routing
+## 1. Routing Table
 
-| Task | Read |
+| หมวดงาน / คำสั่ง | ไฟล์อ้างอิงที่ต้องอ่าน (Sequential Flow) |
 |---|---|
-| สร้าง/ยกเครื่อง UI (default) | `references/design-core.md` -> `build` -> `references/quality-gate.md` |
-| รีดีไซน์หน้าเดิม / ตรวจจับ AI Tells | `references/redesign-audit.md` (หรือ `/medesign audit`) -> `references/quality-gate.md` |
-| เจนคำสั่งสร้างภาพต้นแบบเว็บ & มือถือ | `references/image-mockup-direction.md` (หรือ `/medesign mockup`) |
-| แปลงภาพต้นแบบ/Mockup เป็นโค้ด | `references/image-to-code.md` (หรือ `/medesign to-code`) -> `references/quality-gate.md` |
-| ทำ component / modal เฉพาะจุด | `references/components.md` |
-| งานใน MESURV หรือโปรเจกต์ MeBoard | เพิ่ม `references/mesurv-dna.md` |
-| สไลด์นำเสนอ & Pitch Decks | `references/slides.md` (หรือ `/medesign --slides`) |
-| สถาปัตยกรรมเอกสารและรายงานบริหาร (Executive PDF Reports) | `references/executive-reports.md` (หรือ `/medesign --report`) |
-| ตัวพิมพ์ไทย-ละติน & Font Pairings สากล | `references/typography-thai-latin.md` |
-| แบนเนอร์ โฆษณา ปกเพจ/โซเชียล | `references/banner-sizes-and-styles.md` (หรือ `/medesign --banner`) |
-| ภาพถ่ายและกราฟิกโซเชียลมีเดีย | `references/social-photos-design.md` (หรือ `/medesign --social`) |
-| ออกแบบโลโก้ AI & Style Guide | `references/logo-design.md` (หรือ `/medesign --logo`) |
-| Corporate Identity (CIP) & นามบัตร | `references/cip-design.md` (หรือ `/medesign --cip`) |
-| ไอคอน SVG และชุด Icon Sets | `references/icon-design.md` (หรือ `/medesign --icon`) |
-| ต้องการคำศัพท์/แนวคิดสไตล์เพิ่ม | `references/vocab-protocol.md` -> `references/ui-ux-vocabulary-vault.md` |
-| ถอดสไตล์จากภาพ/URL เป็น token | `references/style-extraction.md` (หรือ `/medesign extract`) |
-| เว็บตามสไตล์แบรนด์ดัง / โหมดอัตโนมัติ | `/medesign brand` · `/medesign auto` |
-| สไตล์ minimalist / brutalist / soft | อ่าน `references/styles/{minimalist|brutalist|soft}.md` -> `references/quality-gate.md` |
-| กฎเหล็ก Anti-AI-Tells | `references/ai-tells.md` -> `references/quality-gate.md` |
-| ดึงโทเค็น 73 แบรนด์ดัง (Linear, Apple, Stripe) | `references/brand-design-tokens.md` |
-| สเปก shadcn/ui & Radix UI styling | `references/ui-styling-shadcn.md` |
-| ขัดเกลา UI ให้เนี๊ยบ (Impeccable Polish) | `references/impeccable-polish.md` |
-| 3D / WebGL Landing / Spatial Background | `references/threeui-spatial-engine.md` -> `references/quality-gate.md` |
-| Motion Tokens & Tactile Easing | `references/motion-tokens.md` |
-| สร้างหรืออ่านคู่มือดีไซน์โปรเจกต์ (DESIGN.md) | `references/design-md-protocol.md` |
-| แอนิเมชันลื่นไหล & Micro-Interactions (AutoAnimate) | `references/micro-interactions-and-auto-animate.md` |
-| Infinite Spatial Canvas & Viewport Virtualization | `references/spatial-canvas-engine.md` |
-| 38 Archetypes ระดับโลก (30 Visual + 8 Engineering) & 5-Axis Matrix | `references/argon-design-archetypes.md` -> `references/quality-gate.md` |
-| 11 กฎเหล็ก Apple Design Award & CSS 2026 Invariants | `references/modern-craft-invariants.md` -> `references/quality-gate.md` |
-| ความสมูท 120fps & Compositor Threading | `references/compositor-smoothness.md` |
-| ปรับปรุง/สแกนเว็บเก่า (Retrofit Protocol) | `references/web-retrofit-protocol.md` -> `references/quality-gate.md` |
-| สลับหน้าลื่นไหล Native View Transitions API | `references/view-transitions-engine.md` |
-| สไตล์ Preset พิเศษ (`metha` / `apple` / `tesla`) | อ่าน `presets/{metha|apple|tesla}/guidelines.md` + `presets/{name}/design-tokens.css` |
-| รัน Deterministic Test Suite & Browser Matrix Audit | `node tests/runner.js [--browser]` หรือ `node tests/browser-audit.js` |
+| **สร้างใหม่จากศูนย์** (`/medesign new`) | `references/brief-intake.md` -> `references/design-core.md` -> `references/quality-gate.md` |
+| **แก้/รีดีไซน์ของเดิม** (`/medesign revamp`) | `references/brief-intake.md` -> `references/redesign-audit.md` -> `references/quality-gate.md` |
+| **อ้างอิงเว็บดัง** (`/medesign like [url/แบรนด์]`) | `references/brief-intake.md` -> `references/style-extraction.md` -> `references/design-core.md` -> `references/quality-gate.md` |
+| **เทมเพลตคำสั่ง 3 โหมด** | `references/prompt-templates.md` |
+| **ตรวจดีไซน์ / สแกน AI Tells** (`/medesign audit`) | `references/redesign-audit.md` -> `references/quality-gate.md` |
+| **ขัดเกลาโค้ดอัตโนมัติ** (`/medesign polish [path]`) | รัน `node bin/medesign.js polish [path]` (Auto-Heal Hard Invariants) |
+| **สไลด์นำเสนอ Interactive** (`/medesign --slides`) | `references/slides.md` |
+| **รายงานบริหาร (Executive PDF)** (`/medesign --report`) | `references/executive-reports.md` (สถาปัตยกรรม 8+4 Consulting Split, 4pt Baseline) |
+| **ตัวพิมพ์ไทย-ละติน & Font Pairs** | `references/typography-thai-latin.md` (Latin-first, Thai leading 1.7–1.8, tracking 0) |
+| **คลัง 73 แบรนด์ระดับโลก** | `references/brand-design-tokens.md` (Linear, Apple, Stripe, Vercel, Supabase) |
+| **38 Argon Archetypes & 5-Axis Matrix** | `references/argon-design-archetypes.md` -> `references/quality-gate.md` |
+| **11 Modern Craft Invariants** | `references/modern-craft-invariants.md` (Closed Spacing, Control Ladder, Concentric Radii) |
+| **คำสั่งสร้างภาพต้นแบบ (Mockup)** | `references/image-mockup-direction.md` (`/medesign mockup [web/mobile]`) |
+| **แปลงภาพ Mockup เป็นโค้ด** | `references/image-to-code.md` (`/medesign to-code`) -> `references/quality-gate.md` |
+| **แบนเนอร์ โฆษณา ปกโซเชียล** | `references/banner-sizes-and-styles.md` (`/medesign --banner`) |
+| **ภาพถ่ายและกราฟิกโซเชียล** | `references/social-photos-design.md` (`/medesign --social`) |
+| **ออกแบบโลโก้ AI & CIP** | `references/logo-design.md` + `references/cip-design.md` |
+| **ไอคอน SVG & Icon Sets** | `references/icon-design.md` (`/medesign --icon`) |
+| **ชิ้นส่วน / Modal เฉพาะจุด** | `references/components.md` |
+| **ปรับปรุงเว็บเก่า (Retrofit 3-Tier)** | `references/web-retrofit-protocol.md` -> `references/quality-gate.md` |
+| **ความสมูท 120fps & Motion** | `references/compositor-smoothness.md` + `references/motion-tokens.md` |
+| **สไตล์ Preset พิเศษ** (`apple` / `tesla`) | `presets/{name}/guidelines.md` + `presets/{name}/design-tokens.css` |
+| **Metha Cockpit / MESURV DNA** (Opt-in) | `references/mesurv-dna.md` (รันเฉพาะสั่ง `/medesign metha` หรือใน `D:/METHA/`) |
+| **รัน Test Suite & Browser Audit** | `node tests/runner.js` หรือ `node tests/browser-audit.js` |
 
 ---
 
-## ⚡ Zero-Flag Intuitive Dispatch & Workflow
+## 2. ลำดับความสำคัญในการเลือกโหมด (Mode Precedence Hierarchy)
 
 > [!IMPORTANT]
-> **ผู้ใช้ไม่ต้องจำหรือพิมพ์ `--flag`**: ระบบรองรับการทำงาน 2 ระดับ:
-> 1. **Auto-Detect Intent (เมื่อสั่งพร้อมข้อความ):** มีคำว่า "สไลด์" $\to$ ทำสไลด์ทันที, มีคำว่า "รายงาน" / "pdf" $\to$ ทำรายงานบริหาร 8+4 ทันที, มีคำว่า "แบนเนอร์" $\to$ ทำแบนเนอร์ทันที, มีคำว่า "โลโก้" $\to$ ออกแบบโลโก้ทันที, มีคำว่า "รีดีไซน์/ตรวจเว็บ" $\to$ เข้าโหมด audit ทันที
-> 2. **Interactive Cockpit Modal (เมื่อสั่ง `/medesign` เปล่า):** เปิดกล่อง `ask_question` ให้คลิกเลือกหมวดหมู่ที่ต้องการทันที
-
-### A. Auto-Detection Matrix
-
-| สิ่งที่ตรวจพบในข้อความ / บริบท | โหมดที่ระบบเลือกใช้อัตโนมัติ | กลไกเบื้องหลัง |
-| :--- | :--- | :--- |
-| **มีคำว่า "สไลด์", "slide", "pitch deck", "นำเสนอ"** | **Interactive HTML Slides** | สร้างสไลด์ด้วย Chart.js, Duarte Sparkline, และ Semantic Tokens |
-| **มีคำว่า "รายงาน", "report", "executive report", "pdf"** | **Executive PDF Reports** | ออกแบบรายงานบริหาร 12-Col Grid, 8+4 Consulting Split, Action Titles |
-| **มีคำว่า "ฟอนต์", "ตัวพิมพ์", "typography", "จับคู่ฟอนต์"** | **Bi-lingual Typography Engine** | ปรับจูน Latin-First, Thai Leading 1.7–1.8, Letter-spacing 0 |
-| **มีคำว่า "แบนเนอร์", "banner", "ปกเพจ", "ภาพโฆษณา"** | **Banner & Display Design** | ออกแบบขนาดมาตรฐานสำหรับ Facebook, Ads, Web พร้อม Grid Layout |
-| **มีคำว่า "โซเชียล", "social", "โพสต์", "ig", "facebook"** | **Social Graphics** | ออกแบบ Visual Composition สำหรับแพลตฟอร์มโซเชียลมีเดีย |
-| **มีคำว่า "โลโก้", "logo", "ตราสินค้า"** | **AI Logo & Color Psychology** | กำหนดสไตล์ 55+ สไตล์, จิตวิทยาสี และสร้างคำสั่งเจนภาพ |
-| **มีคำว่า "โทเค็น", "tokens", "css vars", "สี"** | **3-Layer Design Tokens** | สกัด Global $\to$ Semantic $\to$ Component Tokens |
-| **มีคำว่า "ตรวจดีไซน์", "รีดีไซน์", "แก้หน้าตา", "audit"** | **Redesign Audit** | ตรวจจับ AI Tells, ปรับฟอนต์ สี และ Spacing |
-| **มีคำว่า "เว็บเก่า", "retrofit", "ตรวจเว็บเดิม", "แก้เว็บอืด"** | **Legacy Web Retrofit** | สแกน 4 มิติด้วย Hybrid 3-Tier Model ปรับปรุงโค้ดแบบ Zero-Regression |
-| **มีคำว่า "ความสมูท", "120fps", "เลื่อนกระตุก", "jank"** | **Compositor Smoothness** | ปรับแต่ง Compositor-Only Threading, Lenis และ Off-Screen Culling |
-| **มีคำว่า "หน้าเว็บ", "แอพ", "ui", "landing page"** | **UI/UX Modern Craft (Default)** | ออกแบบตาม 38 Archetypes และ Locked DNA Profile |
-
-### B. Dedicated Commands & Headless Shortcuts
-
-| คำสั่ง | พฤติกรรม |
-|:---|:---|
-| `/medesign` | **เปิด `ask_question` Cockpit Modal** ให้คลิกเลือกหมวดหมู่งานที่ต้องการใน 1 คลิก |
-| `/medesign auto` | ใช้ **Locked DNA Profile** ทันที — MESURV Fusion & MeBoard FINAL-01/02 |
-| `/medesign audit` | **ตรวจและวางแผนรีดีไซน์เว็บเดิม** กำจัด AI Tells, ปรับฟอนต์ สี และ Spacing |
-| `/medesign retrofit` | **สแกนและปรับปรุงเว็บเก่า** ด้วยโมเดล Hybrid 3-Tier ป้องกัน Regression 100% |
-| `/medesign --brand` | **ออกแบบอัตลักษณ์แบรนด์** โทนเสียง (Voice & Tone) และสไตล์ไกด์การสื่อสาร |
-| `/medesign --tokens` | **ออกแบบ 3-Layer Design Tokens** (Global $\to$ Semantic $\to$ Component) และ CSS Variables |
-| `/medesign --slides [topic]` | **สร้างสไลด์ Interactive HTML** พร้อม Chart.js, Duarte Sparkline และ Layout Patterns |
-| `/medesign --report [topic]` | **จัดทำ Executive PDF Report** สถาปัตยกรรมเอกสาร 8+4 Split, 4pt Baseline, Action Titles |
-| `/medesign --banner [platform]` | **ออกแบบแบนเนอร์/ภาพปก** สำหรับ Facebook, Ads, เว็บ พร้อม Preset ขนาดมาตรฐาน |
-| `/medesign --social [channel]` | **ออกแบบกราฟิกโซเชียลมีเดีย** (IG, FB, LinkedIn, Twitter) พร้อม Visual Composition |
-| `/medesign --logo [brand]` | **สร้างโลโก้ AI และ Color Psychology** 55+ สไตล์ และ Color Palettes |
-| `/medesign --cip [brand]` | **จัดทำ Corporate Identity Program (CIP)** ม็อคอัพ นามบัตร เอกสารนำเสนอ |
-| `/medesign --icon [name]` | **สร้างไอคอน SVG แบบคมชัด** ทั้งสไตล์ Line, Solid, Duotone และ Pixel-Perfect |
-| `/medesign mockup [web\|mobile]` | **สร้างคำสั่งสร้างภาพต้นแบบ** แบบ Section-by-section (เว็บ) หรือ Native Screen (มือถือ) |
-| `/medesign to-code` | **แปลงภาพ Mockup เป็นโค้ดจริง** แบบ High-Fidelity สอดคล้องกับ Tailwind / shadcn |
-| `/medesign extract [url/desc]` | **ถอดสไตล์จากเว็บหรือภาพที่ชอบ** แปลงเป็น Token DNA & Mockup |
-| `/medesign metha` | **ใช้ลายเซ็นวิศวกรรมส่วนตัว Metha Cockpit** — ผสานรังวัดที่ดิน, GIS Telemetry (Archetype 32 & 38), 8pt Grid, Inter + IBM Plex Mono Tabular, Charcoal Canvas |
-| `/medesign apple` | **ใช้สไตล์ Apple Human Interface** — Product Showcase, Concentric Radii, Frosted Vibrancy, Pill Buttons, Soft-Settle Motion |
-| `/medesign tesla` | **ใช้สไตล์ Tesla Telemetry** — Industrial Brutalism, Razor-Sharp 4px/2px Chamfer, Obsidian Canvas, Precision 100ms Motion |
-| `/medesign test [--browser]` | **รัน Deterministic Test Suite** — ตรวจสอบทั้ง Static AST และ Headless Chromium Matrix (Mobile/Tablet/Desktop × Dark/Light) |
-| `/medesign compare` | **เปิด Blind Testbed Lab** — เปรียบเทียบ Visual Craft 5 มิติ (`tests/visual-testbed.html`) |
-| `/medesign lint [path]` | **รัน Linter ตรวจจับ Hard Invariants**, สกัดกั้น AI Slop และคำนวณคะแนน $Q$-Score |
-| `/medesign search [query]` | **ค้นหา 38 Archetypes และ Presets** ด้วย Node.js Discovery Engine พร้อม Terminal Summary Card |
-| `/medesign polish [path]` | **ซ่อมโค้ดอัตโนมัติ (Self-Healing)** แก้ไข Hard Invariants (MD005, MD104, MD106 boundary clearance, em-dash, dead buttons) |
-| `/medesign bolder [path]` | **เพิ่มความคมชัดและน้ำหนักภาพ** เพิ่ม font-weight, ความเข้ม border, และความสดของ Accent |
-| `/medesign quiet [path]` | **ลดทอนความจัดจ้านสู่ Minimalist** ลด font-weight, เปลี่ยนเส้นขอบเป็น Hairline, ลดความสดสี |
-| `/medesign snapshot [path]` | **จับภาพหน้าจอเรนเดอร์จริงระดับ High-DPI** (Mobile, Tablet, Desktop, หรือ `--og` 1200x630) ด้วย Headless CDP |
-| `/medesign [brand]` | ใช้ Token ของแบรนด์ระดับโลกตรงๆ เช่น Linear, Vercel, Apple, Stripe *(73+ แบรนด์)* |
+> 1. **คำสั่งชัดเจนชนะทุกกรณี:** `/medesign new`, `/medesign revamp`, `/medesign like` ข้ามการเดาทั้งหมด แล้วเข้าสู่ `references/brief-intake.md` ทันที
+> 2. **การอนุมานเมื่อไม่ได้ระบุโหมด:**
+>    - มี URL หรือชื่อแบรนด์อ้างอิง -> โหมด `like` (ห้ามส่งเข้า `audit`)
+>    - มีไฟล์เดิมหรือโค้ดเดิมแนบมา -> โหมด `revamp`
+>    - ไม่มีทั้งสองอย่าง -> โหมด `new`
+> 3. **โหมด `audit`:** ใช้สำหรับตรวจจับจุดบกพร่อง/AI Tells ในหน้าเดิมเท่านั้น (เมื่อพิมพ์ `/medesign audit` หรือถูกเรียกต่อจาก `revamp`)
+> 4. **Cockpit Modal:** เมื่อสั่ง `/medesign` เปล่าๆ ให้เปิด `ask_question` ให้เลือกหมวดหมู่งาน (หรือถาม 3 ทางเลือกในแชตหากระบบไม่มี modal)
 
 ---
 
-## 🧬 Design Engine vNext (5 Engines & User DNA)
+## 3. Dedicated Commands & Headless Shortcuts
 
-> ค่า Tokens เต็ม: `user-profile.json` (หรืออ้างอิงจาก `references/brand-design-tokens.md`)
-
-- **01 Optical Geometry & Spacing Engine:** Safe Concentric (`r_outer = r_inner + padding`), Closed Spacing System ($S \in \{2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128\}\text{px}$), Proximity Ratio $\ge 2:1$ ($\text{Gap}_{\text{external}} \ge 2\times\text{Gap}_{\text{internal}}$), Control Heights Ladder (Desktop `28/32/36/40px`, Mobile `44/48px`), Boundary Clearance (`MD106`: Transparent Touch Halo สำหรับ Slider และ $\ge 12$px Optical Padding), Full Pill (`calc(var(--h) / 2)` หรือ `@property` สำหรับ Morphing), Area-Proportional Scaling (`clamp(0.96, 1 - 2.5/max(W,H), 0.995)` โดยแยก Hit Target 44px ออกจาก Visual Surface)
-- **02 Perceptual Color Engine:** In-flow vs Floating Surface Architecture (บัตร/พาเนล In-flow ใช้ Hairline 1px, ห้ามใส่ Drop Shadow, Dark Mode ยกพื้นผิวด้วย +2–4% L แทนเงาดำ, Drop Shadow สงวนไว้เฉพาะ Floating Popover/Dialog), Perceptual Intent rules (`in oklch shorter hue` สำหรับรักษาความสด, `in oklab` สำหรับเกลี่ยความสว่าง/Neutral, Midpoint testing 25/50/75%), `color-mix()` token derivation, Functional Dark Mode Tokens (`surface-canvas`, `surface-raised`, `surface-inset`, `border-subtle`, `border-focus`), OLED Pure Black `#000000`
-- **03 Motion & Interaction Engine:** 4 Motion Profiles (`precision` 0-100ms, `soft-settle` 240-280ms, `spring-settle`, `instant` 0ms), Asymmetric Entry/Exit ($0.65\times$ e.g. 280ms/180ms), `@media (prefers-reduced-motion: reduce)` compliance, CSS Anchor Positioning + Popover API + `@starting-style`
-- **04 Typography & Script Engine:** Latin-First Rule (Font Stack วาง Latin นำหน้า Font ไทยเสมอ), Thai Calibration (`letter-spacing: 0` สำหรับภาษาไทย, Body Line-Height `1.7–1.8`, Headings Line-Height `≥ 1.3`, Thai Diacritic Headroom 2–4px), 4 Official Font Pairings (`references/typography-thai-latin.md`: Dashboard `Geist+Noto Sans Thai`, Brand `DM Sans+Prompt`, Docs `Source Serif 4+Noto Serif Thai/Sarabun`, Display `Kanit/Prompt`), `@font-face` `size-adjust` calibration
-- **05 Design Quality & Anti-Slop Auditor:** Universal Pre-Ship Audit Trio (Squint Test, Grayscale Test, Delete-the-Border Test), Complete 10-State Machine Matrix (Default, Hover, Pressed, Focus-visible, Loading-skeleton delay 200ms, Empty 3 รูปแบบ, Error inline+recovery, Disabled, Partial SWR, Overflow min-width:0), 4-Tier Quality Governance (Hard Invariants -> Soft Heuristics -> Progressive Enhancements -> Domain Rules)
-- **Spatial 3D & Telemetry:** Dynamic Island capsule + Floating telemetry dock + 100dvh viewport map canvas + WebGL `frameloop="demand"` (0W idle, VRAM $\le 32\text{MB}$)
-
----
-
-## 📚 Brand Knowledge Base
-
-- **Design Spec 21 แบรนด์:** `references/brand-design-tokens.md` (หรือ Local Project Design Specs)
-- **คลัง 70+ แบรนด์ระดับโลก:** `references/brand-design-tokens.md` (Linear, Apple, Stripe, Vercel, Supabase, ฯลฯ)
+| คำสั่ง | ผลลัพธ์และการทำงาน |
+|---|---|
+| `/medesign new` | ออกแบบ UI ใหม่จากศูนย์ ผ่าน Brief Intake Gate (เสนอ Direction A/B) |
+| `/medesign revamp` | แก้ไข/รีดีไซน์ UI เดิม ปรับ Layout & Spacing โดยคง Business Logic เดิม |
+| `/medesign like [url/แบรนด์]` | อ้างอิงสุนทรียภาพจากเว็บดัง/แบรนด์ โดยไม่ละเมิดลิขสิทธิ์เนื้อหาและโลโก้ |
+| `/medesign audit [path]` | ตรวจจับ AI Tells, สแกน Accessibility, Spacing และคืนคะแนน Q-Score |
+| `/medesign polish [path]` | ซ่อมโค้ดอัตโนมัติ (Invariants, Google Fonts, Bento CSS, OKLCH, 44px Halo) |
+| `/medesign bolder [path]` | เพิ่มความคมชัดและน้ำหนักภาพ (Increase contrast, border weight, accent vibrance) |
+| `/medesign quiet [path]` | ลดทอนสู่ความมินิมอล (Decrease weight, hairline borders, muted tones) |
+| `/medesign snapshot [path]` | จับภาพเรนเดอร์จริงระดับ High-DPI (Mobile, Tablet, Desktop, OG 1200x630) ด้วย CDP |
+| `/medesign [brand]` | ดึง Token ของ 73 แบรนด์ดังตรงๆ (Linear, Apple, Stripe, Vercel, Supabase, ฯลฯ) |
+| `/medesign metha` | ลายเซ็นวิศวกรรมส่วนตัว Metha Cockpit (Survey/GIS Telemetry, Tabular Mono, Dark Charcoal) |
 
 ---
 
-## 🔧 Execution Protocol
+## 4. Execution Protocol (5 ขั้นตอนมาตรฐาน)
 
-1. **Triage Stack:** ตรวจสอบ Stack (Tailwind, HTML, React, Next.js)
-2. **Workflow Mode:** Plain `/medesign` (Modal), `/medesign auto`, `/medesign audit`, `/medesign mockup`, `/medesign to-code`, หรือ `/medesign extract`
-3. **Token Injection:** อ่าน `user-profile.json` + แบรนด์ที่เลือก + บังคับใช้ Anti-AI-Tells Protocol
-4. **Build & Deliver:** ส่งโค้ดสมบูรณ์ + Visual Highlights brief
-5. **Quality Gate:** อ่าน `references/quality-gate.md`, ปิดท้ายคำตอบด้วย `Gate: quality-gate.md - pass` หรือ `Gate: quality-gate.md - fixed N` เสมอ
+1. **Step 0 — Brief Intake Gate (`references/brief-intake.md`):**
+   - บรรทัดแรกของคำตอบต้องประกาศ `โหมด: new` (หรือ `revamp` / `like`) เสมอ
+   - สรุป Brief 5 ช่อง และเสนอ 2 ทิศทางสั้นๆ (Direction A ใกล้ brief / Direction B ต่างชัดเจน ไม่เกิน 5 บรรทัดต่อทิศทาง)
+   - *ข้อยกเว้น:* ข้ามได้ทันทีเมื่อผู้ใช้ระบุ "ลุยเลย", "skip intake" หรือแก้งานระดับ Micro-component
+   - *Tool Fallback:* หากไม่มี `ask_question` ให้ถามข้อความธรรมดาในแชต; หากไม่มี Node CLI ให้ตรวจทานด้วย 11 Craft Checklist ด้วยตนเอง
+2. **Step 1 — Triage Stack:** ตรวจสอบเทคโนโลยีปลายทาง (Tailwind, Pure CSS, React, Next.js, HTML)
+3. **Step 2 — Token Injection:**
+   - **Neutral Craft (Default):** อ้างอิง 73 แบรนด์ หรือ 38 Archetypes และ Closed Spacing (2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128px)
+   - **Personal DNA (Opt-in):** ใช้ `user-profile.json` หรือ `references/mesurv-dna.md` เฉพาะเมื่อรันใน Workspace `D:/METHA/` หรือเมื่อสั่ง `/medesign metha` / `/medesign auto`
+4. **Step 3 — Build & Deliver:** ส่งโค้ดที่สมบูรณ์ ไร้ Placeholders พร้อมรายงาน Visual Highlights สั้นๆ
+5. **Step 4 — Quality Gate:** ตรวจสอบกับ `references/quality-gate.md` (Squint Test, Grayscale, 10-State Matrix) ปิดท้ายด้วย `Gate: quality-gate.md - pass` เสมอ

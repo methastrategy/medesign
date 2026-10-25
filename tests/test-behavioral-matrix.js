@@ -69,7 +69,7 @@ assert(
 
 // Scenario 7: "/medesign like linear.app" without local spec -> uses style-extraction or notifies user, no token hallucination
 assert(
-  (intake.includes('ห้ามเดาหรือแต่งตัวเลขโทเค็นขึ้นเองจากความจำเด็ดขาด') || intake.includes('ห้ามแต่ง Token ขึ้นเองจากความจำ')) &&
+  (intake.includes('ห้ามแต่งตัวเลขหรือค่าสีขึ้นเองจากความจำเด็ดขาด') || intake.includes('ห้ามแต่ง Token ขึ้นเองจากความจำ')) &&
   brandTokens.includes('awesome-design-md-src') &&
   brandTokens.includes('/medesign extract <url>'),
   'Scenario 7: Missing local brand specs fallback to style-extraction or user notification (Anti-Hallucination)'

@@ -45,18 +45,20 @@ assert(
   'Scenario 3: Attached existing code + "ปรับหน้าให้ดูแพงขึ้น" resolves to `revamp`'
 );
 
-// Scenario 4: "/medesign apple" alone -> asks single question on target subject before guessing
+// Scenario 4: "/medesign apple" alone -> asks target question and brief in one turn (max 3 questions) without leading examples
 assert(
   intake.includes('กฎเหล็กเรื่องเป้าหมายงาน (The Target Subject Invariant)') &&
-  intake.includes('หากในคำสั่งยังไม่ระบุว่าจะสร้างหรือแก้อะไร ห้ามเดาโจทย์ ห้ามแต่งเนื้อหาเอง'),
-  'Scenario 4: Bare preset command enforces Target Subject Invariant without guessing'
+  intake.includes('นิยามของ "ระบุเป้าหมายแล้ว"') &&
+  intake.includes('ถามคำถามปลายเปิดโดย**ไม่ใส่ตัวอย่างนำทาง**') &&
+  intake.includes('หากมีช่อง brief อื่นที่ขาด ให้รวมถามในข้อความเดียวกัน (รวมกันไม่เกิน 3 ข้อ)'),
+  'Scenario 4: Bare preset command enforces Target Subject Invariant without leading examples in <= 3 questions'
 );
 
-// Scenario 5: "/medesign new ลุยเลย" -> asks single question what to build before proceeding
+// Scenario 5: "/medesign new ลุยเลย" -> asks single open question what to build before proceeding
 assert(
-  intake.includes('หากสั่ง "ลุยเลย" แต่ยังไม่ระบุเป้าหมายงาน') &&
-  intake.includes('ต้องปฏิบัติตามกฎเหล็ก Target Subject Invariant คือถามคำถามเดียวสั้นๆ ก่อน'),
-  'Scenario 5: "/medesign new ลุยเลย" enforces Target Subject Invariant before proceeding'
+  intake.includes('หากผู้ใช้สั่ง "ลุยเลย" แต่ยังไม่ระบุเป้าหมาย: ให้ถามข้อเดียวสั้นๆ เท่านั้นว่า *"จะให้สร้างหรือแก้อะไรครับ?"*') &&
+  intake.includes('ผู้ใช้ตอบว่า "อะไรก็ได้" หรือ "ตามสบาย": ให้เลือกชนิดงานทั่วไป 1 อย่าง ประกาศเป็น "สมมติฐาน: ..."'),
+  'Scenario 5: "/medesign new ลุยเลย" asks single open question without leading examples, handles whatever gracefully'
 );
 
 // Scenario 6: User answers "ok" to provisional direction -> accepted as selecting A, no repeat questioning
@@ -67,7 +69,7 @@ assert(
 
 // Scenario 7: "/medesign like linear.app" without local spec -> uses style-extraction or notifies user, no token hallucination
 assert(
-  intake.includes('ห้ามแต่ง Token ขึ้นเองจากความจำ') &&
+  (intake.includes('ห้ามเดาหรือแต่งตัวเลขโทเค็นขึ้นเองจากความจำเด็ดขาด') || intake.includes('ห้ามแต่ง Token ขึ้นเองจากความจำ')) &&
   brandTokens.includes('awesome-design-md-src') &&
   brandTokens.includes('/medesign extract <url>'),
   'Scenario 7: Missing local brand specs fallback to style-extraction or user notification (Anti-Hallucination)'

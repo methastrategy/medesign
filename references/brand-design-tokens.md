@@ -20,7 +20,8 @@
 1. **ลำดับการค้นหาไฟล์สเปก (Resolution Hierarchy & Fallback):**
    - **Preset ภายในระบบ:** หากเป็น `metha`, `apple`, `tesla` ให้อ่านจาก `presets/<name>/guidelines.md` และ `presets/<name>/design-tokens.css`
    - **Upstream Cache:** หากมีโฟลเดอร์ `awesome-design-md-src/design-md/<brand>/DESIGN.md` ให้อ่านสเปกจากไฟล์ดังกล่าว
-   - **Live Extraction Fallback:** หากไม่มีไฟล์ในเครื่อง ให้เรียกโหมด `/medesign extract <url>` เพื่อสกัดโทเค็นสดจากเว็บไซต์ของแบรนด์ หรือสังเคราะห์จาก Core Archetype ประจำแบรนด์
+   - **Live Web Extraction Fallback:** หากไม่มีไฟล์ในเครื่อง และเข้าถึงอินเทอร์เน็ตได้ ให้เรียกโหมด `/medesign extract <url>` เพื่อสกัดโทเค็นสดจากเว็บไซต์จริง
+   - **User Input Fallback:** หากไม่มีไฟล์ในเครื่องและเข้าเว็บไม่ได้ ให้แจ้งผู้ใช้ตามตรงและขอ URL หรือภาพหน้าจอ ห้ามเดาหรือแต่งค่า Token ขึ้นเองจากความจำเด็ดขาด (Anti-Hallucination)
 
 2. **ดึงโทเค็นหลัก 4 เลเยอร์:**
    - **Colors:** สี Canvas, Surface, Hairline, และ Accent หลัก (เช่น Linear Dark `#08090a`, Supabase Emerald, Metha Electric Cyan `#00f5fb`)

@@ -1,6 +1,6 @@
-# ME-DESIGN v1.4.0
+# ME-DESIGN v1.6.0
 
-**The Autonomous Design Engineering System & Quality Linter for AI Coding Assistants**
+**The Autonomous Design Engineering System, Deterministic Quality Linter & Auto-Compiler for AI Coding Assistants**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![CI Matrix](https://github.com/methastrategy/medesign/actions/workflows/ci.yml/badge.svg)](https://github.com/methastrategy/medesign/actions/workflows/ci.yml)
@@ -8,36 +8,49 @@
 [![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Status](https://img.shields.io/badge/status-production--ready-emerald.svg)]()
 [![Archetypes](https://img.shields.io/badge/archetypes-38%20models-indigo.svg)]()
+[![Brand Systems](https://img.shields.io/badge/brands-74%20global%20systems-purple.svg)]()
 
 *Eliminate AI Slop and bring optical mathematics, perceptual color science, and mission-critical engineering rigor to automated UI/UX generation.*
 
 ---
 
-</div>
-
 ## 🌟 Why ME-DESIGN?
 
 Most AI-generated user interfaces suffer from **Decisionless Uniformity**: generic 3-card grids, oversaturated neon glows, clipping Thai/Latin font metrics, broken keyboard accessibility, and non-proportional press deformations.
 
-**ME-DESIGN** changes the paradigm from subjective aesthetic prompting to an **executable 5-Engine Design Architecture** coupled with a **Dual-Tier Quality Linter**, **Knowledge Discovery Search Engine**, and **Self-Healing Code Repair**.
+**ME-DESIGN** changes the paradigm from subjective aesthetic prompting to an **executable 5-Engine Design Architecture** coupled with a **Dual-Tier Quality Linter**, **Knowledge Discovery Search Engine**, **Self-Healing Code Repair**, **Interactive Brief Intake Gate (v2.3)**, and **74 Global Brand Multi-Pane Systems**.
+
+---
+
+## 🖼️ Visual Showcase & Responsive Render Gallery
+
+Pre-rendered directly by ME-DESIGN's Headless Chrome CDP Engine across Desktop (1440×900) and Mobile (390×844) viewports:
+
+| Design System & Archetype | Desktop View (1440×900) | Mobile View (390×844) |
+| :--- | :--- | :--- |
+| **Cadastral Engineering QA/QC**<br>*(Archetype 38 — Geospatial Precision)* | <img src="examples/snapshots/cadastral-qaqc-slide-desktop-1440x900.png" width="480" alt="Cadastral QA/QC Dashboard"> | <img src="examples/snapshots/cadastral-qaqc-slide-mobile-390x844.png" width="160" alt="Cadastral QA/QC Mobile"> |
+| **Linear Issue Board**<br>*(Archetype 06 — Linear Minimal & High-Density)* | <img src="examples/snapshots/linear-issue-board-desktop-1440x900.png" width="480" alt="Linear Issue Board"> | <img src="examples/snapshots/linear-issue-board-mobile-390x844.png" width="160" alt="Linear Mobile"> |
+| **Spotify Web Player**<br>*(Archetype 21 — Decoupled 3-Pane Media Studio)* | <img src="examples/snapshots/spotify-web-player-desktop-1440x900.png" width="480" alt="Spotify Web Player"> | <img src="examples/snapshots/spotify-web-player-mobile-390x844.png" width="160" alt="Spotify Mobile"> |
+| **Executive Saliency Report**<br>*(Archetype 02 — Swiss International Editorial)* | <img src="examples/snapshots/executive-summary-report-desktop-1440x900.png" width="480" alt="Executive Summary Report"> | <img src="examples/snapshots/executive-summary-report-mobile-390x844.png" width="160" alt="Executive Mobile"> |
 
 ---
 
 ## ⚔️ Multi-Dimensional Competitive Benchmark
 
-| Dimension | `medesign` (v1.4.0) | `ui-ux-pro-max-skill` | `pbakaus/impeccable` |
+| Dimension | `medesign` (v1.6.0) | `ui-ux-pro-max-skill` | `pbakaus/impeccable` |
 | :--- | :--- | :--- | :--- |
 | **Execution Architecture** | **Autonomous Node.js CLI & Deterministic Engine** | Prompt-only System Text | Markdown Guidelines & Rules |
+| **Brief Intake Protocol** | **Dual-Layer Auto-Intent Routing & 1-Click Cockpit Gate** | Free-form Prompting | Manual Instructions |
 | **Verification Gate** | **Mathematical Q-Score (0–100) + Hard Invariants** | Subjective LLM Self-Critique | Manual Inspection Checklist |
 | **Self-Healing Code Repair** | **Automatic AST/Regex Fixer (`medesign polish`)** | Re-prompting Prompt Loop | Manual Code Editing |
 | **Conversational Modifiers** | **Instant Code Density (`bolder` / `quiet`)** | Chat Revision Re-rolls | None |
-| **Knowledge Discovery** | **Pure Node.js Search across 38 Archetypes & Presets** | Static Markdown Reading | Static Document Browsing |
+| **Knowledge Discovery** | **Pure Node.js Search across 38 Archetypes & 74 Brands** | Static Markdown Reading | Static Document Browsing |
 | **Automated CI/CD Quality Gate** | **Native OASIS SARIF v2.1.0 for GitHub Code Scanning** | None | None |
 | **Perceptual Color Science** | **OKLCH / OKLab Gamut Mapping & `color-mix()`** | Standard Hex / sRGB Defaults | Hex / sRGB Recommendations |
 | **Headless Browser Matrix** | **Chrome DevTools Protocol (Real Contrast & 44px Hit-Targets)** | None | Manual Browser DevTools |
 | **Design Token Standards** | **Tailwind v4 `@theme`, W3C DTCG & CSS Custom Properties** | Unstructured CSS Snippets | None |
-| **Domain Archetype Depth** | **38 Decoupled Archetypes (HMI ISA-101, GIS Cadastre, Telemetry)** | Generic SaaS / E-commerce | General UI Polish Rules |
-| **Runtime Package Footprint** | **Zero-Dependency CLI (< 300 KB compressed on npm)** | Multi-file Prompt Repos | Docs / Repo Only |
+| **Domain Archetype Depth** | **38 Decoupled Archetypes + 74 Brand Systems (HMI, GIS, Audio)** | Generic SaaS / E-commerce | General UI Polish Rules |
+| **Runtime Package Footprint** | **Zero-Dependency CLI & Comprehensive Ruleset on npm** | Multi-file Prompt Repos | Docs / Repo Only |
 
 ---
 
@@ -54,7 +67,7 @@ ME-DESIGN Core Engine
 
 ---
 
-## 📐 38 Production Archetypes (5-Axis Decoupled Matrix)
+## 📐 38 Production Archetypes & 74 Global Brand Systems
 
 ME-DESIGN decouples UI synthesis across 5 independent axes:
 **Operational Archetype × Visual Language × Spatial Model × Motion Profile × Governance Tier**
@@ -68,85 +81,89 @@ ME-DESIGN decouples UI synthesis across 5 independent axes:
   - **31. Mission Control HMI (ISA-101 Standard):** Tri-state alarms, greyscale base, operator decision priority.
   - **32. Geospatial Situation Awareness (GIS & Cadastre):** Map-centric 16:10 / 100dvh, linked selection tables, EPSG coordinates.
   - **33. CAD Precision Workbench:** Maximized canvas, floating command bar, geometric snap indicators.
-  - **34. Telemetry & Signal Forensics:** Time-series scrubbing, stale sensor detection, gap indicators.
-  - **35. Anomaly Triage & Incident Response:** Priority queue, severity vs confidence matrix.
-  - **36. Field Survey & Offline Operations:** 52px touch targets, RTK fix status, offline sync queue.
-  - **37. Spatiotemporal Change Detection:** Synchronized dual viewports, epoch time slider.
-  - **38. Data Provenance & Survey QA/QC:** Observation lineage, error ellipses, legal timestamp seals.
+- **74 Global Brand Multi-Pane Systems:** Pre-calibrated spatial layouts and design tokens for premier brands (Apple, Spotify, Linear, Tesla, Stripe, Bloomberg, GitHub, Vercel, Porsche, Teenage Engineering, etc.).
 
 ---
 
-## 🚀 Quickstart: Running via `npx` (Zero Installation)
+## 📦 Installation & Global CLI
 
-Execute ME-DESIGN immediately without manual installation:
-
-```bash
-# 1. Discover archetypes, palettes, and typography for any domain query
-npx medesign search "cadastre survey"
-npx medesign search "apple hardware"
-npx medesign search "tesla telemetry"
-
-# 2. Self-healing code repair (auto-fixes MD005 focus rings, 100dvh, dead buttons, em-dashes)
-npx medesign polish path/to/index.html
-
-# 3. Fine-tune visual density and tone directly in code
-npx medesign bolder path/to/index.html   # Boost font weights, sharpen borders, raise contrast
-npx medesign quiet path/to/index.html    # Soften font weights, reduce borders to hairlines
-
-# 4. Lint an HTML, JSX, or CSS file with static AST & invariant rules
-npx medesign lint path/to/index.html
-
-# 5. Lint and export OASIS SARIF v2.1.0 for GitHub Code Scanning
-npx medesign lint path/to/index.html --format sarif
-
-# 6. Run headless Chrome DevTools Protocol verification matrix
-# (Computes real contrast ratios, tab focus indicators, and 44px hit-targets)
-npx medesign audit path/to/index.html
-
-# 7. Export design tokens to Tailwind CSS v4 @theme, W3C DTCG, or CSS variables
-npx medesign tokens --preset apple --format tailwind --out ./tokens
-
-# 8. Verify system health, Node.js version, and headless browser availability
-npx medesign doctor
-```
-
-### 🔎 Knowledge Discovery Engine (`medesign search`)
-
-Query the 38 production archetypes and design system presets to get immediate, actionable styling recommendations:
+Install globally or execute instantly with `npx`:
 
 ```bash
-# Human-focused Terminal Summary Card
-npx medesign search "cadastre survey"
+# Direct execution without permanent installation
+npx medesign <command>
 
-# Output structured JSON for AI agent orchestration
-npx medesign search "luxury fintech" --json
+# Or install globally
+npm install -g medesign
 ```
+
+### Verified CLI Commands
 
 ```text
-ME-DESIGN Discovery Engine
-────────────────────────────────────────
-Query               "cadastre survey"
-Best Match          Archetype 38: Cadastral Survey & QA/QC Workbench
-Preset Link         metha (Metha Engineering Cockpit)
+ME-DESIGN CLI v1.6.0
+Autonomous Design Engineering Toolkit & Automated Linter for AI Coding Assistants
 
-DESIGN ARCHETYPE RECOMMENDATION
-  Archetype         Cadastral Survey & Data Provenance (38)
-  Spatial Model     16:10 / 100dvh Map-Centric with Split Data Grid
-  Primary Color     Electric Cyan (oklch(0.85 0.18 200))
-  Secondary Color   Passed Emerald (oklch(0.72 0.18 145))
-  Surface Contrast  Ultra-Dark Obsidian (#0a0d14)
-  Typography        JetBrains Mono + IBM Plex Sans Thai
-  Motion Profile    Precision Linear (120ms max)
-────────────────────────────────────────
+USAGE:
+  medesign <command> [options]
+
+COMMANDS:
+  search <query>         Search 38 Archetypes & presets with discovery engine
+                        Options: --json
+
+  polish <file>          Self-healing repair for Hard Invariants (MD005, MD104, em-dash)
+
+  bolder <file>          Boost visual density, font weights, and border contrast
+
+  quiet <file>           Softens visual density, font weights, and border treatments
+
+  lint <file>            Lint HTML/CSS/JSX file with static AST & semantic rules
+                        Options: --format <text|json|sarif>
+                                 --preset <apple|tesla|metha>
+                                 --config <path>
+
+  audit <file>           Run headless Chrome DevTools Protocol verification matrix
+                        (Checks computed contrast, tab focus outline, 44px hit-targets across viewports)
+                        Options: --json
+
+  snapshot <file>        Capture high-DPI rendered screenshots across responsive viewports
+                        Options: --out <dir>, --og (1200x630 banner), --viewports <list>
+
+  tokens [export]        Export preset design tokens to Tailwind v4 @theme, W3C DTCG, or CSS
+                        Options: --preset <apple|tesla|metha|all>
+                                 --format <tailwind|dtcg|css|all>
+                                 --out <directory>
+
+  presets [list|get]     Inspect available design system presets
+                        Usage: medesign presets list
+                               medesign presets get <preset-name>
+
+  test [options]         Run deterministic test suite across fixtures
+                        Options: --browser (runs both static AST and headless browser matrix)
+
+  doctor                 Verify local environment, Node.js, and Chrome/CDP availability
+
+  help                   Display this help message
 ```
 
-### 🛠️ Self-Healing Code Repair (`medesign polish`)
+---
 
-Automatically inspect and repair Hard Invariants in your HTML/CSS files without waiting for manual edits:
+## 🛠️ Automated Quality Linter & Self-Healing Repair
 
-- **MD005:** Injects physical `:focus-visible` outlines and `@media (forced-colors: active)` support when `box-shadow` is used without an outline.
-- **MD104:** Replaces unstable `100vh` on containers with dynamic `100dvh` (`min-height: 100vh; min-height: 100dvh;`).
-- **MD004:** Injects hover and active states for buttons without defined interactive contracts.
+### 🛡️ Deterministic Static AST Linter (`medesign lint`)
+
+```bash
+# Output human-readable terminal report
+npx medesign lint path/to/dashboard.html
+
+# Output SARIF 2.1.0 JSON format for GitHub Code Scanning
+npx medesign lint path/to/dashboard.html --format sarif > medesign-results.sarif
+```
+
+### 🩹 Self-Healing Repair (`medesign polish`)
+
+Automatically inspects and repairs hard invariants directly in code:
+- **MD104:** Replaces raw unconstrained `100vh` with safe modern `100dvh` fallbacks.
+- **MD005:** Replaces `outline: none` with physical `:focus-visible` rings and `@media (forced-colors: active)`.
 - **MD002:** Adds `@media (prefers-reduced-motion)` accessibility gates.
 - **MD201:** Cleans up decorative AI-tell em-dashes `—` (including entity `&mdash;`) into clean hyphens `-`.
 
@@ -179,13 +196,13 @@ npx medesign quiet path/to/dashboard.html
 ### The Terminal Quality Audit Card
 
 ```text
-ME-DESIGN v1.4.0
+ME-DESIGN v1.6.0
 Design Quality & Governance Audit
 ────────────────────────────────────────
 Target        dashboard.tsx
 Archetype     Geospatial Situation Awareness (32)
 Analysis      Static AST & Semantic Rules
-Ruleset       medesign-standard@1.4.0
+Ruleset       medesign-standard@1.6.0
 
 QUALITY SCORE (Q = 0.30H + 0.25I + 0.20G + 0.15R + 0.10V)
   Hierarchy (H)       94.0 / 100
@@ -212,9 +229,9 @@ RESULT: PASS (Exit Code: 0)
 
 ME-DESIGN provides shared rule adapters for all major agentic tools:
 
+- **Google Antigravity:** Native Skill supported under `skills/medesign/SKILL.md`
 - **Claude Code:** Copy `integrations/claude-code/SKILL.md` to `.claude/skills/medesign/SKILL.md`
 - **Cursor:** Copy `integrations/cursor/medesign.mdc` to `.cursor/rules/medesign.mdc`
-- **Google Antigravity:** Native Skill supported under `skills/medesign/SKILL.md`
 
 ---
 

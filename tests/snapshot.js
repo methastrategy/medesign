@@ -128,7 +128,7 @@ class CDPClient {
   }
 
   async connect() {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 60; i++) {
       try {
         const r = await fetch(`http://127.0.0.1:${this.port}/json/version`);
         if (r.ok) break;
@@ -184,7 +184,10 @@ async function captureSnapshots() {
     '--no-sandbox',
     '--disable-extensions',
     '--mute-audio',
-    '--hide-scrollbars'
+    '--hide-scrollbars',
+    '--disable-dev-shm-usage',
+    '--disable-setuid-sandbox',
+    '--no-zygote'
   ]);
 
   const allPresets = isOgOnly

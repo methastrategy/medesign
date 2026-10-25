@@ -45,18 +45,18 @@ assert(
   'Scenario 3: Attached existing code + "ปรับหน้าให้ดูแพงขึ้น" resolves to `revamp`'
 );
 
-// Scenario 4: "/medesign apple" alone -> asks single question what to build, doesn't guess
+// Scenario 4: "/medesign apple" alone -> asks single question on target subject before guessing
 assert(
-  intake.includes('ตรวจ §1 เรื่องเป้าหมาย/ข้อจำกัด') &&
-  intake.includes('ถามคำถามเดียวสั้นๆ ว่า "จะให้สร้าง/แก้/อิงระบบอะไร?"'),
-  'Scenario 4: Bare preset command asks single question on goal without guessing'
+  intake.includes('กฎเหล็กเรื่องเป้าหมายงาน (The Target Subject Invariant)') &&
+  intake.includes('หากในคำสั่งยังไม่ระบุว่าจะสร้างหรือแก้อะไร ห้ามเดาโจทย์ ห้ามแต่งเนื้อหาเอง'),
+  'Scenario 4: Bare preset command enforces Target Subject Invariant without guessing'
 );
 
-// Scenario 5: "/medesign new ลุยเลย" -> asks single question what to build, then proceeds
+// Scenario 5: "/medesign new ลุยเลย" -> asks single question what to build before proceeding
 assert(
-  intake.includes('หากพิมพ์ "ลุยเลย" แต่ยังไม่บอกว่าจะสร้างอะไร') &&
-  intake.includes('ถามคำถามเดียวสั้นๆ ว่า "จะให้สร้าง/แก้/อิงระบบอะไร?" แล้วดำเนินการทันที'),
-  'Scenario 5: "/medesign new ลุยเลย" asks single question before proceeding'
+  intake.includes('หากสั่ง "ลุยเลย" แต่ยังไม่ระบุเป้าหมายงาน') &&
+  intake.includes('ต้องปฏิบัติตามกฎเหล็ก Target Subject Invariant คือถามคำถามเดียวสั้นๆ ก่อน'),
+  'Scenario 5: "/medesign new ลุยเลย" enforces Target Subject Invariant before proceeding'
 );
 
 // Scenario 6: User answers "ok" to provisional direction -> accepted as selecting A, no repeat questioning
@@ -67,7 +67,7 @@ assert(
 
 // Scenario 7: "/medesign like linear.app" without local spec -> uses style-extraction or notifies user, no token hallucination
 assert(
-  intake.includes('ห้ามเดา Token จากความจำ') &&
+  intake.includes('ห้ามแต่ง Token ขึ้นเองจากความจำ') &&
   brandTokens.includes('awesome-design-md-src') &&
   brandTokens.includes('/medesign extract <url>'),
   'Scenario 7: Missing local brand specs fallback to style-extraction or user notification (Anti-Hallucination)'

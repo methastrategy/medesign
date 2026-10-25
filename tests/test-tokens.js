@@ -8,7 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 const ANSI_RESET = '\x1b[0m';
 const ANSI_BOLD = '\x1b[1m';
@@ -37,7 +37,7 @@ function assert(condition, message) {
 
 // 1. Test Tailwind v4 @theme Generation
 try {
-  const tailwindOut = execSync(`node "${exporterScript}" --preset apple --format tailwind`, { encoding: 'utf8' });
+  const tailwindOut = spawnSync(process.execPath, [exporterScript, '--preset', 'apple', '--format', 'tailwind'], { encoding: 'utf8' }).stdout || '';
   assert(tailwindOut.includes('@theme {'), 'Tailwind v4 contains @theme block');
   assert(tailwindOut.includes('--color-accent: oklch(0.58 0.22 255);'), 'Tailwind v4 contains exact accent color token');
   assert(tailwindOut.includes('--font-sans:'), 'Tailwind v4 contains font-sans token');
@@ -49,7 +49,7 @@ try {
 
 // 2. Test W3C DTCG Format Specification (Dual OKLCH / sRGB)
 try {
-  const dtcgOut = execSync(`node "${exporterScript}" --preset apple --format dtcg`, { encoding: 'utf8' });
+  const dtcgOut = spawnSync(process.execPath, [exporterScript, '--preset', 'apple', '--format', 'dtcg'], { encoding: 'utf8' }).stdout || '';
   const jsonBlocks = dtcgOut.match(/\{[\s\S]*?\n\}(?=\n\n|\n$)/g) || [];
   assert(jsonBlocks.length >= 2, 'DTCG export outputs both OKLCH and sRGB blocks');
 
@@ -105,7 +105,7 @@ try {
 
 // 4. Test Standard CSS Custom Properties
 try {
-  const cssOut = execSync(`node "${exporterScript}" --preset tesla --format css`, { encoding: 'utf8' });
+  const cssOut = spawnSync(process.execPath, [exporterScript, '--preset', 'tesla', '--format', 'css'], { encoding: 'utf8' }).stdout || '';
   assert(cssOut.includes(':root {'), 'CSS export contains :root block');
   assert(cssOut.includes('--color-accent: oklch(0.58 0.24 28);'), 'Tesla CSS export contains exact accent color');
   assert(cssOut.includes('--radius-outer: 4px;'), 'Tesla CSS export contains 4px outer radius');
@@ -116,7 +116,7 @@ try {
 // 5. Test Directory Export
 const tempOutDir = path.join(__dirname, '..', 'dist', 'test-tokens');
 try {
-  execSync(`node "${exporterScript}" --preset all --format all --out "${tempOutDir}"`, { encoding: 'utf8' });
+  spawnSync(process.execPath, [exporterScript, '--preset', 'all', '--format', 'all', '--out', tempOutDir], { encoding: 'utf8' });
   const expectedFiles = [
     'apple-theme.css', 'apple-tokens.oklch.json', 'apple-tokens.srgb.json', 'apple-tokens.css',
     'tesla-theme.css', 'tesla-tokens.oklch.json', 'tesla-tokens.srgb.json', 'tesla-tokens.css',

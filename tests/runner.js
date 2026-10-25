@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 const ANSI_RESET = '\x1b[0m';
 const ANSI_BOLD = '\x1b[1m';
@@ -77,21 +77,21 @@ if (fs.existsSync(visualTestbed)) {
 }
 
 console.log(`\n${ANSI_BOLD}ME-DESIGN Deterministic Test Suite Runner${ANSI_RESET}`);
-console.log(`${ANSI_GRAY}Running ${testCases.length} fixtures across static AST rules & rule assertions...${ANSI_RESET}\n`);
+console.log(`${ANSI_GRAY}Running ${testCases.length} fixtures across static pattern rules & rule assertions...${ANSI_RESET}\n`);
 
 let passedCount = 0;
 let failedCount = 0;
 
 testCases.forEach(tc => {
-  let exitCode = 0;
-  let stdout = '';
-  try {
-    stdout = execSync(`node "${linterPath}" "${tc.path}" --json`, { stdio: ['pipe', 'pipe', 'ignore'], encoding: 'utf8' });
-    exitCode = 0;
-  } catch (err) {
-    exitCode = err.status || 1;
-    stdout = err.stdout ? err.stdout.toString() : '';
-  }
+  const res = spawnSync(process.execPath, [linterPath, tc.path, '--json'], {
+    encoding: 'utf8',
+    timeout: 15000,
+    maxBuffer: 10 * 1024 * 1024,
+    windowsHide: true
+  });
+
+  const exitCode = res.status !== null ? res.status : 1;
+  const stdout = res.stdout || '';
 
   const actuallyPassed = exitCode === 0;
   const isPassMatch = actuallyPassed === tc.exp.staticPass;
@@ -140,13 +140,13 @@ testCases.forEach(tc => {
 if (runBrowser) {
   console.log(`\n${ANSI_BOLD}Headless Browser Matrix Audits (Mobile / Tablet / Desktop × Dark / Light / High Contrast)${ANSI_RESET}`);
   testCases.forEach(tc => {
-    let browserExit = 0;
-    try {
-      execSync(`node "${browserAuditPath}" "${tc.path}" --json`, { stdio: ['pipe', 'pipe', 'ignore'], encoding: 'utf8' });
-      browserExit = 0;
-    } catch (err) {
-      browserExit = err.status || 1;
-    }
+    const bRes = spawnSync(process.execPath, [browserAuditPath, tc.path, '--json'], {
+      encoding: 'utf8',
+      timeout: 30000,
+      maxBuffer: 10 * 1024 * 1024,
+      windowsHide: true
+    });
+    const browserExit = bRes.status !== null ? bRes.status : 1;
     const bPassed = browserExit === 0;
     const bMatch = bPassed === tc.exp.browserPass;
     const bLabel = bMatch ? `${ANSI_GREEN}PASS${ANSI_RESET}` : `${ANSI_RED}FAIL${ANSI_RESET}`;

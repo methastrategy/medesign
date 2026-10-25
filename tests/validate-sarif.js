@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 const ANSI_RESET = '\x1b[0m';
 const ANSI_BOLD = '\x1b[1m';
@@ -41,12 +41,13 @@ console.log(`${ANSI_GRAY}Validating linter output against SARIF 2.1.0 JSON Schem
 let allPassed = true;
 
 fixtures.forEach(fixture => {
-  let stdout = '';
-  try {
-    stdout = execSync(`node "${linterPath}" "${fixture}" --format sarif`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
-  } catch (err) {
-    stdout = err.stdout ? err.stdout.toString() : '';
-  }
+  const res = spawnSync(process.execPath, [linterPath, fixture, '--format', 'sarif'], {
+    encoding: 'utf8',
+    timeout: 15000,
+    maxBuffer: 10 * 1024 * 1024,
+    windowsHide: true
+  });
+  const stdout = res.stdout || '';
 
   let sarif = null;
   try {

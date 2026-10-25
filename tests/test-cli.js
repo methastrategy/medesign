@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const pkg = require('../package.json');
-const { execSync, spawnSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 const ANSI_RESET = '\x1b[0m';
 const ANSI_BOLD = '\x1b[1m';
@@ -42,7 +42,7 @@ function assert(condition, message) {
 
 try {
   // 1. Test 'search' with query (ANSI Terminal Card)
-  const searchOut = execSync(`node "${cliPath}" search "cadastre survey"`, { encoding: 'utf8' });
+  const searchOut = spawnSync(process.execPath, [cliPath, 'search', 'cadastre survey'], { encoding: 'utf8' }).stdout || '';
   assert(searchOut.includes('ME-DESIGN Discovery Engine'), 'Search displays Discovery Engine header');
   assert(searchOut.includes('Best Match'), 'Search displays Best Match');
   assert(searchOut.includes('Archetype 38'), 'Search matches Cadastral Survey Archetype 38');
@@ -51,7 +51,7 @@ try {
   assert(searchOut.includes('Motion Profile'), 'Search Terminal Card contains Motion Profile');
 
   // 2. Test 'search' with --json flag
-  const searchJsonOut = execSync(`node "${cliPath}" search "apple hardware" --json`, { encoding: 'utf8' });
+  const searchJsonOut = spawnSync(process.execPath, [cliPath, 'search', 'apple hardware', '--json'], { encoding: 'utf8' }).stdout || '';
   const searchJson = JSON.parse(searchJsonOut);
   assert(searchJson.query === 'apple hardware', 'Search JSON contains query');
   assert(searchJson.bestMatch && searchJson.bestMatch.number === 30, 'Search JSON matches Archetype 30 for Apple');
@@ -146,6 +146,24 @@ try {
   assert(polishedAngle.includes('linear-gradient(in oklch -45deg,'), 'Polish handles negative angle gradient in oklch');
   assert(polishedAngle.includes("'Geist', 'Plus Jakarta Sans'"), 'Polish elevates -apple-system font-sans variable');
 
+  // 4e. Test 'polish' --dry-run option (verifies no file mutation on disk)
+  const testDryRunPath = path.join(tmpDir, 'test-dry-run.html');
+  const rawDryRun = '<div style="height: 100vh;">Dry Run</div>';
+  fs.writeFileSync(testDryRunPath, rawDryRun, 'utf8');
+  const dryRunRes = spawnSync(process.execPath, [cliPath, 'polish', testDryRunPath, '--dry-run'], { encoding: 'utf8' });
+  assert(dryRunRes.status === 0, 'Polish --dry-run exits with code 0');
+  assert(dryRunRes.stdout.includes('POLISH DRY-RUN PREVIEW'), 'Polish --dry-run displays preview notice');
+  assert(fs.readFileSync(testDryRunPath, 'utf8') === rawDryRun, 'Polish --dry-run leaves file unmodified on disk');
+
+  // 4f. Test 'polish' gate rejection on unfixable failure (exit code 1)
+  const testFailPath = path.join(tmpDir, 'test-unfixable.html');
+  // Focus block with comment between selector and bracket exposes regex limitation (MD005 hard failure remaining)
+  const unfixableRaw = '<style>.btn:focus /* unhandled comment */ { box-shadow: 0 0 0 2px red; outline: none; }</style><button class="btn">Click</button>';
+  fs.writeFileSync(testFailPath, unfixableRaw, 'utf8');
+  const failRes = spawnSync(process.execPath, [cliPath, 'polish', testFailPath], { encoding: 'utf8' });
+  assert(failRes.status === 1, 'Polish on unfixable file exits with code 1 (Gate Rejection)');
+  assert(failRes.stderr.includes('GATE REJECTED') && failRes.stderr.includes('MD005'), 'Polish failure reports gate rejection with MD005 rule ID');
+
   // 5. Test 'polish' on standalone CSS file (verifies forced-colors injection without </style>)
   const testCssPath = path.join(tmpDir, 'test-standalone.css');
   const rawCss = `.card:focus-visible { outline: none; box-shadow: 0 0 0 3px red; }\n.wrapper { height: 100vh; }`;
@@ -190,21 +208,21 @@ try {
   assert(/oklch\(0\.75 0\.14/.test(quietContent), 'Quiet softens OKLCH chroma (0.20 -> 0.140)');
 
   // 8. Test 'presets' command
-  const presetsListOut = execSync(`node "${cliPath}" presets list`, { encoding: 'utf8' });
+  const presetsListOut = spawnSync(process.execPath, [cliPath, 'presets', 'list'], { encoding: 'utf8' }).stdout || '';
   assert(presetsListOut.includes('apple') && presetsListOut.includes('metha') && presetsListOut.includes('tesla'), 'Presets list outputs all 3 built-in presets');
 
-  const presetAppleOut = execSync(`node "${cliPath}" presets get apple`, { encoding: 'utf8' });
+  const presetAppleOut = spawnSync(process.execPath, [cliPath, 'presets', 'get', 'apple'], { encoding: 'utf8' }).stdout || '';
   const parsedApple = JSON.parse(presetAppleOut);
   assert(parsedApple.id === 'apple', 'Presets get apple outputs valid JSON');
 
   // 9. Test 'doctor' command
-  const doctorOut = execSync(`node "${cliPath}" doctor`, { encoding: 'utf8' });
+  const doctorOut = spawnSync(process.execPath, [cliPath, 'doctor'], { encoding: 'utf8' }).stdout || '';
   assert(doctorOut.includes('Node.js Runtime') && doctorOut.includes('Headless Browser'), 'Doctor command runs health checks');
 
   // 10. Test 'snapshot' command via CLI
   const testBanner = path.join(__dirname, '..', 'examples', 'geospatial-banner-1200x630.html');
   try {
-    const snapOut = execSync(`node "${cliPath}" snapshot "${testBanner}" --og --out "${tmpDir}/snap"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+    const snapOut = spawnSync(process.execPath, [cliPath, 'snapshot', testBanner, '--og', '--out', path.join(tmpDir, 'snap')], { encoding: 'utf8' }).stdout || '';
     assert(snapOut.includes('ME-DESIGN Snapshot Engine'), 'Snapshot engine displays banner header');
     assert(snapOut.includes('1 snapshots saved'), 'Snapshot command captured OG banner successfully');
     assert(fs.existsSync(path.join(tmpDir, 'snap', 'geospatial-banner-1200x630-og-banner-1200x630.png')), 'Snapshot output file exists on disk');
@@ -218,16 +236,16 @@ try {
   }
 
   // 11. Test dedicated executable launchers
-  const mepolishOut = execSync(`node "${path.join(__dirname, '..', 'bin', 'mepolish.js')}" --help`, { encoding: 'utf8' });
+  const mepolishOut = spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'mepolish.js'), '--help'], { encoding: 'utf8' }).stdout || '';
   assert(mepolishOut.includes('ME-DESIGN Self-Healing Polish'), 'Dedicated mepolish launcher runs polish subcommand');
 
-  const mebolderOut = execSync(`node "${path.join(__dirname, '..', 'bin', 'mebolder.js')}" --help`, { encoding: 'utf8' });
+  const mebolderOut = spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'mebolder.js'), '--help'], { encoding: 'utf8' }).stdout || '';
   assert(mebolderOut.includes('ME-DESIGN Bolder Modifier'), 'Dedicated mebolder launcher runs bolder subcommand');
 
-  const mequietOut = execSync(`node "${path.join(__dirname, '..', 'bin', 'mequiet.js')}" --help`, { encoding: 'utf8' });
+  const mequietOut = spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'mequiet.js'), '--help'], { encoding: 'utf8' }).stdout || '';
   assert(mequietOut.includes('ME-DESIGN Quiet Modifier'), 'Dedicated mequiet launcher runs quiet subcommand');
 
-  const melintOut = execSync(`node "${path.join(__dirname, '..', 'bin', 'melint.js')}" --help`, { encoding: 'utf8' });
+  const melintOut = spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'melint.js'), '--help'], { encoding: 'utf8' }).stdout || '';
   assert(melintOut.includes('ME-DESIGN Linter'), 'Dedicated melint launcher runs lint subcommand');
 
   const mesearchOut = spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'mesearch.js'), '--help'], { encoding: 'utf8' });
@@ -237,16 +255,16 @@ try {
   assert(mesnapshotOut.stdout.includes('ME-DESIGN Snapshot Engine'), 'Dedicated mesnapshot launcher displays snapshot usage');
 
   // 12. Test --help flags across commands
-  const polishHelp = execSync(`node "${cliPath}" polish --help`, { encoding: 'utf8' });
+  const polishHelp = spawnSync(process.execPath, [cliPath, 'polish', '--help'], { encoding: 'utf8' }).stdout || '';
   assert(polishHelp.includes('ME-DESIGN Self-Healing Polish'), 'Polish command displays usage on --help');
 
-  const tokensHelp = execSync(`node "${cliPath}" tokens --help`, { encoding: 'utf8' });
+  const tokensHelp = spawnSync(process.execPath, [cliPath, 'tokens', '--help'], { encoding: 'utf8' }).stdout || '';
   assert(tokensHelp.includes('ME-DESIGN Token Exporter'), 'Tokens command displays usage on --help');
 
-  const presetsHelp = execSync(`node "${cliPath}" presets --help`, { encoding: 'utf8' });
+  const presetsHelp = spawnSync(process.execPath, [cliPath, 'presets', '--help'], { encoding: 'utf8' }).stdout || '';
   assert(presetsHelp.includes('ME-DESIGN Presets Inspector'), 'Presets command displays usage on --help');
 
-  const masterHelp = execSync(`node "${cliPath}" help`, { encoding: 'utf8' });
+  const masterHelp = spawnSync(process.execPath, [cliPath, 'help'], { encoding: 'utf8' }).stdout || '';
   assert(masterHelp.includes(`ME-DESIGN CLI v${pkg.version}`), `Master help displays dynamic version v${pkg.version}`);
 
 } catch (err) {

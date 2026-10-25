@@ -90,7 +90,7 @@ ${ANSI_BOLD}COMMANDS:${ANSI_RESET}
                                medesign presets get <preset-name>
 
   ${ANSI_CYAN}test${ANSI_RESET} [options]         Run deterministic test suite across fixtures
-                        Options: --browser (runs both static AST and headless browser matrix)
+                        Options: --browser (runs both static pattern and headless browser matrix)
 
   ${ANSI_CYAN}doctor${ANSI_RESET}                  Verify local environment, Node.js, and Chrome/CDP availability
 
@@ -265,15 +265,21 @@ ${ANSI_GRAY}──────────────────────�
   }
 
   case 'polish': {
-    const targetFile = args[1];
-    if (!targetFile || targetFile === '--help' || targetFile === '-h') {
+    const isHelp = args.includes('--help') || args.includes('-h');
+    const dryRun = args.includes('--dry-run');
+    const targetFile = args.slice(1).find(a => !a.startsWith('--'));
+
+    if (!targetFile || isHelp) {
       console.log(`
 ${ANSI_BOLD}ME-DESIGN Self-Healing Polish & Aesthetic Auto-Compiler${ANSI_RESET}
 ${ANSI_GRAY}Autonomous aesthetic compilation and self-healing repair engine${ANSI_RESET}
 
 ${ANSI_BOLD}Usage:${ANSI_RESET}
-  medesign polish <file>
-  mepolish <file>
+  medesign polish <file> [options]
+  mepolish <file> [options]
+
+${ANSI_BOLD}Options:${ANSI_RESET}
+  --dry-run       Preview potential repairs without modifying files on disk
 
 ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
   - Elevates generic typography to curated Archetypes (Geist / Plus Jakarta Sans / JetBrains Mono)
@@ -288,7 +294,7 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
   - Injects prefers-reduced-motion accessibility gate (MD002)
   - Cleans HTML entity and unicode em-dashes to hyphens (MD201)
 `);
-      process.exit(targetFile === '--help' || targetFile === '-h' ? 0 : 1);
+      process.exit(isHelp ? 0 : 1);
     }
     const resolvedPath = path.resolve(process.cwd(), targetFile);
     if (!fs.existsSync(resolvedPath)) {
@@ -582,20 +588,40 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
       fixes.push('Injected safe concentric radius formula max(0px, r_outer - border_w - pad) (MD103)');
     }
 
+    if (dryRun) {
+      console.log(`\n${ANSI_YELLOW}${ANSI_BOLD}[POLISH DRY-RUN PREVIEW]${ANSI_RESET} ${fixes.length} potential repairs identified for ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
+      fixes.forEach(f => console.log(`  ${ANSI_CYAN}Preview:${ANSI_RESET} ${f}`));
+      console.log(`\n${ANSI_GRAY}Dry-run mode: Target file was not modified on disk.${ANSI_RESET}\n`);
+      process.exit(0);
+    }
+
     fs.writeFileSync(resolvedPath, content, 'utf8');
 
     let afterQ = beforeQ;
     let isPassed = true;
+    let hardFailures = [];
     try {
       const afterRes = spawnSync(process.execPath, [linterScript, resolvedPath, '--json'], { encoding: 'utf8' });
       const parsed = JSON.parse(afterRes.stdout);
       afterQ = parsed.qScore !== undefined ? parsed.qScore : beforeQ;
       isPassed = parsed.passed !== undefined ? parsed.passed : (afterQ >= 75);
+      hardFailures = parsed.hardFailures || [];
     } catch (e) {}
 
+    const statusBadge = isPassed ? `${ANSI_GREEN}PASS${ANSI_RESET}` : `${ANSI_RED}FAIL${ANSI_RESET}`;
     console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[POLISH COMPLETED]${ANSI_RESET} ${fixes.length} issues automatically repaired in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
     fixes.forEach(f => console.log(`  ${ANSI_GREEN}Fixed:${ANSI_RESET} ${f}`));
-    console.log(`${ANSI_BOLD}Q-Score:${ANSI_RESET} ${beforeQ.toFixed(1)} -> ${ANSI_GREEN}${ANSI_BOLD}${afterQ.toFixed(1)}${ANSI_RESET} [${isPassed ? ANSI_GREEN + 'PASS' + ANSI_RESET : ANSI_YELLOW + 'WARNING' + ANSI_RESET}]\n`);
+    console.log(`${ANSI_BOLD}Q-Score:${ANSI_RESET} ${beforeQ.toFixed(1)} -> ${ANSI_GREEN}${ANSI_BOLD}${afterQ.toFixed(1)}${ANSI_RESET} [${statusBadge}]\n`);
+
+    if (!isPassed) {
+      console.error(`${ANSI_RED}${ANSI_BOLD}[GATE REJECTED]${ANSI_RESET} File still contains unresolved violations after auto-repair:`);
+      if (hardFailures.length > 0) {
+        const failureNames = hardFailures.map(f => typeof f === 'string' ? f : `${f.ruleId} (${f.ruleName || 'Violation'})`).join(', ');
+        console.error(`  ${ANSI_RED}Hard Invariant Failures:${ANSI_RESET} ${failureNames}`);
+      }
+      process.exit(1);
+    }
+
     process.exit(0);
   }
 
@@ -902,7 +928,7 @@ ${ANSI_BOLD}Usage:${ANSI_RESET}
     if (args[1] === '--help' || args[1] === '-h') {
       console.log(`
 ${ANSI_BOLD}ME-DESIGN Test Runner${ANSI_RESET}
-${ANSI_GRAY}Run deterministic AST & semantic rule test suites${ANSI_RESET}
+${ANSI_GRAY}Run deterministic static rule & browser test suites${ANSI_RESET}
 
 ${ANSI_BOLD}Usage:${ANSI_RESET}
   medesign test
@@ -979,8 +1005,16 @@ ${ANSI_BOLD}Usage:${ANSI_RESET}
     console.log(`Test Fixtures:      ${ANSI_GREEN}${validCount} valid, ${invalidCount} invalid test fixtures${ANSI_RESET}\n`);
 
     console.log(`${ANSI_GRAY}────────────────────────────────────────${ANSI_RESET}`);
-    console.log(`${ANSI_GREEN}${ANSI_BOLD}STATUS: ALL SYSTEMS OPERATIONAL${ANSI_RESET}\n`);
-    break;
+    if (!nodeOk) {
+      console.log(`${ANSI_RED}${ANSI_BOLD}STATUS: UNSUPPORTED ENVIRONMENT (Node.js >= 18.0.0 required)${ANSI_RESET}\n`);
+      process.exit(1);
+    } else if (foundChrome) {
+      console.log(`${ANSI_GREEN}${ANSI_BOLD}STATUS: ALL SYSTEMS OPERATIONAL (Static & Browser Matrix Ready)${ANSI_RESET}\n`);
+      process.exit(0);
+    } else {
+      console.log(`${ANSI_YELLOW}${ANSI_BOLD}STATUS: CORE OPERATIONAL (Static Engine Ready, Browser Audits Unavailable)${ANSI_RESET}\n`);
+      process.exit(0);
+    }
   }
 
   case 'help':

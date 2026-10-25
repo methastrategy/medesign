@@ -1,4 +1,4 @@
-# ME-DESIGN v1.6.0
+# ME-DESIGN v1.6.1
 
 **The Autonomous Design Engineering System, Deterministic Quality Linter & Auto-Compiler for AI Coding Assistants**
 
@@ -42,7 +42,7 @@ Pre-rendered directly by ME-DESIGN's Headless Chrome CDP Engine across Desktop (
 | **Execution Architecture** | **Autonomous Node.js CLI & Deterministic Engine** | Prompt-only System Text | Markdown Guidelines & Rules |
 | **Brief Intake Protocol** | **Dual-Layer Auto-Intent Routing & 1-Click Cockpit Gate** | Free-form Prompting | Manual Instructions |
 | **Verification Gate** | **Mathematical Q-Score (0–100) + Hard Invariants** | Subjective LLM Self-Critique | Manual Inspection Checklist |
-| **Self-Healing Code Repair** | **Automatic AST/Regex Fixer (`medesign polish`)** | Re-prompting Prompt Loop | Manual Code Editing |
+| **Self-Healing Code Repair** | **Deterministic Pattern & Style Fixer (`medesign polish`)** | Re-prompting Prompt Loop | Manual Code Editing |
 | **Conversational Modifiers** | **Instant Code Density (`bolder` / `quiet`)** | Chat Revision Re-rolls | None |
 | **Knowledge Discovery** | **Pure Node.js Search across 38 Archetypes & 74 Brands** | Static Markdown Reading | Static Document Browsing |
 | **Automated CI/CD Quality Gate** | **Native OASIS SARIF v2.1.0 for GitHub Code Scanning** | None | None |
@@ -100,7 +100,7 @@ npm install -g medesign
 ### Verified CLI Commands
 
 ```text
-ME-DESIGN CLI v1.6.0
+ME-DESIGN CLI v1.6.1
 Autonomous Design Engineering Toolkit & Automated Linter for AI Coding Assistants
 
 USAGE:
@@ -111,12 +111,13 @@ COMMANDS:
                         Options: --json
 
   polish <file>          Self-healing repair for Hard Invariants (MD005, MD104, em-dash)
+                        Options: --dry-run
 
   bolder <file>          Boost visual density, font weights, and border contrast
 
   quiet <file>           Softens visual density, font weights, and border treatments
 
-  lint <file>            Lint HTML/CSS/JSX file with static AST & semantic rules
+  lint <file>            Lint HTML/CSS/JSX file with deterministic pattern & architectural rules
                         Options: --format <text|json|sarif>
                                  --preset <apple|tesla|metha>
                                  --config <path>
@@ -138,7 +139,7 @@ COMMANDS:
                                medesign presets get <preset-name>
 
   test [options]         Run deterministic test suite across fixtures
-                        Options: --browser (runs both static AST and headless browser matrix)
+                        Options: --browser (runs both static pattern and headless browser matrix)
 
   doctor                 Verify local environment, Node.js, and Chrome/CDP availability
 
@@ -149,7 +150,7 @@ COMMANDS:
 
 ## 🛠️ Automated Quality Linter & Self-Healing Repair
 
-### 🛡️ Deterministic Static AST Linter (`medesign lint`)
+### 🛡️ Deterministic Static Rules Linter (`medesign lint`)
 
 ```bash
 # Output human-readable terminal report
@@ -201,7 +202,7 @@ Design Quality & Governance Audit
 ────────────────────────────────────────
 Target        dashboard.tsx
 Archetype     Geospatial Situation Awareness (32)
-Analysis      Static AST & Semantic Rules
+Analysis      Deterministic Static Pattern Rules
 Ruleset       medesign-standard@1.6.0
 
 QUALITY SCORE (Q = 0.30H + 0.25I + 0.20G + 0.15R + 0.10V)

@@ -41,8 +41,10 @@ def load_env():
     """Load .env files in priority order"""
     env_paths = [
         Path(__file__).parent.parent.parent / ".env",
+        Path.home() / ".gemini" / ".env",
         Path.home() / ".claude" / "skills" / ".env",
         Path.home() / ".claude" / ".env",
+        Path.home() / ".env",
     ]
 
     for env_path in env_paths:
@@ -74,7 +76,7 @@ ATLAS_API_BASE = "https://api.atlascloud.ai/api/v1"
 MUAPI_MODEL = "nano-banana"
 MUAPI_MODELS = ("nano-banana", "nano-banana-pro")
 MUAPI_API_BASE = "https://api.muapi.ai/api/v1"
-HTTP_USER_AGENT = "ui-ux-pro-max/2.5 (logo generation)"
+HTTP_USER_AGENT = "medesign/1.6.1 (logo generation)"
 ATLAS_POLL_INTERVAL = 2
 ATLAS_MAX_POLLS = 90
 MUAPI_POLL_INTERVAL = 2

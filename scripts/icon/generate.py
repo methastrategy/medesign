@@ -28,8 +28,10 @@ def load_env():
     """Load .env files in priority order"""
     env_paths = [
         Path(__file__).parent.parent.parent / ".env",
+        Path.home() / ".gemini" / ".env",
         Path.home() / ".claude" / "skills" / ".env",
-        Path.home() / ".claude" / ".env"
+        Path.home() / ".claude" / ".env",
+        Path.home() / ".env"
     ]
     for env_path in env_paths:
         if env_path.exists():

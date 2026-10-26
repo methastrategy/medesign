@@ -62,15 +62,12 @@
 - "Join [notable company] and [notable company]"
 - "As seen in [publication]"
 
-## Search Commands
+## Formula Selection Heuristic
 
-```bash
-# Find formula for slide type
-python ../design-system/scripts/search-slides.py "problem agitation" -d copy
-
-# Get emotion-appropriate formula
-python ../design-system/scripts/search-slides.py "urgency cta" -d copy
-```
+- **Cold Audiences:** Start with PAS (Pain, Agitate, Solve)
+- **Feature Announcements:** Use FAB (Features, Advantages, Benefits)
+- **High-Stakes Pitches:** Lead with Problem-Agitation into Inevitable Solution
+- **Action / Conversion Slides:** Conclude with Clear Urgency CTA
 
 ## Quick Reference
 

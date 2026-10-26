@@ -8,7 +8,7 @@
   - `MOTION_INTENSITY = 6/10` (Spring Physics `cubic-bezier(0.22, 1, 0.36, 1)` สำหรับ Hover/Drawer + 0ms Instant State Sync สำหรับการสลับเหรียญ/กรองตาราง + เคารพ `@media (prefers-reduced-motion: reduce)`)
   - `VISUAL_DENSITY = 7–8/10` (High-Craft Telemetry Density: ใช้ `font-variant-numeric: tabular-nums` ทุกตัวเลขราคา/พิกัด/เวลา, ช่องว่างภายในสัมพันธ์กับรัศมีขอบ)
 - **Gapless Bento & Viewport Budget:**
-  - กริดแบบ Bento ต้องใส่ `grid-auto-flow: dense;` เสมอเพื่อไม่ให้เกิดหลุมว่าง (No orphan grid holes)
+  - กริดแบบ Bento ให้จัดวางด้วย `grid-auto-flow: row;` ร่วมกับ Named Grid Areas หรือวางคอลัมน์ให้เต็มพอดี (ห้ามใช้ `grid-auto-flow: dense;` เด็ดขาด เพื่อป้องกัน DOM/Tab Order สลับตำแหน่งตามกฎ MD101)
   - ใช้ `min-height: 100dvh;` แทน `100vh` และล็อก `overflow-x: hidden;` บน `body`
   - **Viewport Budget:** ใน 1 หน้าจอแรก (Above the Fold) ห้ามมีกลุ่มองค์ประกอบแยกกันเกิน 3 โซนหลัก และต้องมีพื้นที่ว่าง (Whitespace / Surface Canvas) อย่างน้อย 25%
 

@@ -238,4 +238,4 @@ ME-DESIGN provides shared rule adapters for all major agentic tools:
 
 ## 📄 License
 
-MIT License © 2026 Metha Triparamkit (Survey Engineering & Geoinformatics, Kasetsart University).
+MIT License © 2026 Metha Tripraphankit (Survey Engineering & Geoinformatics, Kasetsart University).

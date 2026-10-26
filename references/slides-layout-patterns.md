@@ -109,29 +109,14 @@
 | `contrast-pair` | Before/after |
 | `logo-grayscale` | Client logos |
 
-## Search Commands
-
-```bash
-# Find layout for specific use
-python ../design-system/scripts/search-slides.py "metrics dashboard" -d layout
-
-# Contextual recommendation
-python ../design-system/scripts/search-slides.py "traction slide" \
-  --context --position 4 --total 10
-```
-
 ## Layout Decision Flow
 
-```
-1. What's the slide goal?
-   └─> Search layout-logic.csv
+1. **What is the slide goal?**
+   - High Impact Intro -> Hero Pattern
+   - Metric Comparison -> Split Comparison or 3-Card Bento
+   - Sequence of Events -> Timeline Pattern
+   - Multi-feature Overview -> 4-Column Feature Grid
 
-2. What emotion should it trigger?
-   └─> Search color-logic.csv
-
-3. What's the content type?
-   └─> Search typography.csv
-
-4. Should it break pattern?
-   └─> Check position (1/3, 2/3) → Use full-bleed
-```
+2. **What visual density is required?**
+   - Executive / Pitch: Low density, high whitespace (40%+ canvas)
+   - Technical Review: High tabular density with Chart.js container

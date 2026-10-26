@@ -72,16 +72,6 @@ What Is → What Could Be → What Is → What Could Be → New Bliss
 
 Pattern breaks at 1/3 and 2/3 positions create engagement peaks.
 
-## Search Commands
-
-```bash
-# Find strategy by goal
-python ../design-system/scripts/search-slides.py "investor pitch" -d strategy
-
-# Get emotion arc
-python ../design-system/scripts/search-slides.py "series a funding" -d strategy --json
-```
-
 ## Matching Strategy to Context
 
 | Context | Recommended Strategy |

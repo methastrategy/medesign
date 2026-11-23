@@ -30,7 +30,7 @@
     "medesign.config.js"
   ],
   "scripts": {
-    "test": "node tests/runner.js && node tests/validate-sarif.js && node tests/test-tokens.js && node tests/test-cli.js && node tests/test-gamut.js && node tests/test-behavioral-matrix.js",
+    "test": "node tests/runner.js && node tests/test-hard-invariants.js && node tests/validate-sarif.js && node tests/test-tokens.js && node tests/test-cli.js && node tests/test-gamut.js && node tests/test-behavioral-matrix.js",
     "test:unit": "node tests/runner.js",
     "test:sarif": "node tests/validate-sarif.js",
     "test:tokens": "node tests/test-tokens.js",

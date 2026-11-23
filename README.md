@@ -18,7 +18,32 @@
 
 Most AI-generated user interfaces suffer from **Decisionless Uniformity**: generic 3-card grids, oversaturated neon glows, clipping Thai/Latin font metrics, broken keyboard accessibility, and non-proportional press deformations.
 
-**ME-DESIGN** changes the paradigm from subjective aesthetic prompting to an **executable 5-Engine Design Architecture** coupled with a **Dual-Tier Quality Linter**, **Knowledge Discovery Search Engine**, **Self-Healing Code Repair**, **Interactive Brief Intake Gate (v2.3)**, and **74 Global Brand Multi-Pane Systems**.
+**ME-DESIGN** changes the paradigm from subjective aesthetic prompting to an **executable Frontend Design Engineering Skill**:
+- **Two-Level Workflow:** Fast Path for focused 1-component fixes, and Deep Path for whole-page architecture and product redesigns.
+- **Context-First Design Intelligence:** Design decisions derived from product domain, target audience, and brand—never forced universal templates.
+- **Deterministic Quality Linter:** Enforces 5 Non-Overridable Hard Invariants with source line & column diagnostics.
+- **Safe Atomic Auto-Repair (`medesign polish`):** Candidate validation, quality regression guards, unified line diffs, and automatic rollback on failure.
+- **Headless Chrome CDP Browser Audit:** Real computed contrast, keyboard tab focus, touch targets, and horizontal overflow across Mobile (390px), Tablet (820px), Desktop (1440px), and Windows High Contrast Mode.
+- **Zero-Dependency CLI:** Pure Node.js standard library with OASIS SARIF v2.1.0 output for GitHub Code Scanning.
+
+---
+
+## ⚡ Two-Level Workflow (Fast Path vs. Deep Path)
+
+ME-DESIGN automatically adapts to the scope of your request:
+
+### 1. Fast Path — Focused Component & Style Tweaks
+For small requests (*"fix button spacing"*, *"make this section responsive"*, *"adjust font hierarchy"*):
+- **Inspect:** Reads only the target component and local styles.
+- **Act:** Applies the minimal surgical change preserving business logic.
+- **Verify:** Runs targeted linter without forcing design workshops or multi-question intake rituals.
+
+### 2. Deep Path — New Surfaces & Product Redesigns
+For major projects (*"build GIS dashboard"*, *"design e-commerce checkout"*, *"modernize portal"*):
+1. **Context & Brief Intake:** Detects mode (`new` / `revamp` / `like`), product domain, and audience.
+2. **Design Direction:** Proposes a deliberate visual concept, compact color palette, and motion profile.
+3. **Information Architecture & Implementation:** Semantic HTML5, accessible components, and full state coverage.
+4. **Deterministic Verification:** Static linter audit + CDP headless browser matrix verification.
 
 ---
 
@@ -111,7 +136,7 @@ COMMANDS:
                         Options: --json
 
   polish <file>          Self-healing repair for Hard Invariants (MD005, MD104, em-dash)
-                        Options: --dry-run
+                        Options: --dry-run, --diff
 
   bolder <file>          Boost visual density, font weights, and border contrast
 
@@ -197,31 +222,43 @@ npx medesign quiet path/to/dashboard.html
 ### The Terminal Quality Audit Card
 
 ```text
-ME-DESIGN v1.6.0
+ME-DESIGN vNext
 Design Quality & Governance Audit
 ────────────────────────────────────────
-Target        dashboard.tsx
-Archetype     Geospatial Situation Awareness (32)
-Analysis      Deterministic Static Pattern Rules
-Ruleset       medesign-standard@1.6.0
+Target        accessibility-contrast-fail.html
+Preset        DEFAULT
+Analysis      Static Pattern & Heuristic Rules (Confidence Gated)
+Ruleset       medesign-standard@1.6.1
 
 QUALITY SCORE (Q = 0.30H + 0.25I + 0.20G + 0.15R + 0.10V)
-  Hierarchy (H)       94.0 / 100
-  Information (I)     90.0 / 100
-  Geometry (G)        92.0 / 100
-  Responsive (R)      88.0 / 100
-  Visual Craft (V)    95.0 / 100
+  Hierarchy (H)       95.0 / 100
+  Information (I)     65.0 / 100
+  Geometry (G)        85.0 / 100
+  Responsive (R)      80.0 / 100
+  Visual Craft (V)    90.0 / 100
 
-  Q-SCORE             91.8 / 100  [PASS]
+  Q-SCORE             82.8 / 100  [FAIL]
+  (Note: Q-Score is a static pattern heuristic, not a direct measurement of rendered layout)
 
 HARD INVARIANTS CHECKLIST
-  PASS  Keyboard Focus Ring Visibility (:focus-visible)
-  PASS  Reduced Motion Compliance (@media prefers-reduced-motion)
-  PASS  Anti-AI Tells: Zero Em-Dash Invariant
-  PASS  Predictable DOM Order (No unsemantic dense flow)
+  FAIL  MD001: Keyboard Focus Ring Visibility (:focus-visible)
+  FAIL  MD002: Reduced Motion Compliance (@media prefers-reduced-motion)
+  FAIL  MD003: Isolated Hit-Target Area (No raw scale-95 crushing)
+  PASS  MD004: Interactive State Contract (No dead buttons)
+  FAIL  MD005: High Contrast Focus Visibility (forced-colors: active outline)
+
+FINDINGS (5)
+  error   [14:11] MD001 (hard-invariant)  Missing visible focus indicator (:focus-visible) for interactive controls.
+          -> Remediation: Define :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+  error   [20:7] MD002 (hard-invariant)  Animations/transitions detected without @media (prefers-reduced-motion) compliance gate.
+          -> Remediation: Add @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; } }
+  error   [31:7] MD003 (hard-invariant)  Detected raw scale(0.90-0.95) directly on interactive button container, collapsing touch hit-target.
+          -> Remediation: Isolate outer 44px hit-target container and scale only the inner .visual-surface using clamp(0.96, 1 - 2.5/max(W,H), 0.995).
+  error   [14:5] MD005 (hard-invariant)  Focus indicator relies on box-shadow or suppresses outline without replacement.
+          -> Remediation: Always specify a physical outline in focus styles: :focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
 
 ────────────────────────────────────────
-RESULT: PASS (Exit Code: 0)
+RESULT: FAIL (4 hard invariant failures, Exit Code: 1)
 ```
 
 ---
@@ -230,9 +267,20 @@ RESULT: PASS (Exit Code: 0)
 
 ME-DESIGN provides shared rule adapters for all major agentic tools:
 
-- **Google Antigravity:** Native Skill supported under `skills/medesign/SKILL.md`
+- **Google Antigravity:** Native Skill supported under `C:\Users\hotme\.gemini\config\skills\medesign\SKILL.md` (or workspace `.gemini/skills/medesign/SKILL.md`)
 - **Claude Code:** Copy `integrations/claude-code/SKILL.md` to `.claude/skills/medesign/SKILL.md`
 - **Cursor:** Copy `integrations/cursor/medesign.mdc` to `.cursor/rules/medesign.mdc`
+- **Windsurf / OpenClaw / Generic Agents:** Link to root `SKILL.md` in `.agents/rules/` or `AGENTS.md`
+
+---
+
+## 📚 Architectural & Benchmark Documentation
+
+- [Roadmap & Product Architecture](docs/roadmap/FRONTEND-DESIGN-SKILL-ROADMAP.md)
+- [Competitive Benchmark Synthesis](docs/audit/COMPETITIVE-BENCHMARK.md)
+- [Standardized 8-Task Benchmark Suite](docs/benchmark/BENCHMARK-SUITE.md)
+- [Initial Source Audit](docs/audit/INITIAL-SOURCE-AUDIT.md)
+- [Design Routing & Knowledge Guide](references/design-routing.md)
 
 ---
 

@@ -267,6 +267,7 @@ ${ANSI_GRAY}──────────────────────�
   case 'polish': {
     const isHelp = args.includes('--help') || args.includes('-h');
     const dryRun = args.includes('--dry-run');
+    const showDiff = args.includes('--diff');
     const targetFile = args.slice(1).find(a => !a.startsWith('--'));
 
     if (!targetFile || isHelp) {
@@ -280,6 +281,7 @@ ${ANSI_BOLD}Usage:${ANSI_RESET}
 
 ${ANSI_BOLD}Options:${ANSI_RESET}
   --dry-run       Preview potential repairs without modifying files on disk
+  --diff          Display unified line diff of proposed changes
 
 ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
   - Elevates generic typography to curated Archetypes (Geist / Plus Jakarta Sans / JetBrains Mono)
@@ -317,7 +319,8 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
     }
     const beforeQ = beforeReport.qScore;
 
-    let content = fs.readFileSync(resolvedPath, 'utf8');
+    const originalContent = fs.readFileSync(resolvedPath, 'utf8');
+    let content = originalContent;
     const fixes = [];
 
     const getClean = (src) => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '');
@@ -595,9 +598,42 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
       fixes.push('Injected safe concentric radius formula max(0px, r_outer - border_w - pad) (MD103)');
     }
 
+    function printUnifiedDiff(orig, mod, filename) {
+      const origLines = orig.split('\n');
+      const modLines = mod.split('\n');
+      console.log(`\n${ANSI_BOLD}--- a/${path.basename(filename)}${ANSI_RESET}`);
+      console.log(`${ANSI_BOLD}+++ b/${path.basename(filename)}${ANSI_RESET}`);
+      let i = 0, j = 0;
+      let diffCount = 0;
+      while (i < origLines.length || j < modLines.length) {
+        if (i < origLines.length && j < modLines.length && origLines[i] === modLines[j]) {
+          i++; j++;
+        } else {
+          if (i < origLines.length && (j >= modLines.length || origLines[i] !== modLines[j])) {
+            console.log(`${ANSI_RED}- ${origLines[i]}${ANSI_RESET}`);
+            i++;
+            diffCount++;
+          }
+          if (j < modLines.length && (i >= origLines.length || modLines[j] !== origLines[i])) {
+            console.log(`${ANSI_GREEN}+ ${modLines[j]}${ANSI_RESET}`);
+            j++;
+            diffCount++;
+          }
+          if (diffCount > 60) {
+            console.log(`${ANSI_GRAY}... (diff truncated for terminal clarity)${ANSI_RESET}`);
+            break;
+          }
+        }
+      }
+      console.log('');
+    }
+
     if (dryRun) {
       console.log(`\n${ANSI_YELLOW}${ANSI_BOLD}[POLISH DRY-RUN PREVIEW]${ANSI_RESET} ${fixes.length} potential repairs identified for ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
       fixes.forEach(f => console.log(`  ${ANSI_CYAN}Preview:${ANSI_RESET} ${f}`));
+      if (showDiff && fixes.length > 0) {
+        printUnifiedDiff(originalContent, content, resolvedPath);
+      }
       console.log(`\n${ANSI_GRAY}Dry-run mode: Target file was not modified on disk.${ANSI_RESET}\n`);
       process.exit(0);
     }
@@ -623,12 +659,15 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
       process.exit(1);
     }
 
-    if (!isPassed) {
+    if (!isPassed || (Number.isFinite(beforeQ) && afterQ < beforeQ)) {
       try { fs.unlinkSync(candidatePath); } catch (_) {}
-      console.error(`${ANSI_RED}${ANSI_BOLD}[GATE REJECTED]${ANSI_RESET} Candidate failed verification; original file was preserved:`);
+      console.error(`${ANSI_RED}${ANSI_BOLD}[GATE REJECTED]${ANSI_RESET} Candidate failed verification or regressed; original file was preserved:`);
       if (hardFailures.length > 0) {
         const failureNames = hardFailures.map(f => typeof f === 'string' ? f : `${f.ruleId} (${f.ruleName || 'Violation'})`).join(', ');
         console.error(`  ${ANSI_RED}Hard Invariant Failures:${ANSI_RESET} ${failureNames}`);
+      }
+      if (Number.isFinite(beforeQ) && afterQ < beforeQ) {
+        console.error(`  ${ANSI_RED}Quality Regression:${ANSI_RESET} Q-Score regressed from ${beforeQ.toFixed(1)} to ${afterQ.toFixed(1)}`);
       }
       console.error(`  Q-Score: ${Number.isFinite(afterQ) ? afterQ.toFixed(1) : 'unavailable'}`);
       process.exit(1);
@@ -645,6 +684,9 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
     const statusBadge = `${ANSI_GREEN}PASS${ANSI_RESET}`;
     console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[POLISH COMPLETED]${ANSI_RESET} ${fixes.length} changes applied and verified in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
     fixes.forEach(f => console.log(`  ${ANSI_GREEN}Applied:${ANSI_RESET} ${f}`));
+    if (showDiff && fixes.length > 0) {
+      printUnifiedDiff(originalContent, content, resolvedPath);
+    }
     console.log(`${ANSI_BOLD}Static Q-Score:${ANSI_RESET} ${beforeQ.toFixed(1)} -> ${ANSI_GREEN}${ANSI_BOLD}${afterQ.toFixed(1)}${ANSI_RESET} [${statusBadge}]\n`);
 
     process.exit(0);

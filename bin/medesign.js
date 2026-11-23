@@ -988,6 +988,8 @@ ${ANSI_BOLD}Usage:${ANSI_RESET}
     const major = parseInt(nodeVer.slice(1).split('.')[0], 10);
     const nodeOk = major >= 18;
     console.log(`Node.js Runtime:    ${nodeOk ? ANSI_GREEN + nodeVer + ' (Supported)' : ANSI_RED + nodeVer + ' (Requires >= 18.0.0)'}${ANSI_RESET}`);
+    const hasWs = typeof WebSocket !== 'undefined';
+    console.log(`Native WebSocket:   ${hasWs ? ANSI_GREEN + 'Available (CDP Browser Audits Supported)' : ANSI_YELLOW + 'Unavailable (Browser Audits Require Node >= 20.10.0)'}${ANSI_RESET}`);
 
     const chromeCandidates = [
       process.env.CHROME_PATH,

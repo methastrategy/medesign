@@ -61,6 +61,11 @@ if (!fs.existsSync(targetFile)) {
   process.exit(2);
 }
 
+if (typeof WebSocket === 'undefined') {
+  console.error(`${ANSI_RED}Error:${ANSI_RESET} Headless browser audit requires native WebSocket support (Node.js >= 20.10.0 or Node.js >= 22). Current: ${process.version}`);
+  process.exit(2);
+}
+
 const resolvedPath = path.resolve(targetFile);
 const fileUrl = 'file:///' + resolvedPath.replace(/\\/g, '/');
 
@@ -367,12 +372,19 @@ async function runAudit() {
             highContrastOutlineRendered = hasOutline;
           }
 
+          // Test 4: Viewport Horizontal Overflow Detection
+          const docEl = document.documentElement;
+          const horizontalOverflow = (docEl.scrollWidth - window.innerWidth) > 2.0;
+
           return {
             buttonCount: buttons.length,
             hitTargetViolations,
             minContrastRatio: Math.round(minContrast * 10) / 10,
             focusVisibleRendered,
             highContrastOutlineRendered,
+            horizontalOverflow,
+            scrollWidth: docEl.scrollWidth,
+            viewportWidth: window.innerWidth,
             debugContrast
           };
         })()
@@ -404,8 +416,9 @@ async function runAudit() {
     const focusPass = isForced
       ? (r.highContrastOutlineRendered || r.buttonCount === 0)
       : (r.focusVisibleRendered || r.buttonCount === 0);
+    const overflowPass = !r.horizontalOverflow;
 
-    if (!contrastPass || !hitTargetPass || !focusPass) overallPass = false;
+    if (!contrastPass || !hitTargetPass || !focusPass || !overflowPass) overallPass = false;
   });
 
   if (isJson) {
@@ -420,11 +433,11 @@ async function runAudit() {
   // Render Matrix Card
   console.log(`\n${ANSI_BOLD}ME-DESIGN Phase 2 — Browser Verification Matrix${ANSI_RESET}`);
   console.log(`${ANSI_CYAN}Headless Chromium Runtime Engine (CDP v156)${ANSI_RESET}`);
-  console.log(`${ANSI_GRAY}────────────────────────────────────────────────────────────────────────${ANSI_RESET}`);
+  console.log(`${ANSI_GRAY}────────────────────────────────────────────────────────────────────────────────────────${ANSI_RESET}`);
   console.log(`Target: ${path.basename(targetFile)}\n`);
 
-  console.log(`${'VIEWPORT'.padEnd(10)} | ${'MODE'.padEnd(14)} | ${'CONTRAST'.padEnd(10)} | ${'HIT-TARGET (≥44px)'.padEnd(20)} | ${'TAB FOCUS'.padEnd(10)}`);
-  console.log(`${ANSI_GRAY}------------------------------------------------------------------------${ANSI_RESET}`);
+  console.log(`${'VIEWPORT'.padEnd(10)} | ${'MODE'.padEnd(14)} | ${'CONTRAST'.padEnd(10)} | ${'HIT-TARGET (≥44px)'.padEnd(20)} | ${'TAB FOCUS'.padEnd(12)} | ${'OVERFLOW'}`);
+  console.log(`${ANSI_GRAY}----------------------------------------------------------------------------------------${ANSI_RESET}`);
 
   auditResults.forEach(r => {
     const isForced = r.theme === 'forced-colors';
@@ -433,6 +446,7 @@ async function runAudit() {
     const focusPass = isForced
       ? (r.highContrastOutlineRendered || r.buttonCount === 0)
       : (r.focusVisibleRendered || r.buttonCount === 0);
+    const overflowPass = !r.horizontalOverflow;
 
     const contrastStr = isForced
       ? ANSI_CYAN + 'SYS-HIGH' + ANSI_RESET
@@ -444,10 +458,14 @@ async function runAudit() {
 
     const focusStr = (focusPass ? ANSI_GREEN : ANSI_RED) + (focusPass ? (isForced ? 'OUTLINE OK' : 'VERIFIED') : (isForced ? 'NO OUTLINE' : 'NO FOCUS')) + ANSI_RESET;
 
-    console.log(`${r.viewport.padEnd(10)} | ${r.theme.padEnd(14)} | ${contrastStr.padEnd(19)} | ${hitStr.padEnd(31)} | ${focusStr}`);
+    const overflowStr = overflowPass
+      ? ANSI_GREEN + 'OK (Fit)' + ANSI_RESET
+      : ANSI_RED + `FAIL (+${Math.round(r.scrollWidth - r.viewportWidth)}px)` + ANSI_RESET;
+
+    console.log(`${r.viewport.padEnd(10)} | ${r.theme.padEnd(14)} | ${contrastStr.padEnd(19)} | ${hitStr.padEnd(31)} | ${focusStr.padEnd(21)} | ${overflowStr}`);
   });
 
-  console.log(`${ANSI_GRAY}────────────────────────────────────────────────────────────────────────${ANSI_RESET}`);
+  console.log(`${ANSI_GRAY}────────────────────────────────────────────────────────────────────────────────────────${ANSI_RESET}`);
   if (overallPass) {
     console.log(`${ANSI_GREEN}${ANSI_BOLD}BROWSER MATRIX VERIFICATION: PASS (Exit Code: 0)${ANSI_RESET}\n`);
     process.exit(0);

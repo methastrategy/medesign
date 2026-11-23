@@ -163,6 +163,7 @@ try {
   const failRes = spawnSync(process.execPath, [cliPath, 'polish', testFailPath], { encoding: 'utf8' });
   assert(failRes.status === 1, 'Polish on unfixable file exits with code 1 (Gate Rejection)');
   assert(failRes.stderr.includes('GATE REJECTED') && failRes.stderr.includes('MD005'), 'Polish failure reports gate rejection with MD005 rule ID');
+  assert(fs.readFileSync(testFailPath, 'utf8') === unfixableRaw, 'Polish rejected candidate preserves original file byte-for-byte');
 
   // 5. Test 'polish' on standalone CSS file (verifies forced-colors injection without </style>)
   const testCssPath = path.join(tmpDir, 'test-standalone.css');

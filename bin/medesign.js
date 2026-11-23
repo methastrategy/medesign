@@ -303,12 +303,19 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
     }
 
     const linterScript = path.join(rootDir, 'tests', 'linter.js');
-    let beforeQ = 80.0;
+    const beforeRes = spawnSync(process.execPath, [linterScript, resolvedPath, '--json'], { encoding: 'utf8' });
+    let beforeReport;
     try {
-      const beforeRes = spawnSync(process.execPath, [linterScript, resolvedPath, '--json'], { encoding: 'utf8' });
-      const parsed = JSON.parse(beforeRes.stdout);
-      beforeQ = parsed.qScore || 80.0;
-    } catch (e) {}
+      beforeReport = JSON.parse(beforeRes.stdout);
+    } catch (e) {
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} Pre-repair audit did not return valid JSON; source file was not changed.`);
+      process.exit(1);
+    }
+    if (beforeRes.error || !beforeReport || !Number.isFinite(beforeReport.qScore) || typeof beforeReport.passed !== 'boolean') {
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} Pre-repair audit report is incomplete; source file was not changed.`);
+      process.exit(1);
+    }
+    const beforeQ = beforeReport.qScore;
 
     let content = fs.readFileSync(resolvedPath, 'utf8');
     const fixes = [];
@@ -595,32 +602,50 @@ ${ANSI_BOLD}Repairs & Aesthetic Compilations:${ANSI_RESET}
       process.exit(0);
     }
 
-    fs.writeFileSync(resolvedPath, content, 'utf8');
-
-    let afterQ = beforeQ;
-    let isPassed = true;
+    const candidatePath = `${resolvedPath}.medesign-${process.pid}.tmp`;
+    let afterQ;
     let hardFailures = [];
+    let isPassed = false;
     try {
-      const afterRes = spawnSync(process.execPath, [linterScript, resolvedPath, '--json'], { encoding: 'utf8' });
-      const parsed = JSON.parse(afterRes.stdout);
-      afterQ = parsed.qScore !== undefined ? parsed.qScore : beforeQ;
-      isPassed = parsed.passed !== undefined ? parsed.passed : (afterQ >= 75);
-      hardFailures = parsed.hardFailures || [];
-    } catch (e) {}
-
-    const statusBadge = isPassed ? `${ANSI_GREEN}PASS${ANSI_RESET}` : `${ANSI_RED}FAIL${ANSI_RESET}`;
-    console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[POLISH COMPLETED]${ANSI_RESET} ${fixes.length} issues automatically repaired in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
-    fixes.forEach(f => console.log(`  ${ANSI_GREEN}Fixed:${ANSI_RESET} ${f}`));
-    console.log(`${ANSI_BOLD}Q-Score:${ANSI_RESET} ${beforeQ.toFixed(1)} -> ${ANSI_GREEN}${ANSI_BOLD}${afterQ.toFixed(1)}${ANSI_RESET} [${statusBadge}]\n`);
+      fs.writeFileSync(candidatePath, content, 'utf8');
+      const afterRes = spawnSync(process.execPath, [linterScript, candidatePath, '--json'], { encoding: 'utf8' });
+      if (afterRes.error) throw afterRes.error;
+      const afterReport = JSON.parse(afterRes.stdout);
+      if (!afterReport || !Number.isFinite(afterReport.qScore) || typeof afterReport.passed !== 'boolean') {
+        throw new Error('Post-repair audit report is incomplete');
+      }
+      afterQ = afterReport.qScore;
+      isPassed = afterReport.passed;
+      hardFailures = Array.isArray(afterReport.hardFailures) ? afterReport.hardFailures : [];
+    } catch (e) {
+      try { fs.unlinkSync(candidatePath); } catch (_) {}
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} Post-repair audit failed (${e.message}); original file was preserved.`);
+      process.exit(1);
+    }
 
     if (!isPassed) {
-      console.error(`${ANSI_RED}${ANSI_BOLD}[GATE REJECTED]${ANSI_RESET} File still contains unresolved violations after auto-repair:`);
+      try { fs.unlinkSync(candidatePath); } catch (_) {}
+      console.error(`${ANSI_RED}${ANSI_BOLD}[GATE REJECTED]${ANSI_RESET} Candidate failed verification; original file was preserved:`);
       if (hardFailures.length > 0) {
         const failureNames = hardFailures.map(f => typeof f === 'string' ? f : `${f.ruleId} (${f.ruleName || 'Violation'})`).join(', ');
         console.error(`  ${ANSI_RED}Hard Invariant Failures:${ANSI_RESET} ${failureNames}`);
       }
+      console.error(`  Q-Score: ${Number.isFinite(afterQ) ? afterQ.toFixed(1) : 'unavailable'}`);
       process.exit(1);
     }
+
+    try {
+      fs.renameSync(candidatePath, resolvedPath);
+    } catch (e) {
+      try { fs.unlinkSync(candidatePath); } catch (_) {}
+      console.error(`${ANSI_RED}Error:${ANSI_RESET} Could not safely replace original file (${e.message}); original file was preserved.`);
+      process.exit(1);
+    }
+
+    const statusBadge = `${ANSI_GREEN}PASS${ANSI_RESET}`;
+    console.log(`\n${ANSI_GREEN}${ANSI_BOLD}[POLISH COMPLETED]${ANSI_RESET} ${fixes.length} changes applied and verified in ${ANSI_CYAN}${path.basename(resolvedPath)}${ANSI_RESET}`);
+    fixes.forEach(f => console.log(`  ${ANSI_GREEN}Applied:${ANSI_RESET} ${f}`));
+    console.log(`${ANSI_BOLD}Static Q-Score:${ANSI_RESET} ${beforeQ.toFixed(1)} -> ${ANSI_GREEN}${ANSI_BOLD}${afterQ.toFixed(1)}${ANSI_RESET} [${statusBadge}]\n`);
 
     process.exit(0);
   }

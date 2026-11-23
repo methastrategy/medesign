@@ -35,12 +35,13 @@ jobs:
         run: node bin/medesign.js test
 
       - name: Generate SARIF Security & Invariant Report
+        if: always()
         run: node bin/medesign.js lint tests/visual-testbed.html --format sarif > medesign-results.sarif
 
       - name: Upload SARIF to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         continue-on-error: true
-        if: always() && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x' && hashFiles('medesign-results.sarif') != ''
         with:
           sarif_file: medesign-results.sarif
           category: medesign-linter

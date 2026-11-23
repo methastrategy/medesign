@@ -58,7 +58,7 @@ Read `references/brief-intake.md` when needed. Inspect the repository and identi
 - Framework, styling approach and relevant constraints
 - Primary action and success state
 
-If the brief is complete, proceed with reasonable assumptions. Ask one concise question only when the answer materially affects the design or implementation.
+If the brief is complete, proceed with reasonable assumptions. Ask one concise question only when the answer materially affects the design or implementation. (Fallback: หากไม่มี `ask_question` ให้ถามข้อความธรรมดาในแชต; หากไม่มี Node CLI ให้ตรวจทานด้วย 11 Craft Checklist ด้วยตนเอง)
 
 ### 2. Choose a design direction
 For a new or visibly redesigned surface, define a short direction before coding:
@@ -133,7 +133,7 @@ Before applying an automatic repair, preview it when the change is broad or coul
 
 ## Quality gate
 
-Use `references/quality-gate.md` for the checks applicable to the deliverable. Separate results into:
+Use `references/quality-gate.md` for the checks applicable to the deliverable (Squint Test, Grayscale, 10-State Matrix). ปิดท้ายด้วย `Gate: quality-gate.md - pass` เสมอ **เฉพาะข้อความที่ส่งมอบโค้ดเท่านั้น** (ข้อความเสนอทิศทาง A/B ไม่ต้องใส่ Gate) Separate results into:
 
 - **Static checks:** source patterns and structural heuristics.
 - **Browser checks:** rendered styles, geometry, viewport behaviour and interaction.

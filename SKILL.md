@@ -1,6 +1,6 @@
 ---
 name: medesign
-description: "Design, build, improve, or review frontend UI/UX for websites and applications. Use when creating a page, component, flow, dashboard, design system, or when an existing interface needs better usability, visual craft, responsive behaviour, accessibility, or frontend polish."
+description: "Design, build, improve, or review frontend UI/UX for websites and apps. Use when creating or refining pages, components, dashboards, and design systems for usability, visual craft, responsive layout, and a11y."
 ---
 
 # ME-DESIGN — Frontend Design & Engineering Skill

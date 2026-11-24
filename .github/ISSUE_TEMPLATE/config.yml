@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "ME-DESIGN Documentation & Benchmarks"
+    url: "https://github.com/methastrategy/medesign#readme"
+    about: "Read the official documentation, 8-task benchmark suite, and architecture guides."
+  - name: "Security Advisory Reporting"
+    url: "https://github.com/methastrategy/medesign/security/advisories"
+    about: "Report security vulnerabilities privately and securely."

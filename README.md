@@ -1,4 +1,4 @@
-# ME-DESIGN v1.6.1
+# ME-DESIGN v1.7.0
 
 **The Autonomous Design Engineering System, Deterministic Quality Linter & Auto-Compiler for AI Coding Assistants**
 
@@ -62,7 +62,7 @@ Pre-rendered directly by ME-DESIGN's Headless Chrome CDP Engine across Desktop (
 
 ## ⚔️ Multi-Dimensional Competitive Benchmark
 
-| Dimension | `medesign` (v1.6.0) | `ui-ux-pro-max-skill` | `pbakaus/impeccable` |
+| Dimension | `medesign` (v1.7.0) | `ui-ux-pro-max-skill` | `pbakaus/impeccable` |
 | :--- | :--- | :--- | :--- |
 | **Execution Architecture** | **Autonomous Node.js CLI & Deterministic Engine** | Prompt-only System Text | Markdown Guidelines & Rules |
 | **Brief Intake Protocol** | **Dual-Layer Auto-Intent Routing & 1-Click Cockpit Gate** | Free-form Prompting | Manual Instructions |
@@ -125,7 +125,7 @@ npm install -g medesign
 ### Verified CLI Commands
 
 ```text
-ME-DESIGN CLI v1.6.1
+ME-DESIGN CLI v1.7.0
 Autonomous Design Engineering Toolkit & Automated Linter for AI Coding Assistants
 
 USAGE:
@@ -228,7 +228,7 @@ Design Quality & Governance Audit
 Target        accessibility-contrast-fail.html
 Preset        DEFAULT
 Analysis      Static Pattern & Heuristic Rules (Confidence Gated)
-Ruleset       medesign-standard@1.6.1
+Ruleset       medesign-standard@1.7.0
 
 QUALITY SCORE (Q = 0.30H + 0.25I + 0.20G + 0.15R + 0.10V)
   Hierarchy (H)       95.0 / 100

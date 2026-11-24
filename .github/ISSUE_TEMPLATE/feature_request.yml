@@ -1,0 +1,29 @@
+name: "Feature Proposal"
+description: "Suggest a new idea, design archetype, token preset, or CLI enhancement"
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature! Please provide context on how this improves design quality, developer workflow, or AI coding assistant capability.
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem or Opportunity"
+      description: "Is your feature request related to a problem or a gap in current UI archetypes?"
+      placeholder: "Current presets lack geospatial GIS styling..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Proposed Solution"
+      description: "Describe the solution or feature you'd like to see added."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives Considered"
+      description: "Any alternative solutions or workarounds you've considered."

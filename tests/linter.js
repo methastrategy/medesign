@@ -2,7 +2,7 @@
 
 /**
  * ME-DESIGN vNext — Verification Engine & Linter
- * Static AST & Rule Verification Runner for HTML / CSS / JSX
+ * Static pattern-based rule verification for HTML / CSS / JSX
  * Usage: node tests/linter.js <filepath> [--preset <name>] [--format text|json|sarif] [--config <path>]
  */
 
@@ -15,7 +15,7 @@ const args = process.argv.slice(2);
 if (args.includes('--help') || args.includes('-h')) {
   console.log(`
 \x1b[1mME-DESIGN Linter (v${pkg.version})\x1b[0m
-\x1b[90mStatic AST & semantic rule auditing for HTML/CSS/JSX\x1b[0m
+\x1b[90mStatic pattern and heuristic auditing for HTML/CSS/JSX\x1b[0m
 
 \x1b[1mUsage:\x1b[0m
   medesign lint <file> [options]
@@ -88,28 +88,58 @@ for (const cfg of candidateConfigs) {
 
 const content = fs.readFileSync(targetFile, 'utf8');
 
-// Support inline suppression: /* medesign-disable-next-line RULE */ and block suppression
+// Hard invariants are policy gates: user config and inline suppression cannot disable them.
+const HARD_INVARIANT_RULES = new Set(['MD001', 'MD002', 'MD003', 'MD004', 'MD005']);
+
+// Support inline suppression for advisory rules only.
 let preprocessedCode = content
-  .replace(/\/\*\s*medesign-disable-next-line\s+[A-Za-z0-9_]+\s*\*\/[\r\n]+[^\r\n]+/g, '/* medesign-suppressed */')
-  .replace(/\/\*\s*medesign-disable\s+[A-Za-z0-9_]+\s*\*\/[\s\S]*?\/\*\s*medesign-enable\s+[A-Za-z0-9_]+\s*\*\//g, '/* medesign-suppressed */');
+  .replace(/\/\*\s*medesign-disable-next-line\s+([A-Za-z0-9_]+)\s*\*\/[\r\n]+[^\r\n]+/g, (match, ruleId) =>
+    HARD_INVARIANT_RULES.has(ruleId.toUpperCase()) ? match : '/* medesign-suppressed */')
+  .replace(/\/\*\s*medesign-disable\s+([A-Za-z0-9_]+)\s*\*\/([\s\S]*?)\/\*\s*medesign-enable\s+\1\s*\*\//g, (match, ruleId, body) =>
+    HARD_INVARIANT_RULES.has(ruleId.toUpperCase())
+      ? body
+      : '/* medesign-suppressed */');
 
 // Strip remaining comments so commentary does not trigger false positives or bypasses
 const cleanCode = preprocessedCode
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/<!--[\s\S]*?-->/g, '');
 
+function findLocation(source, pattern) {
+  let idx = -1;
+  if (pattern instanceof RegExp) {
+    const m = pattern.exec(source);
+    if (m) idx = m.index;
+  } else if (typeof pattern === 'string') {
+    idx = source.indexOf(pattern);
+  }
+  if (idx < 0) return { line: 1, column: 1 };
+  const upTo = source.substring(0, idx);
+  const lines = upTo.split('\n');
+  const line = lines.length;
+  const column = lines[lines.length - 1].length + 1;
+  return { line, column };
+}
+
 const diagnostics = [];
 
 // 1. RULE MD001: Focus Visibility (:focus-visible) - Hard Invariant
 const hasFocusVisible = /:focus-visible/i.test(cleanCode) || /focus:outline/i.test(cleanCode) || /focus-visible:/i.test(cleanCode) || /outline:\s*2px/i.test(cleanCode);
 if (!hasFocusVisible) {
+  const loc = findLocation(content, /:focus\b|<button\b/i);
   diagnostics.push({
     ruleId: 'MD001',
     ruleName: 'FocusVisibility',
+    ruleClass: 'hard-invariant',
     category: 'I',
-    severity: config.rules.MD001 || 'error',
+    severity: HARD_INVARIANT_RULES.has('MD001') ? 'error' : (config.rules.MD001 || 'error'),
     hardInvariant: true,
+    confidence: 'high',
+    line: loc.line,
+    column: loc.column,
     message: 'Missing visible focus indicator (:focus-visible) for interactive controls.',
+    explanation: 'Interactive controls without visible focus trap keyboard navigation users (WCAG 2.4.7).',
+    suggestedFix: 'Define :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }',
     remediation: 'Define :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }'
   });
 }
@@ -118,13 +148,20 @@ if (!hasFocusVisible) {
 const hasAnimations = /animation:|transition:/i.test(cleanCode) && !/transition:\s*none/i.test(cleanCode);
 const hasReducedMotion = /prefers-reduced-motion/i.test(cleanCode);
 if (hasAnimations && !hasReducedMotion) {
+  const loc = findLocation(content, /animation:|transition:/i);
   diagnostics.push({
     ruleId: 'MD002',
     ruleName: 'ReducedMotionCompliance',
+    ruleClass: 'hard-invariant',
     category: 'R',
-    severity: config.rules.MD002 || 'error',
+    severity: HARD_INVARIANT_RULES.has('MD002') ? 'error' : (config.rules.MD002 || 'error'),
     hardInvariant: true,
+    confidence: 'high',
+    line: loc.line,
+    column: loc.column,
     message: 'Animations/transitions detected without @media (prefers-reduced-motion) compliance gate.',
+    explanation: 'Animations and transitions without reduced-motion queries can trigger vestibular disorientation (WCAG 2.3.3).',
+    suggestedFix: 'Add @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }',
     remediation: 'Add @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }'
   });
 }
@@ -132,13 +169,20 @@ if (hasAnimations && !hasReducedMotion) {
 // 3. RULE MD003: Uncontrolled Button Scale / Hit Target Crush - Hard Invariant
 const hasUncontrolledScale = /active:scale-9[0-5]/i.test(cleanCode) || /:active\s*\{\s*transform:\s*scale\(0\.9[0-5]\)/i.test(cleanCode);
 if (hasUncontrolledScale) {
+  const loc = findLocation(content, /active:scale-9[0-5]|transform:\s*scale\(0\.9[0-5]\)/i);
   diagnostics.push({
     ruleId: 'MD003',
     ruleName: 'IsolatedHitTarget',
+    ruleClass: 'hard-invariant',
     category: 'G',
-    severity: config.rules.MD003 || 'error',
+    severity: HARD_INVARIANT_RULES.has('MD003') ? 'error' : (config.rules.MD003 || 'error'),
     hardInvariant: true,
+    confidence: 'high',
+    line: loc.line,
+    column: loc.column,
     message: 'Detected raw scale(0.90-0.95) directly on interactive button container, collapsing touch hit-target.',
+    explanation: 'Direct container scaling collapses the outer interactive touch area below 44px (WCAG 2.5.5 / 2.5.8).',
+    suggestedFix: 'Isolate outer 44px hit-target container and scale only the inner .visual-surface using clamp(0.96, 1 - 2.5/max(W,H), 0.995).',
     remediation: 'Isolate outer 44px hit-target container and scale only the inner .visual-surface using clamp(0.96, 1 - 2.5/max(W,H), 0.995).'
   });
 }
@@ -147,13 +191,20 @@ if (hasUncontrolledScale) {
 const hasButtons = /<button/i.test(cleanCode) || /class="[^"]*btn[^"]*"/i.test(cleanCode);
 const hasInteractiveStates = /:hover/i.test(cleanCode) || /:active/i.test(cleanCode);
 if (hasButtons && !hasInteractiveStates) {
+  const loc = findLocation(content, /<button|class="[^"]*btn[^"]*"/i);
   diagnostics.push({
     ruleId: 'MD004',
     ruleName: 'InteractiveStateContract',
+    ruleClass: 'hard-invariant',
     category: 'I',
-    severity: config.rules.MD004 || 'error',
+    severity: HARD_INVARIANT_RULES.has('MD004') ? 'error' : (config.rules.MD004 || 'error'),
     hardInvariant: true,
+    confidence: 'high',
+    line: loc.line,
+    column: loc.column,
     message: 'Buttons declared without defined interactive states (:hover / :active).',
+    explanation: 'Interactive controls without hover or pressed state feedback appear non-functional (WCAG 4.1.2).',
+    suggestedFix: 'Provide meaningful visual feedback for hover and active/pressed states.',
     remediation: 'Provide meaningful visual feedback for hover and active/pressed states.'
   });
 }
@@ -162,23 +213,32 @@ if (hasButtons && !hasInteractiveStates) {
 // In Windows High Contrast Mode, box-shadow is completely stripped by the browser. Focus MUST use physical outline.
 const focusBlocks = cleanCode.match(/(?:button|a|\.[\w-]+)?:focus(?:-visible)?\s*\{[^}]+\}/gi) || [];
 let hasBoxShadowOnlyFocus = false;
+let offendingFocusBlock = null;
 for (const block of focusBlocks) {
   const hasOutline = /outline\s*:\s*(?!none|0px?)([^;}]+)/i.test(block);
   const hasBoxShadow = /box-shadow\s*:/i.test(block);
   const stripsOutline = /outline\s*:\s*(?:none|0px?)\s*(?:;|\})/i.test(block);
   if (stripsOutline || (hasBoxShadow && !hasOutline)) {
     hasBoxShadowOnlyFocus = true;
+    offendingFocusBlock = block;
     break;
   }
 }
 if (hasBoxShadowOnlyFocus) {
+  const loc = findLocation(content, offendingFocusBlock || /:focus/i);
   diagnostics.push({
     ruleId: 'MD005',
     ruleName: 'HighContrastFocusRing',
+    ruleClass: 'hard-invariant',
     category: 'I',
-    severity: config.rules.MD005 || 'error',
+    severity: HARD_INVARIANT_RULES.has('MD005') ? 'error' : (config.rules.MD005 || 'error'),
     hardInvariant: true,
+    confidence: 'high',
+    line: loc.line,
+    column: loc.column,
     message: 'Focus indicator relies on box-shadow or suppresses outline without replacement. In Windows High Contrast (forced-colors: active), box-shadow is stripped, causing total focus ring loss.',
+    explanation: 'Windows High Contrast Mode strips CSS box-shadow, resulting in invisible focus rings if outline is disabled.',
+    suggestedFix: 'Always specify a physical outline in focus styles: :focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }',
     remediation: 'Always specify a physical outline in focus styles: :focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }'
   });
 }
@@ -186,13 +246,20 @@ if (hasBoxShadowOnlyFocus) {
 // 6. RULE MD101: Dense Grid on Data Dashboards - Soft Heuristic (Warning)
 const hasDenseGrid = /grid-auto-flow:\s*dense/i.test(cleanCode);
 if (hasDenseGrid) {
+  const loc = findLocation(content, /grid-auto-flow:\s*dense/i);
   diagnostics.push({
     ruleId: 'MD101',
     ruleName: 'DenseGridTabSequence',
+    ruleClass: 'accessibility-requirement',
     category: 'G',
     severity: config.rules.MD101 || 'warning',
     hardInvariant: false,
+    confidence: 'medium',
+    line: loc.line,
+    column: loc.column,
     message: 'grid-auto-flow: dense may scramble DOM order away from keyboard tab order.',
+    explanation: 'Dense auto-flow packs elements into visual holes out of DOM sequence, violating logical reading order (WCAG 1.3.2 / 2.4.3).',
+    suggestedFix: 'Use grid-auto-flow: row with Named Grid Areas (grid-template-areas) for predictable data layouts.',
     remediation: 'Use grid-auto-flow: row with Named Grid Areas (grid-template-areas) for predictable data layouts.'
   });
 }
@@ -201,13 +268,20 @@ if (hasDenseGrid) {
 const hasGradient = /linear-gradient\(/i.test(cleanCode);
 const hasOklchOklab = /linear-gradient\([^)]*\bin\s+(oklch|oklab)/i.test(cleanCode);
 if (hasGradient && !hasOklchOklab) {
+  const loc = findLocation(content, /linear-gradient\(/i);
   diagnostics.push({
     ruleId: 'MD102',
     ruleName: 'PerceptualColorInterpolation',
+    ruleClass: 'visual-quality-heuristic',
     category: 'V',
     severity: config.rules.MD102 || 'warning',
     hardInvariant: false,
+    confidence: 'medium',
+    line: loc.line,
+    column: loc.column,
     message: 'Gradients detected without modern perceptual interpolation space (in oklch / in oklab).',
+    explanation: 'Standard sRGB gradients pass through desaturated muddy gray intermediate hues due to non-uniform lightness.',
+    suggestedFix: 'Use linear-gradient(in oklch shorter hue ...) or linear-gradient(in oklab ...) to prevent middle-gray mud.',
     remediation: 'Use linear-gradient(in oklch shorter hue ...) or linear-gradient(in oklab ...) to prevent middle-gray mud.'
   });
 }
@@ -216,13 +290,20 @@ if (hasGradient && !hasOklchOklab) {
 const hasOuterRadius = /border-radius:\s*\d+px/i.test(cleanCode);
 const hasInnerConcentric = /max\(\s*0px/i.test(cleanCode) || /calc\(infinity/i.test(cleanCode) || /--corner-r/i.test(cleanCode);
 if (hasOuterRadius && !hasInnerConcentric) {
+  const loc = findLocation(content, /border-radius:\s*\d+px/i);
   diagnostics.push({
     ruleId: 'MD103',
     ruleName: 'ConcentricRadiusMath',
+    ruleClass: 'visual-quality-heuristic',
     category: 'G',
     severity: config.rules.MD103 || 'info',
     hardInvariant: false,
+    confidence: 'medium',
+    line: loc.line,
+    column: loc.column,
     message: 'Consider applying Safe Concentric Radius formula max(0px, r_outer - border_w - pad) for nested cards.',
+    explanation: 'Nested containers with equal border-radius suffer corner optical collision and clipped corners.',
+    suggestedFix: 'Ensure inner containers compute radius proportionally to avoid clipped corners.',
     remediation: 'Ensure inner containers compute radius proportionally to avoid clipped corners.'
   });
 }
@@ -231,13 +312,20 @@ if (hasOuterRadius && !hasInnerConcentric) {
 const hasRaw100vh = /(?:height|min-height|max-height)\s*:\s*100vh/i.test(cleanCode);
 const hasDvhSvh = /100[ds]vh/i.test(cleanCode);
 if (hasRaw100vh && !hasDvhSvh) {
+  const loc = findLocation(content, /(?:height|min-height|max-height)\s*:\s*100vh/i);
   diagnostics.push({
     ruleId: 'MD104',
     ruleName: 'MobileViewportStability',
+    ruleClass: 'accessibility-requirement',
     category: 'R',
     severity: config.rules.MD104 || 'warning',
     hardInvariant: false,
+    confidence: 'high',
+    line: loc.line,
+    column: loc.column,
     message: '100vh viewport unit used without dynamic viewport fallback (100dvh/100svh). On mobile browsers, toolbar expansion causes vertical jumping.',
+    explanation: '100vh does not account for dynamic mobile browser chrome (address bar expansion), causing vertical scroll jumps.',
+    suggestedFix: 'Provide dynamic viewport unit: min-height: 100vh; min-height: 100dvh;',
     remediation: 'Provide dynamic viewport unit: min-height: 100vh; min-height: 100dvh;'
   });
 }
@@ -245,13 +333,20 @@ if (hasRaw100vh && !hasDvhSvh) {
 // 10. RULE MD105: Visual/DOM Order Scrambling - Soft Heuristic (Warning)
 const hasOrderReverse = /flex-direction\s*:\s*(row|column)-reverse/i.test(cleanCode) || /\border\s*:\s*(-?[1-9]\d*)/i.test(cleanCode);
 if (hasOrderReverse) {
+  const loc = findLocation(content, /flex-direction\s*:\s*(row|column)-reverse|\border\s*:\s*(-?[1-9]\d*)/i);
   diagnostics.push({
     ruleId: 'MD105',
     ruleName: 'VisualDomSequenceScramble',
+    ruleClass: 'accessibility-requirement',
     category: 'G',
     severity: config.rules.MD105 || 'warning',
     hardInvariant: false,
+    confidence: 'high',
+    line: loc.line,
+    column: loc.column,
     message: 'Reverse flex-direction or CSS order detected. Reordering visual sequence without updating DOM order violates WCAG 1.3.2 and disorients keyboard users.',
+    explanation: 'CSS reverse layout or order creates a mismatch between reading/focus sequence and visual order (WCAG 1.3.2).',
+    suggestedFix: 'Reorder elements in HTML/DOM source directly rather than relying on reverse layout or CSS order.',
     remediation: 'Reorder elements in HTML/DOM source directly rather than relying on reverse layout or CSS order.'
   });
 }
@@ -260,6 +355,7 @@ if (hasOrderReverse) {
 // When an interactive slider or pill container has a rounded background, inner tracks must maintain >= 8px optical clearance.
 const sliderPillBlocks = cleanCode.match(/(?:[a-zA-Z0-9_\-\.\#\:\*\,\[\]\="'>\s]+)?(?:slider|progress|scrubber|pill-track)\s*\{[^}]+\}/gi) || [];
 let hasBoundaryCollision = false;
+let offendingSliderBlock = null;
 for (const block of sliderPillBlocks) {
   const hasPillRadius = /border-radius\s*:\s*(?:var\(--radius-full\)|9999px|50%|[1-9]\d{1,}px)/i.test(block);
   const hasVisibleBg = /background(?:-color)?\s*:\s*(?!none|transparent\b|rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\))/i.test(block);
@@ -267,17 +363,25 @@ for (const block of sliderPillBlocks) {
   const hasOpticalPadding = /padding(?:-inline|-left|-right)?\s*:\s*(?:[^;}]*?(?:[8-9]px|[1-9]\d+px|var\(--padding))/i.test(block);
   if (hasPillRadius && hasVisibleBg && hasMinHeightTarget && !hasOpticalPadding) {
     hasBoundaryCollision = true;
+    offendingSliderBlock = block;
     break;
   }
 }
 if (hasBoundaryCollision) {
+  const loc = findLocation(content, offendingSliderBlock || /(?:slider|progress|scrubber|pill-track)\s*\{/i);
   diagnostics.push({
     ruleId: 'MD106',
     ruleName: 'ContainerBoundaryClearance',
+    ruleClass: 'ux-heuristic',
     category: 'G',
     severity: config.rules.MD106 || 'warning',
     hardInvariant: false,
+    confidence: 'medium',
+    line: loc.line,
+    column: loc.column,
     message: 'Detected full-width slider/progress track inside a rounded container with background but zero optical padding, causing visual boundary collision.',
+    explanation: 'Track elements colliding with pill border radius create optical tension and imprecise drag handles.',
+    suggestedFix: 'Isolate outer 44px hit-target with transparent background, or provide horizontal optical padding (padding: 0 12px) to prevent the track from slamming into the curved border.',
     remediation: 'Isolate outer 44px hit-target with transparent background, or provide horizontal optical padding (padding: 0 12px) to prevent the track from slamming into the curved border.'
   });
 }
@@ -286,13 +390,20 @@ if (hasBoundaryCollision) {
 const visibleTextMatch = content.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '');
 const hasEmDash = /[—–]/.test(visibleTextMatch);
 if (hasEmDash) {
+  const loc = findLocation(content, /[—–]/);
   diagnostics.push({
     ruleId: 'MD201',
     ruleName: 'EditorialPunctuationHyphen',
+    ruleClass: 'optional-recommendation',
     category: 'V',
     severity: config.rules.MD201 || 'info',
     hardInvariant: false,
+    confidence: 'high',
+    line: loc.line,
+    column: loc.column,
     message: 'Detected em-dash (—) or en-dash (–) in rendered copy.',
+    explanation: 'Em-dash punctuation is an editorial tell from LLM prose generators; clean UI copy prefers hyphens or colons.',
+    suggestedFix: 'Consider replacing with hyphen (-) or colon for concise UI copywriting.',
     remediation: 'Consider replacing with hyphen (-) or colon for concise UI copywriting.'
   });
 }
@@ -374,6 +485,10 @@ if (format === 'sarif') {
                 artifactLocation: {
                   uri: uri,
                   uriBaseId: '%SRCROOT%'
+                },
+                region: {
+                  startLine: d.line || 1,
+                  startColumn: d.column || 1
                 }
               }
             }
@@ -392,6 +507,8 @@ if (format === 'json') {
   console.log(JSON.stringify({
     file: targetFile,
     preset: presetName,
+    analysisType: 'static-pattern-heuristic',
+    scoreType: 'static-heuristic',
     qScore,
     passed: isPassed,
     scores: { H, I, G, R, V },
@@ -415,7 +532,7 @@ console.log(`${ANSI_CYAN}Design Quality & Governance Audit${ANSI_RESET}`);
 console.log(`${ANSI_GRAY}────────────────────────────────────────${ANSI_RESET}`);
 console.log(`Target        ${path.basename(targetFile)}`);
 console.log(`Preset        ${presetName.toUpperCase()}`);
-console.log(`Analysis      Static AST & Semantic Rules`);
+console.log(`Analysis      Static Pattern & Heuristic Rules (Confidence Gated)`);
 console.log(`Ruleset       medesign-standard@${pkg.version}\n`);
 
 console.log(`${ANSI_BOLD}QUALITY SCORE (Q = ${w.H}H + ${w.I}I + ${w.G}G + ${w.R}R + ${w.V}V)${ANSI_RESET}`);
@@ -426,7 +543,8 @@ console.log(`  Responsive (R)      ${R.toFixed(1)} / 100`);
 console.log(`  Visual Craft (V)    ${V.toFixed(1)} / 100\n`);
 
 const qScoreColor = isPassed ? ANSI_GREEN : ANSI_RED;
-console.log(`  ${ANSI_BOLD}Q-SCORE             ${qScoreColor}${qScore.toFixed(1)} / 100${ANSI_RESET}  [${isPassed ? 'PASS' : 'FAIL'}]\n`);
+console.log(`  ${ANSI_BOLD}Q-SCORE             ${qScoreColor}${qScore.toFixed(1)} / 100${ANSI_RESET}  [${isPassed ? 'PASS' : 'FAIL'}]`);
+console.log(`  ${ANSI_GRAY}(Note: Q-Score is a static pattern heuristic, not a direct measurement of rendered layout)${ANSI_RESET}\n`);
 
 console.log(`${ANSI_BOLD}HARD INVARIANTS CHECKLIST${ANSI_RESET}`);
 console.log(`  ${hasFocusVisible ? ANSI_GREEN + 'PASS' : ANSI_RED + 'FAIL'}${ANSI_RESET}  MD001: Keyboard Focus Ring Visibility (:focus-visible)`);
@@ -439,7 +557,7 @@ if (diagnostics.length > 0) {
   console.log(`${ANSI_BOLD}FINDINGS (${diagnostics.length})${ANSI_RESET}`);
   diagnostics.forEach(d => {
     const sevColor = d.severity === 'error' ? ANSI_RED : (d.severity === 'warning' ? ANSI_YELLOW : ANSI_CYAN);
-    console.log(`  ${sevColor}${d.severity.padEnd(7)}${ANSI_RESET} ${d.ruleId}  ${d.message}`);
+    console.log(`  ${sevColor}${d.severity.padEnd(7)}${ANSI_RESET} [${d.line}:${d.column}] ${d.ruleId} (${d.ruleClass})  ${d.message}`);
     if (d.remediation) {
       console.log(`          ${ANSI_GRAY}-> Remediation: ${d.remediation}${ANSI_RESET}`);
     }

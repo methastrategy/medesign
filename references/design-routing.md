@@ -1,207 +1,96 @@
-# Design Routing Guide
+# ME-DESIGN — Knowledge & Design Intelligence Routing Guide
 
-When to use each design sub-skill.
+This document classifies all references within ME-DESIGN, mapping product contexts, intents, and user domains to relevant architectural modules.
 
-## Skill Overview
+---
 
-| Skill | Purpose | Key Files |
-|-------|---------|-----------|
-| brand | Brand identity, voice, assets | SKILL.md + 10 references + 3 scripts |
-| design-system | Token architecture, specs | SKILL.md + 7 references + 2 scripts |
-| ui-styling | Component implementation | SKILL.md + 7 references + 2 scripts |
-| logo-design | AI logo generation (55 styles, 30 palettes) | SKILL.md + 4 references + 2 scripts |
-| cip-design | Corporate Identity Program (50 deliverables) | SKILL.md + 3 references + 3 scripts |
-| slides | HTML presentations with Chart.js | SKILL.md + 4 references |
-| banner (built-in) | Banners for social, ads, web, print (22 styles) | references/banner-sizes-and-styles.md |
-| icon-design | SVG icon generation (15 styles, Gemini 3.1 Pro) | SKILL.md + 1 reference + 1 script |
+## 1. Reference Classification (Four-Tier Architecture)
 
-## Routing by Task Type
+To minimize context pollution and prevent unnecessary loading, all 60+ repository references are organized into four distinct tiers:
 
-### Brand Identity Tasks
-**→ brand**
+### Tier 1: Core Engineering Knowledge (Load on Frontend Design Workflows)
+These references establish the non-negotiable foundations of web accessibility, layout, typography, and delivery verification:
 
-- Define brand colors and typography
-- Create logo usage guidelines
-- Establish brand voice and tone
-- Organize and validate assets
-- Create messaging frameworks
-- Audit brand consistency
+| Reference | Domain & Purpose | Trigger Condition |
+|---|---|---|
+| `references/design-core.md` | Layout principles, 8-pt grid, closed spacing tokens, visual hierarchy | Spatial layout, spacing, containers |
+| `references/typography-thai-latin.md` | Bilingual Thai-Latin font pairing, vertical metrics, line-height >= 1.7 | Typography, font stacks, Thai diacritic clipping |
+| `references/modern-craft-invariants.md` | WCAG 2.2 standards, touch target contracts (44px), high contrast outline | Accessibility, interactive states, contracts |
+| `references/quality-gate.md` | Deterministic verification: Squint Test, Grayscale, 10-State Matrix | Delivery review, code completion |
+| `references/brief-intake.md` | Mode detection (`new` / `revamp` / `like`), ambiguity resolution | Initial brief intake (deep path) |
 
-### Token System Tasks
-**→ design-system**
+---
 
-- Create design tokens JSON
-- Generate CSS variables
-- Define component specifications
-- Map tokens to Tailwind config
-- Validate token usage in code
-- Document state and variants
+### Tier 2: Specialized Design Intelligence (Load JIT Based on Domain/Task)
+Load only the reference matching the specific product domain or technical task:
 
-### Implementation Tasks
-**→ ui-styling**
+| Reference | Domain & Purpose | Recommended Stack / Context |
+|---|---|---|
+| `references/argon-design-archetypes.md` | 38 Curated Domain Archetypes (SaaS, GIS, Cadastre, Telemetry, FinTech) | Creating distinct, non-generic interfaces |
+| `references/brand-design-tokens.md` | 74 Global Brand System Profiles & OKLCH token mappings | Brand inspiration or theme adaptation |
+| `references/motion-tokens.md` | 120fps spring physics curves, duration scales, micro-interactions | Animation, transition, hover/active physics |
+| `references/compositor-smoothness.md` | Hardware-accelerated CSS properties (`transform`, `opacity`) | High-framerate interaction, scroll performance |
+| `references/components.md` | Accessible component blueprints (dialog, combobox, tooltip, table) | Component implementation, complex controls |
+| `references/ui-styling-shadcn.md` | Tailwind CSS + shadcn/ui integration conventions | React / Next.js / Tailwind stack |
+| `references/web-retrofit-protocol.md` | Safe legacy web modernization (Tier 1-3 progressive patches) | Refactoring existing webbases without breakage |
+| `references/style-extraction.md` | Methodical CSS / token reverse-engineering from live sites | `/medesign extract <url>` or theme cloning |
+| `references/image-to-code.md` | Figma / screenshot to production code mapping protocol | Converting visual designs to code |
+| `references/ai-tells.md` | Catalog of 44 AI-generated visual tells to detect and eradicate | Anti-generic polish, design critique |
+| `references/redesign-audit.md` | Pre-implementation audit checklist for existing projects | Planning a surface or application revamp |
 
-- Add shadcn/ui components
-- Style with Tailwind classes
-- Implement dark mode
-- Create responsive layouts
-- Build accessible components
+---
 
-### Logo Design Tasks
-**→ logo-design**
+### Tier 3: Optional Media & Graphic References (User Explicit Request Only)
+Do not load during web application or frontend development unless explicitly asked for graphics or slides:
 
-- Create logos with AI (Gemini Nano Banana)
-- Search logo styles, color palettes, industry guidelines
-- Generate design briefs
-- Explore 55+ styles (minimalist, vintage, luxury, geometric, etc.)
+| Reference | Media Type | Deliverable |
+|---|---|---|
+| `references/slides.md` | Presentation | HTML pitch decks with Chart.js |
+| `references/slides-html-template.md` | Presentation | Reusable semantic HTML slide boilerplate |
+| `references/slides-layout-patterns.md` | Presentation | Bento, split, timeline, and metric slide layouts |
+| `references/slides-copywriting-formulas.md`| Presentation | Executive storytelling and slide messaging formulas |
+| `references/slides-strategies.md` | Presentation | Slide deck pacing and structural strategies |
+| `references/banner-sizes-and-styles.md` | Graphic Design | Social and display ad banner specifications (22 styles) |
+| `references/social-photos-design.md` | Graphic Design | OpenGraph, Twitter card, and social post graphics |
+| `references/logo-design.md` | Identity | SVG logo prompts, geometric/minimalist styles |
+| `references/cip-design.md` | Identity | Corporate Identity Program (stationery, collateral) |
+| `references/icon-design.md` | Graphic Design | Vector SVG icon design protocols (15 styles) |
+| `references/executive-reports.md` | Documentation | High-density technical and executive report templates |
+| `references/image-mockup-direction.md` | Mockup | 3D device mockup composition guides |
 
-### Corporate Identity Program Tasks
-**→ cip-design**
+---
 
-- Generate CIP deliverables (business cards, letterheads, signage, vehicles, apparel)
-- Create CIP briefs with industry/style analysis
-- Generate mockups with/without logo (Gemini Flash/Pro)
-- Render HTML presentations from CIP mockups
+### Tier 4: Archived & Superset References (Retained for Provenance)
+These references represent earlier iterations or raw vocabulary sources:
 
-### Presentation Tasks
-**→ slides**
+- `references/intake.md`: Early English brief intake (superseded by `brief-intake.md` v2.3).
+- `references/redesign.md`: Legacy redesign notes (superseded by `web-retrofit-protocol.md`).
+- `references/vocabulary.md`: Legacy UI vocabulary (superseded by `vocab-protocol.md` and `ui-ux-vocabulary-vault.md`).
+- `references/ui-ux-vocabulary-vault.md` & `ui-ux-vocabulary-vault.json`: 90KB raw lexicon vault used by discovery indexing.
 
-- Create strategic HTML presentations
-- Data visualization with Chart.js
-- Apply copywriting formulas to slide content
-- Use layout patterns and design tokens
+---
 
-### Banner Design Tasks
-**→ design (built-in banner: references/banner-sizes-and-styles.md)**
+## 2. Design Decision Matrix (Context-Driven Architecture)
 
-- Design banners for social media (Facebook, Twitter, LinkedIn, YouTube, Instagram)
-- Create ad banners (Google Ads, Meta Ads)
-- Website hero banners and headers
-- Print banners and covers
-- 22 art direction styles (minimalist, bold typography, gradient, glassmorphism, etc.)
+Design decisions must be derived from context, not arbitrary taste. Never force a single archetype or visual style across different products:
 
-### Icon Design Tasks
-**→ icon-design**
+| Product Domain | Target Audience | Spatial Model | Recommended Typography | Primary Palette | Motion Profile |
+|---|---|---|---|---|---|
+| **B2B SaaS / Admin** | Technical Operators, Admins | Bento / Column Grid (Dense) | Geist / Inter + JetBrains Mono | Monochromatic Slate + Vibrant Action | `spring-settle` (160ms) |
+| **GIS / Cadastre / Mapping** | Surveyors, Civil Engineers | 16:10 Split Canvas + Data Shelf | JetBrains Mono + IBM Plex Sans Thai | Ultra-Dark Obsidian + Electric Cyan (#00f5fb) | `precision` (120ms max) |
+| **Telemetry / Industrial** | Operations Center, SREs | Multi-Pane Cockpit (100dvh) | Tabular Monospace | High-Contrast Charcoal + Passed Emerald | `instant` / `precision` |
+| **FinTech / Banking** | Institutional / Retail Investors | Tabular Density + Key Metrics | Plus Jakarta Sans + Tabular Mono | Deep Navy / Forest + Restrained Gold/Emerald | `precision` (140ms) |
+| **Consumer / E-Commerce** | Everyday Consumers | Fluid Editorial / Story Grid | Plus Jakarta Sans / Cabinet Grotesk | Warm Neutral + Product Accent | `soft-settle` (240ms) |
+| **Developer Tooling** | Software Engineers | Terminal-First / Split Pane | Geist Sans + Geist Mono | Deep Void / Monochrome Carbon | `instant` (0-80ms) |
+| **Public Sector / Utility** | General Public (High Diversity) | Simple Linear / Card Stack | Inter + System Sans (WCAG AAA) | High-Contrast Neutral + Accessible Blue | None / `soft-settle` |
 
-- Generate SVG icons with AI (Gemini 3.1 Pro Preview)
-- Batch icon variations in multiple styles
-- Multi-size export (16px, 24px, 32px, 48px)
-- 15 styles: outlined, filled, duotone, rounded, sharp, gradient, etc.
-- 12 categories: navigation, action, communication, media, commerce, data
+---
 
-## Routing by Question Type
+## 3. Anti-Default Guarantees (No Universal Style)
 
-| Question | Skill |
-|----------|-------|
-| "What color should this be?" | brand |
-| "How do I create a token for X?" | design-system |
-| "How do I build a button component?" | ui-styling |
-| "Is this on-brand?" | brand |
-| "Should I use a CSS variable here?" | design-system |
-| "How do I add dark mode?" | ui-styling |
-| "Create a logo for my brand" | logo-design |
-| "Generate business card mockups" | cip-design |
-| "Create a pitch deck" | slides |
-| "Design brand identity package" | cip-design |
-| "What logo style fits my industry?" | logo-design |
-| "Design a Facebook cover" | design (built-in banner) |
-| "Create ad banners for Google" | design (built-in banner) |
-| "Make a website hero banner" | design (built-in banner) |
-| "Generate a settings icon" | icon-design |
-| "Create SVG icons for my app" | icon-design |
-| "Design an icon set" | icon-design |
-
-## Multi-Skill Workflows
-
-### New Project Setup
-
-```
-1. brand → Define identity
-   - Colors, typography, voice
-
-2. design-system → Create tokens
-   - Primitive, semantic, component
-
-3. ui-styling → Implement
-   - Configure Tailwind, add components
-```
-
-### Design System Migration
-
-```
-1. brand → Audit existing
-   - Extract brand colors, fonts
-
-2. design-system → Formalize tokens
-   - Create three-layer architecture
-
-3. ui-styling → Update code
-   - Replace hardcoded values
-```
-
-### Component Creation
-
-```
-1. design-system → Reference specs
-   - Button states, sizes, variants
-
-2. ui-styling → Implement
-   - Build with shadcn/ui + Tailwind
-```
-
-## Skill Dependencies
-
-```
-brand
-    ↓ (colors, typography)
-design-system
-    ↓ (tokens, specs)
-ui-styling
-    ↓ (components)
-Application Code
-```
-
-## Quick Commands
-
-**Brand:**
-```bash
-node ../brand/scripts/inject-brand-context.cjs
-node ../brand/scripts/validate-asset.cjs <path>
-```
-
-**Tokens:**
-```bash
-node ../design-system/scripts/generate-tokens.cjs -c tokens.json
-node ../design-system/scripts/validate-tokens.cjs -d src/
-```
-
-**Components:**
-```bash
-npx shadcn@latest add button card input
-```
-
-## When to Use Multiple Skills
-
-Use **all eight** when:
-- Complete brand package from scratch (logo → CIP → presentation)
-
-Use **brand + design-system + ui-styling** when:
-- Design system setup and implementation
-
-Use **logo-design + cip-design** when:
-- Complete brand identity package with deliverable mockups
-
-Use **logo-design + cip-design + slides** when:
-- Brand pitch: generate logo, create CIP mockups, build pitch deck
-
-Use **design (banner) + brand** when:
-- Social media presence: branded banners across all platforms
-
-Use **icon-design + design-system** when:
-- Custom icon set matching design tokens and component specs
-
-Use **brand + design-system** when:
-- Defining design language without implementation
-
-Use **design-system + ui-styling** when:
-- Implementing existing brand in code
-- Building component library
+ME-DESIGN strictly forbids enforcing the following as universal requirements:
+1. **No Forced Dark Mode:** Choose light, dark, or system-adaptive based entirely on product domain and lighting environment.
+2. **No Forced Bento Grid:** Use Bento layouts only when content units have genuine hierarchical asymmetry. Never distort tabular data into Bento boxes.
+3. **No Forced 3-Pane Cockpit:** Reserve 3-pane spatial layouts for map-centric, CAD, or telemetry tools. Never apply cockpit layouts to landing pages or mobile applications.
+4. **No Forced Neon Accents:** Saturated OKLCH cyan/magenta is suitable for technical displays; consumer, medical, and banking products require restrained semantic colors.
+5. **No Universal Font:** Thai requires Latin fonts defined first (`"Plus Jakarta Sans", "IBM Plex Sans Thai"`), with `line-height >= 1.7` to prevent diacritic clipping.

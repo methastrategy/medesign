@@ -155,6 +155,12 @@ try {
   assert(dryRunRes.stdout.includes('POLISH DRY-RUN PREVIEW'), 'Polish --dry-run displays preview notice');
   assert(fs.readFileSync(testDryRunPath, 'utf8') === rawDryRun, 'Polish --dry-run leaves file unmodified on disk');
 
+  // 4e-2. Test 'polish' --dry-run --diff option (verifies unified diff output)
+  const dryRunDiffRes = spawnSync(process.execPath, [cliPath, 'polish', testDryRunPath, '--dry-run', '--diff'], { encoding: 'utf8' });
+  assert(dryRunDiffRes.status === 0, 'Polish --dry-run --diff exits with code 0');
+  assert(dryRunDiffRes.stdout.includes('--- a/') && dryRunDiffRes.stdout.includes('+++ b/'), 'Polish --diff displays unified diff headers');
+  assert(dryRunDiffRes.stdout.includes('- <div style="height: 100vh;">') || dryRunDiffRes.stdout.includes('+ <div style="'), 'Polish --diff shows modified lines');
+
   // 4f. Test 'polish' gate rejection on unfixable failure (exit code 1)
   const testFailPath = path.join(tmpDir, 'test-unfixable.html');
   // Focus block with comment between selector and bracket exposes regex limitation (MD005 hard failure remaining)
@@ -163,6 +169,7 @@ try {
   const failRes = spawnSync(process.execPath, [cliPath, 'polish', testFailPath], { encoding: 'utf8' });
   assert(failRes.status === 1, 'Polish on unfixable file exits with code 1 (Gate Rejection)');
   assert(failRes.stderr.includes('GATE REJECTED') && failRes.stderr.includes('MD005'), 'Polish failure reports gate rejection with MD005 rule ID');
+  assert(fs.readFileSync(testFailPath, 'utf8') === unfixableRaw, 'Polish rejected candidate preserves original file byte-for-byte');
 
   // 5. Test 'polish' on standalone CSS file (verifies forced-colors injection without </style>)
   const testCssPath = path.join(tmpDir, 'test-standalone.css');

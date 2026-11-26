@@ -98,6 +98,21 @@ assert(
   'Scenario 10: Environments without ask_question or Node CLI degrade gracefully to plain text and manual checklist'
 );
 
+const skillReferences = [...new Set(skill.match(/references\/[\w.-]+\.md/g))];
+const adapter = path.join('integrations', 'claude-code', 'medesign.md');
+assert(
+  skill.replace(/\r\n/g, '\n').length <= 6000 &&
+  skillReferences.every(reference => fs.existsSync(path.join(repo, reference))),
+  'The canonical skill stays within its load budget and all referenced files exist'
+);
+assert(
+  fs.existsSync(path.join(repo, adapter)) &&
+  !fs.readdirSync(path.join(repo, 'integrations'), { recursive: true })
+    .some(file => path.basename(file) === 'SKILL.md') &&
+  fs.readFileSync(path.join(repo, 'README.md'), 'utf8').includes('integrations/claude-code/medesign.md'),
+  'Claude Code has a documented adapter source and installed bundles expose only the canonical skill'
+);
+
 console.log(`\nSummary: ${passed} passed, ${failed} failed.\n`);
 if (failed > 0) {
   process.exit(1);

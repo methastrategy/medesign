@@ -24,3 +24,4 @@ When generating or refactoring UI components, web pages, or engineering dashboar
    - Zero em-dash (`—`) or en-dash (`–`) in visible UI text.
    - Zero decisionless 3-card uniformity.
    - All interactive controls must satisfy `:focus-visible` outline.
+6. **Component reuse:** Start with project and native controls. For external code, inspect its source, license and dependencies, then test it in the host app.

@@ -80,6 +80,7 @@ Plan around the user's task, not a decorative component catalogue:
 ### 4. Implement in the existing stack
 - Follow the repository's component and styling conventions.
 - Prefer existing components and tokens over duplicate systems.
+- When reusing an external component, follow the checks in `references/components.md`.
 - Keep components understandable and avoid unnecessary abstraction.
 - Use semantic HTML and accessible names.
 - Make controls functional; do not ship decorative buttons that appear actionable.
@@ -107,7 +108,7 @@ Load only the relevant references:
 - **Motion and interaction:** `references/motion-tokens.md`, `references/compositor-smoothness.md`
 - **Accessibility and implementation review:** `references/quality-gate.md`, `references/redesign-audit.md`
 - **Existing site retrofit:** `references/web-retrofit-protocol.md`
-- **Component or modal:** `references/components.md`
+- **Component, modal, or SwiftUI registry adoption:** `references/components.md`
 - **Extract a visual system:** `references/style-extraction.md`
 - **Brand inspiration:** `references/brand-design-tokens.md` or `references/style-extraction.md`
 - **Archetype search:** `references/argon-design-archetypes.md`

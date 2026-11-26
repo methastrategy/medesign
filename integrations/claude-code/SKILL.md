@@ -18,3 +18,4 @@ When designing, auditing, or writing frontend code:
    - Operational Archetype × Visual Language × Spatial Model × Motion Profile × Governance Tier.
 4. **Verification:**
    - Verify code against `tests/linter.js` before completing tasks.
+5. **Component reuse:** Start with project and native controls. For external code, inspect its source, license and dependencies, then test it in the host app.

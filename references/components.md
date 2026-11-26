@@ -1,3 +1,11 @@
+## Reusing an external component
+
+Start with the project's existing components and native controls. If there is a gap, use a registry or upstream source to find a candidate by behavior and platform compatibility. Read the entry and its source to review the license, minimum OS or runtime, required files and dependencies, interaction states, and accessibility behavior.
+
+For SwiftUI, [SwiftPieces](https://swiftpieces.com/components) is a candidate catalog. Use its [MCP or llms.txt index](https://swiftpieces.com/docs/mcp) for discovery and inspect the registry files and [license](https://github.com/Saivion/SwiftPieces/blob/main/LICENSE) before adopting a piece. Check the app's deployment target, Xcode SDK, and target membership for each file, including any Metal shader. For a date range picker, check the interaction for selecting and clearing a range as well as the layout at large text sizes.
+
+Track the imported files in the app's repository and record the upstream revision or registry version where the project tracks provenance. Build the affected target and exercise the interaction in the app. On iOS, use the simulator for navigation, Dynamic Type, and Reduce Motion where relevant, and a device for haptic feedback. Report which checks ran.
+
 ## 🎨 Interactive Modal Archetypes (เมื่อใช้ `/medesign` ปกติ)
 
 เรียก `ask_question` ทันทีด้วยตัวเลือกต่อไปนี้ (หรือเปิด Comparison Lab บน Localhost):

@@ -268,7 +268,7 @@ RESULT: FAIL (4 hard invariant failures, Exit Code: 1)
 ME-DESIGN provides shared rule adapters for all major agentic tools:
 
 - **Google Antigravity:** Native Skill supported under `C:\Users\hotme\.gemini\config\skills\medesign\SKILL.md` (or workspace `.gemini/skills/medesign/SKILL.md`)
-- **Claude Code:** Copy `integrations/claude-code/SKILL.md` to `.claude/skills/medesign/SKILL.md`
+- **Claude Code:** Copy `integrations/claude-code/medesign.md` to `.claude/skills/medesign/SKILL.md`. The adapter source uses a distinct filename so project skill scanners find only the main skill.
 - **Cursor:** Copy `integrations/cursor/medesign.mdc` to `.cursor/rules/medesign.mdc`
 - **Windsurf / OpenClaw / Generic Agents:** Link to root `SKILL.md` in `.agents/rules/` or `AGENTS.md`
 

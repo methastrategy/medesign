@@ -34,6 +34,9 @@ jobs:
       - name: Run Deterministic AST & Semantic Test Suite
         run: node bin/medesign.js test
 
+      - name: Verify skill workflows and package layout
+        run: node tests/test-behavioral-matrix.js
+
       - name: Generate SARIF Security & Invariant Report
         if: always()
         run: node bin/medesign.js lint tests/visual-testbed.html --format sarif > medesign-results.sarif
